@@ -50,6 +50,14 @@ struct ContentView: View {
             .navigationBarTitle("Add New Product")
                 
         }
+        .onAppear(perform: {
+            for product in products {
+                print(product.getName)
+                print(product.getType)
+                print(product.ExpiryDate)
+                print(product.CreatedAt)
+            }
+        })
                 
     }
     
@@ -68,8 +76,10 @@ struct ContentView: View {
             }
         }
         catch {
-            
+            fatalError(error.localizedDescription)
         }
+        productName = ""
+        expiryDate = Date()
     }
 
 }
