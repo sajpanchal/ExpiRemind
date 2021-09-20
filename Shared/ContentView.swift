@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
@@ -42,12 +43,33 @@ struct ContentView: View {
                 productType = "Grocery"
             }
             .foregroundColor(.red), trailing: Button("Done") {
-                
+                if productName.count >= 2 {
+                    addProduct()
+                }
             })
             .navigationBarTitle("Add New Product")
                 
         }
+                
+    }
+    
+    func addProduct() {
+        let product = Product(context: viewContext)
+        product.name = productName
+        product.type = productType
+        product.expiryDate = expiryDate
+        product.createdAt = Date()
         
+        do {
+            try viewContext.save()
+            print("product saved")
+            for product in products {
+                print(product)
+            }
+        }
+        catch {
+            
+        }
     }
 
 }
