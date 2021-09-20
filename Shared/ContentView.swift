@@ -10,10 +10,14 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()
+    @State var alertTitle = ""
+    @State var alertMessage = ""
+    @State var showAlert = false
     
     var body: some View {
         NavigationView {
@@ -40,14 +44,60 @@ struct ContentView: View {
                 productName = ""
                 expiryDate = Date()
                 productType = "Grocery"
+                alertTitle = "Discarded!"
+                alertMessage = "New Product has been discarded successfully."
+                showAlert = true
             }
             .foregroundColor(.red), trailing: Button("Done") {
+                if productName.count >= 2 {
+                    addProduct()
+                    alertTitle = "Saved!"
+                    alertMessage = "New Product has been saved successfully."
+                    showAlert = true
+                }
+                else {
+                    alertTitle = "Something went wrong!"
+                    alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
+                    showAlert = true
+                }
                 
             })
             .navigationBarTitle("Add New Product")
                 
         }
+        .onAppear(perform: {
+            for product in products {
+                print(product.getName)
+                print(product.getType)
+                print(product.ExpiryDate)
+                print(product.CreatedAt)
+            }
+        })
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
+                
+    }
+    
+    func addProduct() {
+        let product = Product(context: viewContext)
+        product.name = productName
+        product.type = productType
+        product.expiryDate = expiryDate
+        product.createdAt = Date()
         
+        do {
+            try viewContext.save()
+            print("product saved")
+            for product in products {
+                print(product)
+            }
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+        productName = ""
+        expiryDate = Date()
     }
 
 }
