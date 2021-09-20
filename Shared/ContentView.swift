@@ -15,6 +15,9 @@ struct ContentView: View {
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()
+    @State var alertTitle = ""
+    @State var alertMessage = ""
+    @State var showAlert = false
     
     var body: some View {
         NavigationView {
@@ -41,11 +44,23 @@ struct ContentView: View {
                 productName = ""
                 expiryDate = Date()
                 productType = "Grocery"
+                alertTitle = "Discarded!"
+                alertMessage = "New Product has been discarded successfully."
+                showAlert = true
             }
             .foregroundColor(.red), trailing: Button("Done") {
                 if productName.count >= 2 {
                     addProduct()
+                    alertTitle = "Saved!"
+                    alertMessage = "New Product has been saved successfully."
+                    showAlert = true
                 }
+                else {
+                    alertTitle = "Something went wrong!"
+                    alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
+                    showAlert = true
+                }
+                
             })
             .navigationBarTitle("Add New Product")
                 
@@ -58,6 +73,9 @@ struct ContentView: View {
                 print(product.CreatedAt)
             }
         })
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
                 
     }
     
