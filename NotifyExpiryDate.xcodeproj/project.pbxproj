@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */; };
+		720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */; };
 		724E800F26F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FF926F792900007D122 /* NotifyExpiryDate.xcdatamodeld */; };
 		724E801026F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FF926F792900007D122 /* NotifyExpiryDate.xcdatamodeld */; };
 		724E801126F792910007D122 /* NotifyExpiryDateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
+		720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		724E7FFA26F792900007D122 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyExpiryDateApp.swift; sourceTree = "<group>"; };
 		724E7FFC26F792900007D122 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +57,8 @@
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
+				720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */,
+				720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */,
 				724E7FF826F792900007D122 /* Shared */,
 				724E800526F792910007D122 /* iOS */,
 				724E800C26F792910007D122 /* macOS */,
@@ -197,7 +203,9 @@
 			files = (
 				724E800F26F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */,
 				724E801526F792910007D122 /* Persistence.swift in Sources */,
+				720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */,
 				724E801126F792910007D122 /* NotifyExpiryDateApp.swift in Sources */,
+				720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */,
 				724E801326F792910007D122 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
