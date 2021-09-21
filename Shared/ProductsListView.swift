@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
-    @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
+    @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
     var body: some View {
         NavigationView {
             VStack {
@@ -21,8 +21,6 @@ struct ProductsListView: View {
                             }
                         }
                     }
-                
-                    
                     Section(header: Text("Electronics")) {
                         ForEach(products, id: \.self) { product in
                             if product.getType == "Electronics" {
@@ -52,10 +50,7 @@ struct ProductsListView: View {
                             }
                         }
                     }
-                }
-                
-                
-                
+                }                                                
             }
             .navigationTitle("List of Products")
         }
