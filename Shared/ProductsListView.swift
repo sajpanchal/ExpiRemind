@@ -10,43 +10,17 @@ import SwiftUI
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
+    let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
     var body: some View {
         NavigationView {
             VStack {
                 List {
-                    Section(header: Text("Document")) {
-                        ForEach(products, id: \.self) { product in
-                            if product.getType == "Document" {
-                                ListRowView(product: product)
-                            }
-                        }
-                    }
-                    Section(header: Text("Electronics")) {
-                        ForEach(products, id: \.self) { product in
-                            if product.getType == "Electronics" {
-                                ListRowView(product: product)
-                            }
-                        }
-                        
-                    }
-                    Section(header: Text("Grocery")) {
-                        ForEach(products, id: \.self) { product in
-                            if product.getType == "Grocery" {
-                                ListRowView(product: product)
-                            }
-                        }
-                    }
-                    Section(header: Text("Subscripition")) {
-                        ForEach(products, id: \.self) { product in
-                            if product.getType == "Subscripition" {
-                                ListRowView(product: product)
-                            }
-                        }
-                    }
-                    Section(header: Text("Other")) {
-                        ForEach(products, id: \.self) { product in
-                            if product.getType == "Other" {
-                                ListRowView(product: product)
+                    ForEach(productTypes, id: \.self) { type in
+                        Section(header: Text(type)) {
+                            ForEach(products, id: \.self) { product in
+                                if product.getType == type {
+                                    ListRowView(product: product)
+                                }
                             }
                         }
                     }
