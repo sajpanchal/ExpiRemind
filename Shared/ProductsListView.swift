@@ -11,6 +11,7 @@ struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
+    
     var body: some View {
         NavigationView {
             VStack {

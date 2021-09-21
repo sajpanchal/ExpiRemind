@@ -18,6 +18,7 @@ struct ListRowView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
                 }
+                .frame(alignment: .leading)
                 Spacer()
                 VStack {
                     Text("Expiry Date")
@@ -33,10 +34,10 @@ struct ListRowView: View {
             Spacer()
             HStack {
                 Text(product.CreatedAt)
-                    .font(.caption2)
                     .foregroundColor(.gray)
-                    
+                    .font(.system(size: 10))
             }
+            .frame(alignment: .trailing)
         }
     }
 }
