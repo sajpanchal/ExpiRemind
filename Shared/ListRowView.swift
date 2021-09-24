@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListRowView: View {
-    @State var product: Product
+    @ObservedObject var product: Product
     var body: some View {
         VStack {
             HStack {

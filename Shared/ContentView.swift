@@ -66,6 +66,15 @@ struct ContentView: View {
             }
             .onAppear(perform: {
                 for product in products {
+                    if product.getType == "Subscripition" {
+                        product.type = "Subscription"
+                        do {
+                            try viewContext.save()
+                        }
+                        catch {
+                            fatalError(error.localizedDescription)
+                        }
+                    }
                     print(product.getName)
                     print(product.getType)
                     print(product.ExpiryDate)
