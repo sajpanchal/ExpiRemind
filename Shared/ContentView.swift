@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
-    let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
+    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()

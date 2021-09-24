@@ -10,7 +10,7 @@ import SwiftUI
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
-    let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
+    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     
     var body: some View {
         NavigationView {
