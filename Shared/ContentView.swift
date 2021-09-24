@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
-    let productTypes = ["Document","Electronics","Grocery","Subscripition", "Other"]
+    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()
@@ -66,6 +66,15 @@ struct ContentView: View {
             }
             .onAppear(perform: {
                 for product in products {
+                    if product.getType == "Subscripition" {
+                        product.type = "Subscription"
+                        do {
+                            try viewContext.save()
+                        }
+                        catch {
+                            fatalError(error.localizedDescription)
+                        }
+                    }
                     print(product.getName)
                     print(product.getType)
                     print(product.ExpiryDate)

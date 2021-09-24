@@ -34,7 +34,7 @@ extension Product {
         dateFormatter.dateStyle = .medium // Jan 1, 2021
         dateFormatter.timeStyle = .none
         
-        return dateFormatter.string(from: expiryDate!)
+        return dateFormatter.string(from: expiryDate ?? Date())
     }
     
     public var CreatedAt: String {
@@ -42,7 +42,7 @@ extension Product {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .long
         
-        return dateFormatter.string(from: createdAt!)
+        return dateFormatter.string(from: createdAt ?? Date())
     }
 
 }
