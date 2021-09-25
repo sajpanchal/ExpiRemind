@@ -10,6 +10,7 @@ import CoreData
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
+    
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var showEditProductView = false
     var body: some View {
@@ -30,18 +31,30 @@ struct ProductsListView: View {
                                     
                                 }
                             }
+                            .onDelete(perform: deleteProduct)
                         }
                     }
-                }                                                
+                }
             }
-            .onAppear(perform: {
-               ProductsListView()
-                print("products list view is updated.")
-            })
             .sheet(isPresented: $showEditProductView) {
                 EditProductView(product: products.first!, productName: "", productType: "", expiryDate: Date())
             }
             .navigationTitle("List of Products")
+        }
+    }
+    func deleteProduct(at offsets: IndexSet) {
+        for offset in offsets {
+            let product = products[offset]
+            print("index set: ", offsets)
+            print("index: ", offset)
+            viewContext.delete(product)
+        }
+        do {
+            try viewContext.save()
+            print("product deleted...")
+        }
+        catch {
+            fatalError(error.localizedDescription)
         }
     }
 }
