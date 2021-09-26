@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) var presentationMode
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
@@ -75,10 +76,6 @@ struct ContentView: View {
                             fatalError(error.localizedDescription)
                         }
                     }
-                    print(product.getName)
-                    print(product.getType)
-                    print(product.ExpiryDate)
-                    print(product.CreatedAt)
                 }
             })
             .alert(isPresented: $showAlert) {
@@ -92,6 +89,7 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "list.bullet.rectangle")
                     Text("List")
+            
                 }
         }
                 
