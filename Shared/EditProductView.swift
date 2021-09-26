@@ -59,11 +59,11 @@ struct EditProductView: View {
         expiryDate = product.expiryDate ?? Date()
     }
     func saveChanges() {
-        if let prod = products.first(where: {$0.CreatedAt == product.CreatedAt})  {
+        if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
             prod.name = productName
             prod.type = productType
             prod.expiryDate = expiryDate
-            prod.createdAt = Date()
+            prod.dateStamp = Date()
             do {
                 try viewContext.save()
             }

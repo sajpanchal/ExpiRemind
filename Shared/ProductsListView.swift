@@ -23,7 +23,7 @@ struct ProductsListView: View {
                                
                                 if product.getType == type {
                                     NavigationLink(
-                                        destination: EditProductView(product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate!),
+                                        destination: EditProductView(product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
                                             ListRowView(product: product)
                                         })

@@ -10,7 +10,6 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
@@ -67,7 +66,8 @@ struct ContentView: View {
             }
             .onAppear(perform: {
                 for product in products {
-                    if product.getType == "Subscripition" {
+                    print(product.getName)
+                    if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter) {
                         product.type = "Subscription"
                         do {
                             try viewContext.save()
@@ -94,13 +94,32 @@ struct ContentView: View {
         }
                 
     }
-    
+    func checkExpiry(expiryDate: Date, deleteDays: Int) -> Bool {
+        if expiryDate > Date() {
+            let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
+            print("difference is: ",diff)
+            return false
+        }
+        else {
+            let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
+            if let days = diff.day {
+                if days >= deleteDays {
+                    return true
+                }
+                else {
+                    return false
+                }
+            }
+            
+        }
+        return false
+    }
     func addProduct() {
         let product = Product(context: viewContext)
         product.name = productName
         product.type = productType
         product.expiryDate = expiryDate
-        product.createdAt = Date()
+        product.dateStamp = Date()
         
         do {
             try viewContext.save()
