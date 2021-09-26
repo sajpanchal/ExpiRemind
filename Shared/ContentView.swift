@@ -12,6 +12,8 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
+    let daysCollection = [1, 3, 7, 30]
+    @State var numberOfDays = 30
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()
@@ -37,6 +39,13 @@ struct ContentView: View {
                         Section(header:Text("Expiry Date")) {
                             DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
                                 Text("Set Expiry Date")
+                            }
+                        }
+                        Section(header: Text("Delete after number of days expiry")) {
+                            Picker("Select the number of days", selection: $numberOfDays) {
+                                ForEach(daysCollection, id: \.self) {
+                                    Text("\($0) Days")
+                                }
                             }
                         }
                     }
@@ -100,10 +109,7 @@ struct ContentView: View {
                 
     }
     func checkExpiry(expiryDate: Date, deleteDays: Int) -> Bool {
-        
             let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
-           
-           
             if let days = diff.day {
                 if days >= deleteDays {
                     print("passed. difference is: ",diff.day!)
@@ -117,15 +123,16 @@ struct ContentView: View {
                 }
             }
             
-        
         return false
     }
+    
     func addProduct() {
         let product = Product(context: viewContext)
         product.name = productName
         product.type = productType
         product.expiryDate = expiryDate
         product.dateStamp = Date()
+        product.deleteAfter = Int16(numberOfDays)
         
         do {
             try viewContext.save()

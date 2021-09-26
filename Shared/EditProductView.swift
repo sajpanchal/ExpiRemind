@@ -13,6 +13,8 @@ struct EditProductView: View {
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     @ObservedObject var product: Product
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
+    let daysCollection = [1, 3, 7, 30]
+    @State var numberOfDays: Int
     @State var productName: String
     @State var productType: String
     @State var expiryDate: Date
@@ -34,6 +36,13 @@ struct EditProductView: View {
                         Text("Set Expiry Date")
                     }
                 }
+                Section(header: Text("Delete after number of days expiry")) {
+                    Picker("Select the number of days", selection: $numberOfDays) {
+                        ForEach(daysCollection, id: \.self) {
+                            Text("\($0) Days")
+                        }
+                    }
+                }
             }
             Button("Save Changes") {
                 saveChanges()
@@ -46,7 +55,7 @@ struct EditProductView: View {
                                 .foregroundColor(.red)
                                 .onTapGesture(perform: deleteProduct))
         .onAppear(perform: {
-            fetchProduct()
+           // fetchProduct()
         })
         .onDisappear(perform: {
             presentationMode.wrappedValue.dismiss()
@@ -57,6 +66,7 @@ struct EditProductView: View {
         productName = product.getName
         productType = product.getType
         expiryDate = product.expiryDate ?? Date()
+        numberOfDays = product.DeleteAfter
     }
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
@@ -64,6 +74,7 @@ struct EditProductView: View {
             prod.type = productType
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
+            prod.deleteAfter = Int16(numberOfDays)
             do {
                 try viewContext.save()
             }
@@ -82,6 +93,7 @@ struct EditProductView: View {
         }
         productName = ""
         productType = "Grocery"
+        numberOfDays = 30
         expiryDate = Date()
         presentationMode.wrappedValue.dismiss()
     }
@@ -89,6 +101,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView( product: Product(), productName: "",productType: "", expiryDate: Date())
+        EditProductView( product: Product(), numberOfDays: 30, productName: "",productType: "", expiryDate: Date())
     }
 }
