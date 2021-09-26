@@ -16,7 +16,6 @@ struct EditProductView: View {
     @State var productName: String
     @State var productType: String
     @State var expiryDate: Date
-    
     var body: some View {
         VStack {
             Form {
@@ -40,45 +39,51 @@ struct EditProductView: View {
                 saveChanges()
                 presentationMode.wrappedValue.dismiss()
             }
+            Spacer()
         }
         .navigationTitle("Edit Product")
+        .navigationBarItems(trailing: Image(systemName: "trash.fill")
+                                .foregroundColor(.red)
+                                .onTapGesture(perform: deleteProduct))
         .onAppear(perform: {
             fetchProduct()
         })
+        .onDisappear(perform: {
+            presentationMode.wrappedValue.dismiss()
+        })
+        
     }
     func fetchProduct() {
         productName = product.getName
         productType = product.getType
-        expiryDate = product.expiryDate!
-        print("Product fetched...")
-        print("product name:",(product.getName))
-        print("product type:",(product.getType))
-        print("product expiry:",(product.ExpiryDate))
+        expiryDate = product.expiryDate ?? Date()
     }
     func saveChanges() {
-      // let prod = Product(context: viewContext)
         if let prod = products.first(where: {$0.CreatedAt == product.CreatedAt})  {
-           
-                prod.name = productName
-                prod.type = productType
-                prod.expiryDate = expiryDate
-                prod.createdAt = Date()
-                do {
-                    try viewContext.save()
-                    
-                }
-                catch {
-                    fatalError(error.localizedDescription)
-                }
-                  
-            
-            for prod in products {
-            
-                print(prod.getName)
-                print(prod.getType)
-                print(prod.ExpiryDate)
+            prod.name = productName
+            prod.type = productType
+            prod.expiryDate = expiryDate
+            prod.createdAt = Date()
+            do {
+                try viewContext.save()
+            }
+            catch {
+                fatalError(error.localizedDescription)
             }
         }
+    }
+    func deleteProduct() {
+        viewContext.delete(product)
+        do {
+            try viewContext.save()
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+        productName = ""
+        productType = "Grocery"
+        expiryDate = Date()
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
