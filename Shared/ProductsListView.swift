@@ -23,7 +23,7 @@ struct ProductsListView: View {
                                
                                 if product.getType == type {
                                     NavigationLink(
-                                        destination: EditProductView(product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate!),
+                                        destination: EditProductView(product: product, numberOfDays: product.DeleteAfter, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
                                             ListRowView(product: product)
                                         })
@@ -36,7 +36,7 @@ struct ProductsListView: View {
                 }
             }
             .sheet(isPresented: $showEditProductView) {
-                EditProductView(product: products.first!, productName: "", productType: "", expiryDate: Date())
+                EditProductView(product: products.first!, numberOfDays: 30, productName: "", productType: "", expiryDate: Date())
             }
             .navigationTitle("List of Products")
         }

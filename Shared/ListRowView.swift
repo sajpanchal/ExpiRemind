@@ -33,7 +33,7 @@ struct ListRowView: View {
             }
             Spacer()
             HStack {
-                Text(product.CreatedAt)
+                Text(product.DateStamp)
                     .foregroundColor(.gray)
                     .font(.system(size: 10))
             }

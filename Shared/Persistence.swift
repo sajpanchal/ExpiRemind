@@ -21,7 +21,7 @@ struct PersistenceController {
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .none
             newProduct.expiryDate = dateFormatter.date(from: "Jan 10, 2021")
-            newProduct.createdAt = Date()
+            newProduct.dateStamp = Date()
         }
         do {
             try viewContext.save()
