@@ -68,9 +68,14 @@ struct ContentView: View {
                 for product in products {
                     print(product.getName)
                     if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter) {
-                        product.type = "Subscription"
+                        viewContext.delete(product)
+                        print("product deleted..")
+                        print("name:", product.getName)
+                        print("expiry:", product.ExpiryDate)
+                        print("delete after:", product.DeleteAfter)
                         do {
                             try viewContext.save()
+                            
                         }
                         catch {
                             fatalError(error.localizedDescription)
@@ -95,23 +100,24 @@ struct ContentView: View {
                 
     }
     func checkExpiry(expiryDate: Date, deleteDays: Int) -> Bool {
-        if expiryDate > Date() {
+        
             let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
-            print("difference is: ",diff)
-            return false
-        }
-        else {
-            let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
+           
+           
             if let days = diff.day {
                 if days >= deleteDays {
+                    print("passed. difference is: ",diff.day!)
+                    print("days = \(diff.day!), deleteDays = \(deleteDays)")
                     return true
                 }
                 else {
+                    print("failed. difference is: ",diff.day!)
+                    print("days = \(diff.day!), deleteDays = \(deleteDays)")
                     return false
                 }
             }
             
-        }
+        
         return false
     }
     func addProduct() {
