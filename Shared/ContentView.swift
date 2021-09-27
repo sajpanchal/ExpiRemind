@@ -65,6 +65,7 @@ struct ContentView: View {
                         alertTitle = "Saved!"
                         alertMessage = "New Product has been saved successfully."
                         showAlert = true
+                        
                     }
                     else {
                         alertTitle = "Something went wrong!"
@@ -77,7 +78,7 @@ struct ContentView: View {
             .onAppear(perform: {
                 for product in products {
                     print(product.getName)
-                    if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter) {
+                    if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter, product: product) {
                         viewContext.delete(product)
                         print("product deleted..")
                         print("name:", product.getName)
@@ -92,7 +93,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                notificationRequest()
+               
             })
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -110,34 +111,89 @@ struct ContentView: View {
         }
                 
     }
-    func notificationRequest() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
+    func notificationRequest() -> Bool {
+        var result = false
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
             if success {
                 print("all set")
+               result = true
             }
             else if let error = error {
                 print(error.localizedDescription)
+             result = false
             }
+           
         }
+        print(result)
+        return result
     }
-    func checkExpiry(expiryDate: Date, deleteDays: Int) -> Bool {
+    func checkExpiry(expiryDate: Date, deleteDays: Int, product: Product) -> Bool {
             let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
             if let days = diff.day {
                 if days >= deleteDays {
                     print("passed. difference is: ",diff.day!)
                     print("days = \(diff.day!), deleteDays = \(deleteDays)")
+                   
                     return true
                 }
                 else {
                     print("failed. difference is: ",diff.day!)
                     print("days = \(diff.day!), deleteDays = \(deleteDays)")
+                    if abs(days) <= 3 {
+                        let content = UNMutableNotificationContent()
+                        content.title = "Your product is expiring soon!"
+                        let formatter = DateFormatter()
+                        formatter.dateStyle = .medium
+                        formatter.timeStyle = .none
+                        content.subtitle = "\(product.getName) expiring \(product.ExpiryDate == formatter.string(from: Date()) ? "today.": "on \(product.ExpiryDate).")"
+                        content.sound = UNNotificationSound.default
+                        
+                            sendNotification(content: content)
+                        
+                        
+                    }
                     return false
                 }
             }
             
         return false
     }
-    
+    func sendNotification(content: UNMutableNotificationContent) {
+  
+        print("notification sent")
+        var date = DateComponents()
+        date.hour = 8
+        date.minute = 30
+        //let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
+        let addRequest =  {
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) {error in
+                guard let error = error else {
+                    return
+                }
+                print(error.localizedDescription)
+            }
+        }
+      
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            if settings.authorizationStatus == .authorized {
+                print("request is added.")
+                addRequest()
+            }
+            else {
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    if success {
+                        addRequest()
+                    }
+                    else {
+                        print("something went wrong")
+                    }
+                }
+            }
+        }
+    }
     func addProduct() {
         let product = Product(context: viewContext)
         product.name = productName
@@ -149,7 +205,9 @@ struct ContentView: View {
         do {
             try viewContext.save()
             print("product saved")
+           
             for product in products {
+                checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter, product: product)
                 print(product)
             }
         }
