@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import UserNotifications
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -91,6 +92,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                notificationRequest()
             })
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -107,6 +109,16 @@ struct ContentView: View {
                 }
         }
                 
+    }
+    func notificationRequest() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
+            if success {
+                print("all set")
+            }
+            else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
     }
     func checkExpiry(expiryDate: Date, deleteDays: Int) -> Bool {
             let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
