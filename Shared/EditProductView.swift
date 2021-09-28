@@ -18,6 +18,7 @@ struct EditProductView: View {
     @State var productName: String
     @State var productType: String
     @State var expiryDate: Date
+    
     var body: some View {
         VStack {
             Form {
@@ -54,20 +55,12 @@ struct EditProductView: View {
         .navigationBarItems(trailing: Image(systemName: "trash.fill")
                                 .foregroundColor(.red)
                                 .onTapGesture(perform: deleteProduct))
-        .onAppear(perform: {
-           // fetchProduct()
-        })
         .onDisappear(perform: {
             presentationMode.wrappedValue.dismiss()
         })
         
     }
-    func fetchProduct() {
-        productName = product.getName
-        productType = product.getType
-        expiryDate = product.expiryDate ?? Date()
-        numberOfDays = product.DeleteAfter
-    }
+    
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
             prod.name = productName
@@ -101,6 +94,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView( product: Product(), numberOfDays: 30, productName: "",productType: "", expiryDate: Date())
+        EditProductView(product: Product(), numberOfDays: 30, productName: "",productType: "", expiryDate: Date())
     }
 }
