@@ -85,6 +85,7 @@ struct ContentView: View {
                 .navigationBarTitle("Add New Product")
             }
             .onAppear(perform: {
+                notificationRequest()
                 for product in products {
                     if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter, product: product) {
                         viewContext.delete(product)
@@ -113,6 +114,21 @@ struct ContentView: View {
         }
                 
     }
+    
+    func notificationRequest() {
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
+                if success {
+                    print("all set")
+                
+                }
+                else if let error = error {
+                    print(error.localizedDescription)
+                }
+               
+            }
+        }
+    
     func prepareAlertContent(title: String, message: String) {
         alertTitle = title
         alertMessage = message
@@ -160,8 +176,10 @@ struct ContentView: View {
             }
             else {
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    print("request is not added yet.")
                     if success {
                         addRequest()
+                        print("request is now added.")
                     }
                     else {
                         fatalError(error!.localizedDescription)
