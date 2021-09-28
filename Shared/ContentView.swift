@@ -174,17 +174,21 @@ struct ContentView: View {
                 print("request is added.")
                 addRequest()
             }
-            else {
+            else if settings.authorizationStatus == .notDetermined {
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                     print("request is not added yet.")
                     if success {
                         addRequest()
                         print("request is now added.")
                     }
-                    else {
-                        fatalError(error!.localizedDescription)
+                    else {                      
+                        fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
+                                                
                     }
                 }
+            }
+            else {
+                return
             }
         }
     }
