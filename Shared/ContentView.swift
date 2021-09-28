@@ -181,7 +181,7 @@ struct ContentView: View {
                         addRequest()
                         print("request is now added.")
                     }
-                    else {                      
+                    else {
                         fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
                                                 
                     }
