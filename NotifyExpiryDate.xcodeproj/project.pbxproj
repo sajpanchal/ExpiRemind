@@ -42,6 +42,7 @@
 		724E800B26F792910007D122 /* NotifyExpiryDate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotifyExpiryDate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		724E800D26F792910007D122 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		724E800E26F792910007D122 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "NotifyExpiryDate (iOS).entitlements"; sourceTree = "<group>"; };
 		7251B75226FE13130014FEE3 /* EditProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +67,7 @@
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
+				7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */,
 				720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */,
 				720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */,
 				724E7FF826F792900007D122 /* Shared */,
@@ -358,6 +360,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "NotifyExpiryDate (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S4G67KLBRN;
 				ENABLE_PREVIEWS = YES;
@@ -380,6 +383,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "NotifyExpiryDate (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S4G67KLBRN;
 				ENABLE_PREVIEWS = YES;
