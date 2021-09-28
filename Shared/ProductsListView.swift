@@ -15,7 +15,6 @@ struct ProductsListView: View {
     var body: some View {
         NavigationView {
             VStack {
-                
                 List {
                     ForEach(productTypes, id: \.self) { type in
                         Section(header: Text(type)) {
@@ -27,7 +26,6 @@ struct ProductsListView: View {
                                         label: {
                                             ListRowView(product: product)
                                         })
-                                    
                                 }
                             }
                             .onDelete(perform: deleteProduct)
@@ -35,17 +33,12 @@ struct ProductsListView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showEditProductView) {
-                EditProductView(product: products.first!, numberOfDays: 30, productName: "", productType: "", expiryDate: Date())
-            }
             .navigationTitle("List of Products")
         }
     }
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {
             let product = products[offset]
-            print("index set: ", offsets)
-            print("index: ", offset)
             viewContext.delete(product)
         }
         do {
