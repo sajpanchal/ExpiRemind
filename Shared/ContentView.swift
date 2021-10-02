@@ -12,7 +12,8 @@ import UserNotifications
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
-    
+    @StateObject var localNotification = LocalNotification()
+    @ObservedObject var notificationCenter: NotificationCenter
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     let daysCollection = [1, 3, 7, 30]
     
@@ -87,6 +88,10 @@ struct ContentView: View {
             .onAppear(perform: {
                 notificationRequest()
                 for product in products {
+                    print("name: ",product.name)
+                    print("expiry date:",product.ExpiryDate)
+                    print("is subscribed:", product.isNotificationSet)
+                    
                     if checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter, product: product) {
                         viewContext.delete(product)
                         do {
@@ -150,7 +155,14 @@ struct ContentView: View {
                 else {
                     if days <= 3 {
                        
-                        sendNotification(product: product)
+                       // sendNotification(product: product)
+                        if !product.isNotificationSet {
+                             sendNotification(product: product)
+                            print("calling notifcation for \(product.getName)")
+                            //localNotification.setLocalNotification (title: "\(product.getName) is expiring soon!", subtitle: "\(product.getName) expiring \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "today.": "on \(product.ExpiryDate).")", body: "", when: date)
+                        }
+                       
+                        
                     }
                     return false
                 }
@@ -179,7 +191,16 @@ struct ContentView: View {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             if settings.authorizationStatus == .authorized {
                 print("request is added.")
+                
                 addRequest()
+                do {
+                    product.isNotificationSet = true
+                    try viewContext.save()
+                    print("product \(product.getName) saved")
+                }
+                catch {
+                    fatalError(error.localizedDescription)
+                }
             }
             else if settings.authorizationStatus == .notDetermined {
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
@@ -224,6 +245,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView(notificationCenter: NotificationCenter()).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
