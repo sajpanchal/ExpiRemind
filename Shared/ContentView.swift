@@ -26,7 +26,7 @@ struct ContentView: View {
     
     var date: DateComponents {
         var date = DateComponents()
-        date.hour = 12
+        date.hour = 8
         date.minute = 30
         return date
     }
@@ -140,13 +140,13 @@ struct ContentView: View {
             if let days = diff.day {
                 print("days:",days)
                 print(product.ExpiryDate)
-                // if today is before expiry
+                // if today is after expiry
                 if days < 0 {
                     if abs(days) >= deleteDays {
                         return true
                     }
                 }
-                // if today has passed expiry
+                // if today is before expiry
                 else {
                     if days <= 3 {
                        
@@ -212,10 +212,7 @@ struct ContentView: View {
             try viewContext.save()
             print("product saved")
            
-            for product in products {
-                let isExpired = checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteDays: product.DeleteAfter, product: product)
-                print(isExpired)
-            }
+            
         }
         catch {
             fatalError(error.localizedDescription)
