@@ -24,17 +24,40 @@ struct ProductsListView: View {
                                     NavigationLink(
                                         destination: EditProductView(product: product, numberOfDays: product.DeleteAfter, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
-                                            ListRowView(product: product)
+                                          
+                                                ListRowView(product: product)
+                                                
+                                           
                                         })
+                                        //.listRowBackground(isExpired(expiryDate: product.expiryDate!) ? Color.init(red: 195.0, green: 0.0, blue: 0.0) : Color.clear)
+                                        .disabled(isExpired(expiryDate: product.expiryDate!))
                                 }
+                                  
                             }
+                           
                             .onDelete(perform: deleteProduct)
+                            
                         }
                     }
+                   
                 }
+               
+                
             }
             .navigationTitle("List of Products")
         }
+    }
+    func isExpired(expiryDate: Date) -> Bool {
+       let result = Calendar.current.compare(Date(), to: expiryDate, toGranularity: .day)
+        switch result {
+        case .orderedDescending :
+            return true
+        case .orderedAscending :
+            return false
+        case .orderedSame :
+            return false
+        }
+       
     }
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {

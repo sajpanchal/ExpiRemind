@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ListRowView: View {
+
     @ObservedObject var product: Product
     var body: some View {
         VStack {
@@ -24,10 +25,11 @@ struct ListRowView: View {
                     Text("Expiry Date")
                         .foregroundColor(.primary)
                         .font(.caption)
-                     Text(product.ExpiryDate)
+                    Text(isExpired(expiryDate: product.expiryDate ?? Date()) ? product.ExpiryDate: product.ExpiryDate)
                         .fontWeight(.bold)
                         .font(.body)
                         .foregroundColor(.red)
+                        
                 }
                 .frame(alignment: .trailing)
             }
@@ -38,7 +40,19 @@ struct ListRowView: View {
                     .font(.system(size: 10))
             }
             .frame(alignment: .trailing)
+        }.foregroundColor(isExpired(expiryDate: product.expiryDate ?? Date()) ? .red : .clear)
+    }
+    func isExpired(expiryDate: Date) -> Bool {
+       let result = Calendar.current.compare(Date(), to: expiryDate, toGranularity: .day)
+        switch result {
+        case .orderedDescending :
+            return true
+        case .orderedAscending :
+            return false
+        case .orderedSame :
+            return false
         }
+       
     }
 }
 

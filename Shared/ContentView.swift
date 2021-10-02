@@ -26,8 +26,8 @@ struct ContentView: View {
     
     var date: DateComponents {
         var date = DateComponents()
-        date.hour = 8
-        date.minute = 0
+        date.hour = 12
+        date.minute = 30
         return date
     }
     var dateFormatter: DateFormatter {
@@ -136,13 +136,20 @@ struct ContentView: View {
     }
    
     func checkExpiry(expiryDate: Date, deleteDays: Int, product: Product) -> Bool {
-            let diff = Calendar.current.dateComponents([.day], from: expiryDate, to: Date())
+        let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
             if let days = diff.day {
-                if days >= deleteDays {
-                    return true
+                print("days:",days)
+                print(product.ExpiryDate)
+                // if today is before expiry
+                if days < 0 {
+                    if abs(days) >= deleteDays {
+                        return true
+                    }
                 }
+                // if today has passed expiry
                 else {
-                    if abs(days) <= 3 {
+                    if days <= 3 {
+                       
                         sendNotification(product: product)
                     }
                     return false
