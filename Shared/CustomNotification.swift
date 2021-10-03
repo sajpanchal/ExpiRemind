@@ -68,7 +68,7 @@ class CustomNotification {
             let center = UNUserNotificationCenter.current()
             center.requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
                 if success {
-                    print("all set")
+                    print("Notification request has been set for user to authorize.")
                 }
                 else if let error = error {
                     print(error.localizedDescription)
@@ -84,7 +84,7 @@ class CustomNotification {
         
         let addRequest =  {
             let trigger = UNCalendarNotificationTrigger(dateMatching: self.date, repeats: true)
-            let request = UNNotificationRequest(identifier: product.DateStamp, content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "\(product.id)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request) { error in
                 guard let error = error else {
                     return
@@ -118,8 +118,8 @@ class CustomNotification {
         
     }
     func removeNotification(product: Product) {
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [product.DateStamp])
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [product.DateStamp])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)"])
         print("product notification is deleted")
     }
 }
