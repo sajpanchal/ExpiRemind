@@ -6,11 +6,10 @@
 //
 
 import SwiftUI
-
+import os
 @main
 struct NotifyExpiryDateApp: App {
     let persistenceController = PersistenceController.shared
-
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -18,3 +17,4 @@ struct NotifyExpiryDateApp: App {
         }
     }
 }
+
