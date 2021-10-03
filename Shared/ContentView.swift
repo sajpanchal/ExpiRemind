@@ -12,8 +12,7 @@ import UserNotifications
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
-    @StateObject var localNotification = LocalNotification()
-    @ObservedObject var notificationCenter: NotificationCenter
+   
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     let daysCollection = [1, 3, 7, 30]
     
@@ -245,6 +244,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(notificationCenter: NotificationCenter()).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
