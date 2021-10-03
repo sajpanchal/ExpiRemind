@@ -66,6 +66,34 @@ struct ProductsListView: View {
             notification.removeNotification(product: product)
             viewContext.delete(product)
         }
+        notification.saveContext(viewContext: viewContext)
+        notification.removeAllNotifications()
+        notification.notificationRequest()
+        
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
+        }
+    }
+   /* func handleProducts(result: String, product: Product) {
+        print("result for \(product.getName) is: \(result)")
+        switch result {
+            case "Delete" :
+            notification.removeNotification(product: product)
+                viewContext.delete(product)
+            case "Near Expiry":
+            print("\(product.getName): is Near Expiry")
+            case "Expired":
+            notification.removeNotification(product: product)
+                break
+        case "Alive":
+            print("\(product.getName): is Alive")
+            default:
+            break
+        }
+    }
+    func saveContext() {
         do {
             try viewContext.save()
             print("product deleted...")
@@ -73,8 +101,9 @@ struct ProductsListView: View {
         catch {
             fatalError(error.localizedDescription)
         }
-    }
+    }*/
 }
+
 
 struct ProductsListView_Previews: PreviewProvider {
     static var previews: some View {

@@ -72,20 +72,23 @@ struct ContentView: View {
                 .navigationBarTitle("Add New Product")
             }
             .onAppear(perform: {
+                notification.removeAllNotifications()
                 notification.notificationRequest()
+                
                 for product in products {
                     let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    handleProducts(result: result, product: product)
-                    saveContext()
+                    notification.handleProducts(viewContext:viewContext, result: result, product: product)
+                    notification.saveContext(viewContext: viewContext)
                 }
                
             })
             .onDisappear(perform: {
                 notification.notificationRequest()
+                notification.removeAllNotifications()
                 for product in products {                                       
                     let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    handleProducts(result: result, product: product)
-                    saveContext()
+                    notification.handleProducts(viewContext:viewContext, result: result, product: product)
+                    notification.saveContext(viewContext: viewContext)
                 }
             })
             .alert(isPresented: $showAlert) {
@@ -103,33 +106,7 @@ struct ContentView: View {
         }
                 
     }
-    func saveContext() {
-        do {
-            try viewContext.save()
-            print("product is saved.")
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    func handleProducts(result: String, product: Product) {
-        print("result for \(product.getName) is: \(result)")
-        switch result {
-            case "Delete" :
-            notification.removeNotification(product: product)
-                viewContext.delete(product)
-            case "Near Expiry":
-               // product.isNotificationSet = true
-                print("Notification status: \(product.isNotificationSet)")
-            case "Expired":
-            notification.removeNotification(product: product)
-                break
-        case "Alive":
-            product.isNotificationSet = false
-            default:
-            break
-        }
-    }
+    
     func prepareAlertContent(title: String, message: String) {
         alertTitle = title
         alertMessage = message
@@ -143,10 +120,12 @@ struct ContentView: View {
         product.expiryDate = expiryDate
         product.dateStamp = Date()
         product.deleteAfter = Int16(numberOfDays)
-        saveContext()
+        notification.saveContext(viewContext: viewContext)
         productName = ""
         expiryDate = Date()
     }
+    
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

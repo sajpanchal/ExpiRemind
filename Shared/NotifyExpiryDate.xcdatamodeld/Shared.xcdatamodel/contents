@@ -4,11 +4,10 @@
         <attribute name="dateStamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deleteAfter" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="expiryDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="isNotificationSet" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Product" positionX="-63" positionY="-18" width="128" height="119"/>
+        <element name="Product" positionX="-63" positionY="-18" width="128" height="104"/>
     </elements>
 </model>

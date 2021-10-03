@@ -21,7 +21,7 @@ extension Product {
     @NSManaged public var name: String?
     @NSManaged public var type: String?
     @NSManaged public var deleteAfter: Int16
-    @NSManaged public var isNotificationSet: Bool
+   
     
     public var getName: String {
         name ?? "N/A"
@@ -54,6 +54,8 @@ extension Product {
             return Int(deleteAfter)
         }
     }
+    
+    
 
 }
 

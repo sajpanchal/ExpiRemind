@@ -7,6 +7,7 @@
 
 import Foundation
 import UserNotifications
+import CoreData
 
 
 class CustomNotification {
@@ -31,7 +32,6 @@ class CustomNotification {
                 print("\n------------------------\(product.id)-----------------------------")
                 print("name: ",product.getName)
                 print("expiry date:",product.ExpiryDate)
-                print("is subscribed:", product.isNotificationSet)
                 print("today is: \(Date())")
                 print("days to expiry:",days)
                 print(product.ExpiryDate)
@@ -50,11 +50,10 @@ class CustomNotification {
                 else {
                     // expiry date is 3 or less days away.
                     if days <= 3 {
-                        print("\(product.getName):  \(product.isNotificationSet)")
-                        if !product.isNotificationSet {
+                        print("\(product.getName)")
+                        
                             sendNotification(product: product)
                             print("calling notifcation for \(product.getName)")
-                        }
                         return "Near Expiry"
                     }
                     //expiry date is far away.
@@ -99,7 +98,7 @@ class CustomNotification {
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 if settings.authorizationStatus == .authorized {
                     addRequest()
-                    product.isNotificationSet = true
+                   
                     print("Notification request has been sent...")
                     
                 }
@@ -108,11 +107,11 @@ class CustomNotification {
                     print("Notification request is not authorized by the user yet.")
                     if success {
                             addRequest()
-                            product.isNotificationSet = true
+                           
                             print("Notification request has been now sent...")
                         }
                     else {
-                        product.isNotificationSet = false
+                       
                             fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
                         }
                     }
@@ -130,10 +129,40 @@ class CustomNotification {
             
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)"])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)"])
-        
-        
-        
-       
     print("product notification is deleted for \(product.getName)")
+    }
+    func removeAllNotifications() {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        print("All product notification is deleted...")
+    }
+    
+    func saveContext(viewContext: NSManagedObjectContext) {
+        do {
+            try viewContext.save()
+            print("product is saved.")
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    func handleProducts(viewContext: NSManagedObjectContext, result: String, product: Product) {
+        print("result for \(product.getName) is: \(result)")
+        switch result {
+            //remove the product notification and delete from core data
+            case "Delete" :
+            removeNotification(product: product)
+                viewContext.delete(product)
+            // once notification is sent
+            case "Near Expiry":
+                print("\(product.getName): is Near Expiry")
+            case "Expired":
+            removeNotification(product: product)
+                break
+        case "Alive":
+            print("\(product.getName): is Alive")
+            default:
+            break
+        }
     }
 }
