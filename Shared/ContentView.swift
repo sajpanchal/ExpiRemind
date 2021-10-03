@@ -23,20 +23,7 @@ struct ContentView: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     @State var showAlert = false
-    
-    var date: DateComponents {
-        var date = DateComponents()
-        date.hour = 8
-        date.minute = 30
-        return date
-    }
-    var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }
-    
+            
     var body: some View {
         TabView() {
             NavigationView {
@@ -87,31 +74,19 @@ struct ContentView: View {
             .onAppear(perform: {
                 notification.notificationRequest()
                 for product in products {
-                    print("name: ",product.getName)
-                    print("expiry date:",product.ExpiryDate)
-                    print("is subscribed:", product.isNotificationSet)
-                    
                     let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    print("result for \(product.getName) is: \(result)")
-                    switch result {
-                        case "Expired" :
-                            viewContext.delete(product)
-                        case "Near Expiry":
-                            product.isNotificationSet = true
-                        case "Undefined":
-                            break
-                        default:
-                        break
-                    }
-                        do {
-                            try viewContext.save()
-                            print("\(product.getName) is saved.")
-                        }
-                        catch {
-                            fatalError(error.localizedDescription)
-                        }                 
+                    handleProducts(result: result, product: product)
+                    saveContext()
                 }
                
+            })
+            .onDisappear(perform: {
+                notification.notificationRequest()
+                for product in products {                                       
+                    let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+                    handleProducts(result: result, product: product)
+                    saveContext()
+                }
             })
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -128,8 +103,32 @@ struct ContentView: View {
         }
                 
     }
-    
-    
+    func saveContext() {
+        do {
+            try viewContext.save()
+            print("product is saved.")
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    func handleProducts(result: String, product: Product) {
+        print("result for \(product.getName) is: \(result)")
+        switch result {
+            case "Delete" :
+            notification.removeNotification(product: product)
+                viewContext.delete(product)
+            case "Near Expiry":
+                product.isNotificationSet = true
+            case "Expired":
+            notification.removeNotification(product: product)
+                break
+        case "Alive":
+            product.isNotificationSet = false
+            default:
+            break
+        }
+    }
     func prepareAlertContent(title: String, message: String) {
         alertTitle = title
         alertMessage = message
@@ -143,14 +142,7 @@ struct ContentView: View {
         product.expiryDate = expiryDate
         product.dateStamp = Date()
         product.deleteAfter = Int16(numberOfDays)
-        
-        do {
-            try viewContext.save()
-            print("product saved")
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
+        saveContext()
         productName = ""
         expiryDate = Date()
     }

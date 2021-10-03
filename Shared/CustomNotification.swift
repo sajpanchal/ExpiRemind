@@ -26,28 +26,41 @@ class CustomNotification {
     func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
         let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
             if let days = diff.day {
-                print("days:",days)
+                print("\n------------------------\(product.id)-----------------------------")
+                print("name: ",product.getName)
+                print("expiry date:",product.ExpiryDate)
+                print("is subscribed:", product.isNotificationSet)
+                print("today is: \(Date())")
+                print("days to expiry:",days)
                 print(product.ExpiryDate)
-                // if today is after expiry
+                // Expiry date is passed
                 if days < 0 {
+                    // deletion days are passed.
                     if abs(days) >= deleteAfter {
+                        return "Delete"
+                    }
+                    //deletion days are yet to be passed.
+                    else {
                         return "Expired"
                     }
                 }
-                // if today is before expiry
+                // Expiry date is not passed yet.
                 else {
+                    // expiry date is 3 or less days away.
                     if days <= 3 {
                         print("\(product.getName):  \(product.isNotificationSet)")
                         if !product.isNotificationSet {
                             sendNotification(product: product)
                             print("calling notifcation for \(product.getName)")
-                                return "Near Expiry"
                         }
+                        return "Near Expiry"
                     }
-                    return "Undefined"
+                    //expiry date is far away.
+                    else {
+                        return "Alive"
+                    }
                 }
             }
-            
         return "Undefined"
     }
     
@@ -56,12 +69,10 @@ class CustomNotification {
             center.requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
                 if success {
                     print("all set")
-                
                 }
                 else if let error = error {
                     print(error.localizedDescription)
                 }
-               
             }
         }
     
@@ -73,7 +84,7 @@ class CustomNotification {
         
         let addRequest =  {
             let trigger = UNCalendarNotificationTrigger(dateMatching: self.date, repeats: true)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: product.DateStamp, content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request) { error in
                 guard let error = error else {
                     return
@@ -82,24 +93,21 @@ class CustomNotification {
             }
            
         }
-      
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             if settings.authorizationStatus == .authorized {
-                print("request is added.")
                 addRequest()
+                print("Notification request has been sent...")
                 
             }
             else if settings.authorizationStatus == .notDetermined {
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                print("request is not added yet.")
+                print("Notification request is not authorized by the user yet.")
                 if success {
-                    addRequest()
-                    print("request is now added.")
-                   
+                        addRequest()
+                        print("Notification request has been now sent...")
                     }
                 else {
-                   
-                    fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
+                        fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
                     }
                 }
             }
@@ -108,5 +116,10 @@ class CustomNotification {
             }
         }
         
+    }
+    func removeNotification(product: Product) {
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [product.DateStamp])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [product.DateStamp])
+        print("product notification is deleted")
     }
 }
