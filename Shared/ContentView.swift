@@ -119,7 +119,8 @@ struct ContentView: View {
             notification.removeNotification(product: product)
                 viewContext.delete(product)
             case "Near Expiry":
-                product.isNotificationSet = true
+               // product.isNotificationSet = true
+                print("Notification status: \(product.isNotificationSet)")
             case "Expired":
             notification.removeNotification(product: product)
                 break

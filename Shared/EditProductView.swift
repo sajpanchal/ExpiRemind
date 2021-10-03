@@ -14,6 +14,7 @@ struct EditProductView: View {
     @ObservedObject var product: Product
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     let daysCollection = [1, 3, 7, 30]
+    let notification = CustomNotification()
     @State var numberOfDays: Int
     @State var productName: String
     @State var productType: String
@@ -46,8 +47,8 @@ struct EditProductView: View {
                 }
             }
             Button("Save Changes") {
+                // save the product changes, remove notification of old changes.
                 saveChanges()
-                presentationMode.wrappedValue.dismiss()
             }
             Spacer()
         }
@@ -56,40 +57,77 @@ struct EditProductView: View {
                                 .foregroundColor(.red)
                                 .onTapGesture(perform: deleteProduct))
         .onDisappear(perform: {
-            presentationMode.wrappedValue.dismiss()
+            // after saving the product do following...
+            notification.notificationRequest()  //notification request alert
+            //check expiry of edited product
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            //handle product notification and product data based on expiry status.
+            handleProducts(result: result, product: product)
+            saveContext()
+            DispatchQueue.main.async {
+                presentationMode.wrappedValue.dismiss()
+            }
+           
         })
         
+    }
+    func saveContext() {
+        do {
+            try viewContext.save()
+            print("product is saved.")
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    func handleProducts(result: String, product: Product) {
+        print("result for \(product.getName) is: \(result)")
+        switch result {
+            //remove the product notification and delete from core data
+            case "Delete" :
+            notification.removeNotification(product: product)
+                viewContext.delete(product)
+            // once notification is sent
+            case "Near Expiry":
+               // product.isNotificationSet = true
+                print("Notification status: \(product.isNotificationSet)")
+            case "Expired":
+            notification.removeNotification(product: product)
+                break
+        case "Alive":
+            product.isNotificationSet = false
+            default:
+            break
+        }
     }
     
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
+            notification.removeNotification(product: product)
             prod.name = productName
             prod.type = productType
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
             prod.deleteAfter = Int16(numberOfDays)
-            do {
-                try viewContext.save()
-            }
-            catch {
-                fatalError(error.localizedDescription)
-            }
+            prod.isNotificationSet = false
+            saveContext()
+            // dismiss the view.
+            presentationMode.wrappedValue.dismiss()
         }
     }
     func deleteProduct() {
         viewContext.delete(product)
-        do {
-            try viewContext.save()
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
+        saveContext()
+        resetFormInputs()
+        presentationMode.wrappedValue.dismiss()
+    }
+    func resetFormInputs() {
         productName = ""
         productType = "Grocery"
         numberOfDays = 30
         expiryDate = Date()
-        presentationMode.wrappedValue.dismiss()
     }
+    
 }
 
 struct EditProductView_Previews: PreviewProvider {

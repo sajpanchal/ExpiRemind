@@ -7,13 +7,16 @@
 
 import Foundation
 import UserNotifications
+
+
 class CustomNotification {
-    
+    var notificationService = NotificationService()
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter
+        
     }
     
     var date: DateComponents {
@@ -81,10 +84,10 @@ class CustomNotification {
         content.title = "\(product.getName) is expiring soon!"
         content.subtitle = "\(product.getName) expiring \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "today.": "on \(product.ExpiryDate).")"
         content.sound = UNNotificationSound.default
-        
         let addRequest =  {
             let trigger = UNCalendarNotificationTrigger(dateMatching: self.date, repeats: true)
             let request = UNNotificationRequest(identifier: "\(product.id)", content: content, trigger: trigger)
+            
             UNUserNotificationCenter.current().add(request) { error in
                 guard let error = error else {
                     return
@@ -93,33 +96,45 @@ class CustomNotification {
             }
            
         }
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus == .authorized {
-                addRequest()
-                print("Notification request has been sent...")
-                
-            }
-            else if settings.authorizationStatus == .notDetermined {
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                print("Notification request is not authorized by the user yet.")
-                if success {
-                        addRequest()
-                        print("Notification request has been now sent...")
-                    }
-                else {
-                        fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
+        
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                if settings.authorizationStatus == .authorized {
+                    addRequest()
+                    product.isNotificationSet = true
+                    print("Notification request has been sent...")
+                    
+                }
+                else if settings.authorizationStatus == .notDetermined {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    print("Notification request is not authorized by the user yet.")
+                    if success {
+                            addRequest()
+                            product.isNotificationSet = true
+                            print("Notification request has been now sent...")
+                        }
+                    else {
+                        product.isNotificationSet = false
+                            fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
+                        }
                     }
                 }
+                else {
+                    return
+                }
             }
-            else {
-                return
-            }
-        }
+        
+        
+     
         
     }
     func removeNotification(product: Product) {
+            
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)"])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)"])
-        print("product notification is deleted")
+        
+        
+        
+       
+    print("product notification is deleted for \(product.getName)")
     }
 }
