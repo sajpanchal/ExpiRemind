@@ -10,7 +10,6 @@ import UserNotifications
 
 
 class CustomNotification {
-    var notificationService = NotificationService()
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
