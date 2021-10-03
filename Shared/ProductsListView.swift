@@ -20,30 +20,19 @@ struct ProductsListView: View {
                     ForEach(productTypes, id: \.self) { type in
                         Section(header: Text(type)) {
                             ForEach(products, id: \.self) { product in
-                               
                                 if product.getType == type {
                                     NavigationLink(
                                         destination: EditProductView(product: product, numberOfDays: product.DeleteAfter, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
-                                          
-                                                ListRowView(product: product)
-                                                
-                                           
+                                            ListRowView(product: product)
                                         })
-                                        //.listRowBackground(isExpired(expiryDate: product.expiryDate!) ? Color.init(red: 195.0, green: 0.0, blue: 0.0) : Color.clear)
                                         .disabled(isExpired(expiryDate: product.expiryDate!))
                                 }
-                                  
                             }
-                           
                             .onDelete(perform: deleteProduct)
-                            
                         }
                     }
-                   
                 }
-               
-                
             }
             .navigationTitle("List of Products")
         }
@@ -76,32 +65,6 @@ struct ProductsListView: View {
             notification.saveContext(viewContext: viewContext)
         }
     }
-   /* func handleProducts(result: String, product: Product) {
-        print("result for \(product.getName) is: \(result)")
-        switch result {
-            case "Delete" :
-            notification.removeNotification(product: product)
-                viewContext.delete(product)
-            case "Near Expiry":
-            print("\(product.getName): is Near Expiry")
-            case "Expired":
-            notification.removeNotification(product: product)
-                break
-        case "Alive":
-            print("\(product.getName): is Alive")
-            default:
-            break
-        }
-    }
-    func saveContext() {
-        do {
-            try viewContext.save()
-            print("product deleted...")
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
-    }*/
 }
 
 

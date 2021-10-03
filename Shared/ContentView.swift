@@ -74,13 +74,11 @@ struct ContentView: View {
             .onAppear(perform: {
                 notification.removeAllNotifications()
                 notification.notificationRequest()
-                
                 for product in products {
                     let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
                     notification.handleProducts(viewContext:viewContext, result: result, product: product)
                     notification.saveContext(viewContext: viewContext)
                 }
-               
             })
             .onDisappear(perform: {
                 notification.notificationRequest()

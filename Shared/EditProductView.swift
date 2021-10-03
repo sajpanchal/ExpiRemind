@@ -66,37 +66,8 @@ struct EditProductView: View {
                                 .onTapGesture(perform: deleteProduct))
         .onDisappear(perform: {
             presentationMode.wrappedValue.dismiss()
-        })
-        
+        })    
     }
-    /*func saveContext() {
-        do {
-            try viewContext.save()
-            print("product is saved.")
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
-    }*/
-    /*func handleProducts(result: String, product: Product) {
-        print("result for \(product.getName) is: \(result)")
-        switch result {
-            //remove the product notification and delete from core data
-            case "Delete" :
-            notification.removeNotification(product: product)
-                viewContext.delete(product)
-            // once notification is sent
-            case "Near Expiry":
-                print("\(product.getName): is Near Expiry")
-            case "Expired":
-            notification.removeNotification(product: product)
-                break
-        case "Alive":
-            print("\(product.getName): is Alive")
-            default:
-            break
-        }
-    }*/
     
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
@@ -111,12 +82,14 @@ struct EditProductView: View {
             presentationMode.wrappedValue.dismiss()
         }
     }
+    
     func deleteProduct() {
         viewContext.delete(product)
         notification.saveContext(viewContext: viewContext)
         resetFormInputs()
         presentationMode.wrappedValue.dismiss()
     }
+    
     func resetFormInputs() {
         productName = ""
         productType = "Grocery"
