@@ -24,7 +24,15 @@ struct ProductsListView: View {
                                     NavigationLink(
                                         destination: EditProductView(product: product, numberOfDays: product.DeleteAfter, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
-                                            ListRowView(product: product)
+                                            ZStack {
+                                                ListRowView(product: product)
+                                                if isExpired(expiryDate: product.expiryDate ?? Date()) {
+                                                    Text("Expired")
+                                                        .font(.largeTitle)
+                                                        .foregroundColor(.gray)
+                                                        
+                                                }
+                                            }
                                         })
                                         .disabled(isExpired(expiryDate: product.expiryDate!))
                                 }
