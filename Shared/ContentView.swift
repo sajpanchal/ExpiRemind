@@ -13,10 +13,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     var notification = CustomNotification()
-    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
-    let daysCollection = [1, 3, 7, 30]
-    
-    @State var numberOfDays = 30
+    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date()
@@ -42,13 +39,6 @@ struct ContentView: View {
                         Section(header:Text("Expiry Date")) {
                             DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
                                 Text("Set Expiry Date")
-                            }
-                        }
-                        Section(header: Text("Delete after number of days expiry")) {
-                            Picker("Select the number of days", selection: $numberOfDays) {
-                                ForEach(daysCollection, id: \.self) {
-                                    Text("\($0) Days")
-                                }
                             }
                         }
                     }
@@ -123,7 +113,7 @@ struct ContentView: View {
         product.type = productType
         product.expiryDate = expiryDate
         product.dateStamp = Date()
-        product.deleteAfter = Int16(numberOfDays)
+        product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
         notification.saveContext(viewContext: viewContext)
         productName = ""
         expiryDate = Date()

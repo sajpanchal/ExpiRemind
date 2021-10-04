@@ -13,9 +13,7 @@ struct EditProductView: View {
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     @ObservedObject var product: Product
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
-    let daysCollection = [1, 3, 7, 30]
     let notification = CustomNotification()
-    @State var numberOfDays: Int
     @State var productName: String
     @State var productType: String
     @State var expiryDate: Date
@@ -36,13 +34,6 @@ struct EditProductView: View {
                 Section(header:Text("Expiry Date")) {
                     DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
                         Text("Set Expiry Date")
-                    }
-                }
-                Section(header: Text("Delete after number of days expiry")) {
-                    Picker("Select the number of days", selection: $numberOfDays) {
-                        ForEach(daysCollection, id: \.self) {
-                            Text("\($0) Days")
-                        }
                     }
                 }
             }
@@ -76,7 +67,6 @@ struct EditProductView: View {
             prod.type = productType
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
-            prod.deleteAfter = Int16(numberOfDays)
             notification.saveContext(viewContext: viewContext)
             // dismiss the view.
             presentationMode.wrappedValue.dismiss()
@@ -93,7 +83,6 @@ struct EditProductView: View {
     func resetFormInputs() {
         productName = ""
         productType = "Grocery"
-        numberOfDays = 30
         expiryDate = Date()
     }
     
@@ -101,6 +90,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView(product: Product(), numberOfDays: 30, productName: "",productType: "", expiryDate: Date())
+        EditProductView(product: Product(), productName: "",productType: "", expiryDate: Date())
     }
 }

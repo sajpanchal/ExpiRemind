@@ -22,7 +22,7 @@ struct ProductsListView: View {
                             ForEach(products, id: \.self) { product in
                                 if product.getType == type {
                                     NavigationLink(
-                                        destination: EditProductView(product: product, numberOfDays: product.DeleteAfter, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
+                                        destination: EditProductView(product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date()),
                                         label: {
                                             ZStack {
                                                 ListRowView(product: product)
