@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct PreferencesView: View {
-    @State var isNotificationEnabled: Bool = false
+    @State var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
     let daysCollection = [1, 3, 7, 30]
-    @State var numberOfDays = 30
-    @ObservedObject var notifications = CustomNotification()
+    @State var numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
+    @State var isAlertOn = false
+    @EnvironmentObject var notification: CustomNotification
+    @Environment(\.managedObjectContext) var viewContext
+    @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
     var body: some View {
         NavigationView {
             VStack {
@@ -28,14 +31,40 @@ struct PreferencesView: View {
                     }
                 }
             }
+            .alert(isPresented: $isAlertOn) {
+                Alert(title: Text("Saved!"), message: Text("Your Preferences hase been saved successfully!"), dismissButton: .default(Text("OK")))
+            }
+            .onAppear(perform: {
+               print("on appear")
+                UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
+                UserDefaults.standard.set(self.isNotificationEnabled, forKey: "isNotificationEnabled")
+            })
             .navigationTitle("Preferences")
             .navigationBarItems( trailing: Button("Save") {
                 if isNotificationEnabled {
-                    notifications.isNotificationEnabled = false
-                    notifications.removeAllNotifications()
+                    notification.isNotificationEnabled = true
+                    notification.removeAllNotifications()
+                    notification.notificationRequest()
+                    for product in products {
+                        let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+                        notification.handleProducts(viewContext:viewContext, result: result, product: product)
+                        notification.saveContext(viewContext: viewContext)
+                    }
+                   
                 }
+                else {
+                    notification.isNotificationEnabled = false
+                    notification.removeAllNotifications()
+                }
+                for product in products {
+                    product.deleteAfter = Int16(numberOfDays)
+                }
+                notification.saveContext(viewContext: viewContext)
+               isAlertOn = true
+                UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
+                UserDefaults.standard.set(self.isNotificationEnabled, forKey: "isNotificationEnabled")
             })
-        }       
+        }
     }
 }
 

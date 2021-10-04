@@ -12,7 +12,7 @@ import UserNotifications
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
-    @ObservedObject var notification = CustomNotification()
+    var notification = CustomNotification()
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     let daysCollection = [1, 3, 7, 30]
     
@@ -101,7 +101,13 @@ struct ContentView: View {
                     Image(systemName: "list.bullet.rectangle")
                     Text("List")
                 }
+            PreferencesView()
+                .tabItem {
+                    Image(systemName: "gearshape.2.fill")
+                    Text("Preferences")
+                }
         }
+        .environmentObject(notification)
                 
     }
     
