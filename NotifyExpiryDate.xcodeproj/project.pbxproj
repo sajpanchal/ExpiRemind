@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		720B9A34270B5368009039EE /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B9A33270B5368009039EE /* PreferencesView.swift */; };
+		720B9A35270B5368009039EE /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B9A33270B5368009039EE /* PreferencesView.swift */; };
 		720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */; };
 		720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */; };
 		7234F4C826FA232800504155 /* ProductsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4C726FA232800504155 /* ProductsListView.swift */; };
@@ -30,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		720B9A33270B5368009039EE /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
 		720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7234F4C726FA232800504155 /* ProductsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListView.swift; sourceTree = "<group>"; };
@@ -88,6 +91,7 @@
 				724E7FFC26F792900007D122 /* ContentView.swift */,
 				72EDC2E82709379C002AA10D /* CustomNotification.swift */,
 				7234F4C726FA232800504155 /* ProductsListView.swift */,
+				720B9A33270B5368009039EE /* PreferencesView.swift */,
 				7251B75226FE13130014FEE3 /* EditProductView.swift */,
 				724E7FFD26F792900007D122 /* Persistence.swift */,
 				724E7FFE26F792910007D122 /* Assets.xcassets */,
@@ -222,6 +226,7 @@
 				724E800F26F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */,
 				724E801526F792910007D122 /* Persistence.swift in Sources */,
 				720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */,
+				720B9A34270B5368009039EE /* PreferencesView.swift in Sources */,
 				7251B75326FE13130014FEE3 /* EditProductView.swift in Sources */,
 				7234F4EB26FA2C9500504155 /* ListRowView.swift in Sources */,
 				72EDC2E92709379C002AA10D /* CustomNotification.swift in Sources */,
@@ -238,6 +243,7 @@
 			files = (
 				7234F4C926FA232800504155 /* ProductsListView.swift in Sources */,
 				7251B75426FE13130014FEE3 /* EditProductView.swift in Sources */,
+				720B9A35270B5368009039EE /* PreferencesView.swift in Sources */,
 				724E801026F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */,
 				724E801626F792910007D122 /* Persistence.swift in Sources */,
 				724E801226F792910007D122 /* NotifyExpiryDateApp.swift in Sources */,

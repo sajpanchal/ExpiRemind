@@ -10,7 +10,8 @@ import UserNotifications
 import CoreData
 
 
-class CustomNotification {
+class CustomNotification: ObservableObject {
+    @Published var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -18,7 +19,7 @@ class CustomNotification {
         return formatter
         
     }
-    
+   
     var date: DateComponents {
         var date = DateComponents()
         date.hour = 8
@@ -51,9 +52,11 @@ class CustomNotification {
                     // expiry date is 3 or less days away.
                     if days <= 3 {
                         print("\(product.getName)")
-                        
+                        if self.isNotificationEnabled {
                             sendNotification(product: product)
                             print("calling notifcation for \(product.getName)")
+                        }
+                           
                         return "Near Expiry"
                     }
                     //expiry date is far away.
@@ -98,7 +101,7 @@ class CustomNotification {
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 if settings.authorizationStatus == .authorized {
                     addRequest()
-                   
+                    
                     print("Notification request has been sent...")
                     
                 }
