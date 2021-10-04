@@ -11,7 +11,7 @@ import CoreData
 
 
 class CustomNotification: ObservableObject {
-    @Published var isNotificationEnabled: Bool = false
+    @Published var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
