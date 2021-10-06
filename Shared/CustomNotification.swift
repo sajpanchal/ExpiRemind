@@ -82,8 +82,8 @@ class CustomNotification: ObservableObject {
     
     func sendNotification(product: Product) {
         let content = UNMutableNotificationContent()
-        content.title = "\(product.getName) is expiring soon!"
-        content.subtitle = "\(product.getName) expiring \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "today.": "on \(product.ExpiryDate).")"
+        content.title = "Expiry Date Reminder"
+        content.body = "Your product '\(product.getName)' \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "has been expired!": "is expiring soon!")"
         content.sound = UNNotificationSound.default
         let addRequest =  {
             let trigger = UNCalendarNotificationTrigger(dateMatching: self.date, repeats: true)

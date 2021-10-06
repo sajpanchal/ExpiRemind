@@ -45,11 +45,7 @@ struct PreferencesView: View {
                     notification.isNotificationEnabled = true
                     notification.removeAllNotifications()
                     notification.notificationRequest()
-                    for product in products {
-                        let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                        notification.handleProducts(viewContext:viewContext, result: result, product: product)
-                        notification.saveContext(viewContext: viewContext)
-                    }
+                    updateProductsandNotifications()
                    
                 }
                 else {
@@ -64,6 +60,13 @@ struct PreferencesView: View {
                 UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
                 UserDefaults.standard.set(self.isNotificationEnabled, forKey: "isNotificationEnabled")
             })
+        }
+    }
+    func updateProductsandNotifications() {
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
         }
     }
 }

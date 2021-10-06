@@ -43,11 +43,7 @@ struct EditProductView: View {
                 notification.removeAllNotifications()
                 notification.notificationRequest()
                 
-                for product in products {
-                    let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    notification.handleProducts(viewContext: viewContext,result: result, product: product)
-                    notification.saveContext(viewContext: viewContext)
-                }
+                updateProductsandNotifications()
             }
             Spacer()
         }
@@ -58,6 +54,13 @@ struct EditProductView: View {
         .onDisappear(perform: {
             presentationMode.wrappedValue.dismiss()
         })    
+    }
+    func updateProductsandNotifications() {
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
+        }
     }
     
     func saveChanges() {
