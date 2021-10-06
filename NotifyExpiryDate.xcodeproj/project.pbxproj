@@ -15,8 +15,6 @@
 		7234F4C926FA232800504155 /* ProductsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4C726FA232800504155 /* ProductsListView.swift */; };
 		7234F4EB26FA2C9500504155 /* ListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4EA26FA2C9500504155 /* ListRowView.swift */; };
 		7234F4EC26FA2C9500504155 /* ListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4EA26FA2C9500504155 /* ListRowView.swift */; };
-		7237A6CE270DFB9E009194A1 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7237A6CD270DFB9E009194A1 /* SignInWithApple.swift */; };
-		7237A6CF270DFB9E009194A1 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7237A6CD270DFB9E009194A1 /* SignInWithApple.swift */; };
 		724E800F26F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FF926F792900007D122 /* NotifyExpiryDate.xcdatamodeld */; };
 		724E801026F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FF926F792900007D122 /* NotifyExpiryDate.xcdatamodeld */; };
 		724E801126F792910007D122 /* NotifyExpiryDateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */; };
@@ -39,7 +37,6 @@
 		720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7234F4C726FA232800504155 /* ProductsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListView.swift; sourceTree = "<group>"; };
 		7234F4EA26FA2C9500504155 /* ListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRowView.swift; sourceTree = "<group>"; };
-		7237A6CD270DFB9E009194A1 /* SignInWithApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithApple.swift; sourceTree = "<group>"; };
 		724E7FFA26F792900007D122 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyExpiryDateApp.swift; sourceTree = "<group>"; };
 		724E7FFC26F792900007D122 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -92,7 +89,6 @@
 				7234F4EA26FA2C9500504155 /* ListRowView.swift */,
 				724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */,
 				724E7FFC26F792900007D122 /* ContentView.swift */,
-				7237A6CD270DFB9E009194A1 /* SignInWithApple.swift */,
 				72EDC2E82709379C002AA10D /* CustomNotification.swift */,
 				7234F4C726FA232800504155 /* ProductsListView.swift */,
 				720B9A33270B5368009039EE /* PreferencesView.swift */,
@@ -237,7 +233,6 @@
 				724E801126F792910007D122 /* NotifyExpiryDateApp.swift in Sources */,
 				720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */,
 				7234F4C826FA232800504155 /* ProductsListView.swift in Sources */,
-				7237A6CE270DFB9E009194A1 /* SignInWithApple.swift in Sources */,
 				724E801326F792910007D122 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -246,7 +241,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7237A6CF270DFB9E009194A1 /* SignInWithApple.swift in Sources */,
 				7234F4C926FA232800504155 /* ProductsListView.swift in Sources */,
 				7251B75426FE13130014FEE3 /* EditProductView.swift in Sources */,
 				720B9A35270B5368009039EE /* PreferencesView.swift in Sources */,

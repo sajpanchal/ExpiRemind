@@ -24,11 +24,19 @@ struct ContentView: View {
     var body: some View {
         if !isSignedIn {
             VStack {
-                SignInWithApple()
-                    .onTapGesture {
-                        showAppleLoginView()
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.fullName, .email]
+                } onCompletion: { result in
+                    switch result {
+                    case .success:
                         isSignedIn = true
+                    case .failure(let error):
+                        isSignedIn = false
+                        fatalError(error.localizedDescription)
                     }
+                    
+                    
+                }
                 }
             }
         else {
