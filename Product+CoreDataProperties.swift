@@ -24,7 +24,7 @@ extension Product {
    
     
     public var getName: String {
-        name ?? "N/A"
+        name?.trimmingCharacters(in: .whitespaces) ?? "N/A"
     }
     
     public var getType: String {
