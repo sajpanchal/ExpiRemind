@@ -11,6 +11,7 @@ import UserNotifications
 import AuthenticationServices
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     var notification = CustomNotification()
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
@@ -24,6 +25,10 @@ struct ContentView: View {
     var body: some View {
         if !isSignedIn {
             VStack {
+                Spacer()
+                Color.blue
+                    .frame(width: 250, height: 250, alignment: .center)
+                Spacer()
                 SignInWithAppleButton(.signIn) { request in
                     request.requestedScopes = [.fullName, .email]
                 } onCompletion: { result in
@@ -32,12 +37,15 @@ struct ContentView: View {
                         isSignedIn = true
                     case .failure(let error):
                         isSignedIn = false
-                        fatalError(error.localizedDescription)
+                        print(error.localizedDescription)
                     }
                     
                     
                 }
-                }
+                .frame(width: 250, height: 50, alignment: .center)
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                
+            }
             }
         else {
             TabView() {
