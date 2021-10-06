@@ -45,15 +45,20 @@ struct ProductsListView: View {
             .onAppear(perform: {
                 notification.removeAllNotifications()
                 notification.notificationRequest()
-                for product in products {
-                    let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    notification.handleProducts(viewContext:viewContext, result: result, product: product)
-                    notification.saveContext(viewContext: viewContext)
-                }
+                updateProductsandNotifications()
             })
             .navigationTitle("List of Products")
         }
     }
+    
+    func updateProductsandNotifications() {
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
+        }
+    }
+    
     func isExpired(expiryDate: Date) -> Bool {
        let result = Calendar.current.compare(Date(), to: expiryDate, toGranularity: .day)
         switch result {
@@ -75,12 +80,7 @@ struct ProductsListView: View {
         notification.saveContext(viewContext: viewContext)
         notification.removeAllNotifications()
         notification.notificationRequest()
-        
-        for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
-        }
+        updateProductsandNotifications()
     }
 }
 

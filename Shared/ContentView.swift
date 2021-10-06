@@ -64,20 +64,12 @@ struct ContentView: View {
             .onAppear(perform: {
                 notification.removeAllNotifications()
                 notification.notificationRequest()
-                for product in products {
-                    let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    notification.handleProducts(viewContext:viewContext, result: result, product: product)
-                    notification.saveContext(viewContext: viewContext)
-                }
+                updateProductsandNotifications()
             })
             .onDisappear(perform: {
                 notification.notificationRequest()
                 notification.removeAllNotifications()
-                for product in products {                                       
-                    let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-                    notification.handleProducts(viewContext:viewContext, result: result, product: product)
-                    notification.saveContext(viewContext: viewContext)
-                }
+                updateProductsandNotifications()
             })
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -100,7 +92,13 @@ struct ContentView: View {
         .environmentObject(notification)
                 
     }
-    
+    func updateProductsandNotifications() {
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
+        }
+    }
     func prepareAlertContent(title: String, message: String) {
         alertTitle = title
         alertMessage = message
@@ -117,13 +115,10 @@ struct ContentView: View {
         notification.saveContext(viewContext: viewContext)
         productName = ""
         expiryDate = Date()
+        
         notification.notificationRequest()
         notification.removeAllNotifications()
-        for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
-        }
+        updateProductsandNotifications()
     }
     
     
