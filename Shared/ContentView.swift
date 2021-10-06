@@ -8,9 +8,10 @@
 import SwiftUI
 import CoreData
 import UserNotifications
-
+import AuthenticationServices
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     var notification = CustomNotification()
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
@@ -20,77 +21,111 @@ struct ContentView: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     @State var showAlert = false
-            
+    @State var isSignedIn = false
     var body: some View {
-        TabView() {
-            NavigationView {
-                VStack {
-                    Form {
-                        Section(header: Text("Product Name")) {
-                            TextField("Enter Product Name", text:$productName)
-                        }
-                        Section(header: Text("Product Type")) {
-                            Picker("Select Product Type", selection: $productType) {
-                                ForEach(productTypes, id: \.self) {
-                                    Text($0)
+        if !isSignedIn {
+            VStack {
+                Spacer()
+                Color.blue
+                    .frame(width: 250, height: 250, alignment: .center)
+                Spacer()
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.fullName, .email]
+                } onCompletion: { result in
+                    switch result {
+                    case .success:
+                        isSignedIn = true
+                    case .failure(let error):
+                        isSignedIn = false
+                        print(error.localizedDescription)
+                    }
+                    
+                    
+                }
+                .frame(width: 250, height: 50, alignment: .center)
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                
+            }
+            }
+        else {
+            TabView() {
+                NavigationView {
+                    VStack {
+                        Form {
+                            Section(header: Text("Product Name")) {
+                                TextField("Enter Product Name", text:$productName)
+                            }
+                            Section(header: Text("Product Type")) {
+                                Picker("Select Product Type", selection: $productType) {
+                                    ForEach(productTypes, id: \.self) {
+                                        Text($0)
+                                    }
+                                }
+                            }
+                            Section(header:Text("Expiry Date")) {
+                                DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
+                                    Text("Set Expiry Date")
                                 }
                             }
                         }
-                        Section(header:Text("Expiry Date")) {
-                            DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
-                                Text("Set Expiry Date")
-                            }
+                    }
+                    .navigationBarItems(leading:Button("Discard") {
+                        productName = ""
+                        expiryDate = Date()
+                        productType = "Grocery"
+                        prepareAlertContent(title: "Discarded!", message: "New Product has been discarded successfully.")
+                       
+                    }
+                    .foregroundColor(.red), trailing: Button("Done") {
+                        if productName.count >= 2 {
+                            addProduct()
+                            prepareAlertContent(title: "Saved!", message: "New Product has been saved successfully.")
                         }
-                    }
+                        else {
+                            prepareAlertContent(title: "Something went wrong!", message: "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!")
+                        }
+                    })
+                    .navigationBarTitle("Add New Product")
                 }
-                .navigationBarItems(leading:Button("Discard") {
-                    productName = ""
-                    expiryDate = Date()
-                    productType = "Grocery"
-                    prepareAlertContent(title: "Discarded!", message: "New Product has been discarded successfully.")
-                   
-                }
-                .foregroundColor(.red), trailing: Button("Done") {
-                    if productName.count >= 2 {
-                        addProduct()
-                        prepareAlertContent(title: "Saved!", message: "New Product has been saved successfully.")
-                    }
-                    else {
-                        prepareAlertContent(title: "Something went wrong!", message: "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!")
-                    }
+                .onAppear(perform: {
+                    notification.removeAllNotifications()
+                    notification.notificationRequest()
+                    updateProductsandNotifications()
                 })
-                .navigationBarTitle("Add New Product")
-            }
-            .onAppear(perform: {
-                notification.removeAllNotifications()
-                notification.notificationRequest()
-                updateProductsandNotifications()
-            })
-            .onDisappear(perform: {
-                notification.notificationRequest()
-                notification.removeAllNotifications()
-                updateProductsandNotifications()
-            })
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-            }
-            .tabItem {
-                Image(systemName: "house")
-                Text("Home")
-            }
-            ProductsListView()
-                .tabItem {
-                    Image(systemName: "list.bullet.rectangle")
-                    Text("List")
+                .onDisappear(perform: {
+                    notification.notificationRequest()
+                    notification.removeAllNotifications()
+                    updateProductsandNotifications()
+                })
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
-            PreferencesView()
                 .tabItem {
-                    Image(systemName: "gearshape.2.fill")
-                    Text("Preferences")
+                    Image(systemName: "house")
+                    Text("Home")
                 }
+                ProductsListView()
+                    .tabItem {
+                        Image(systemName: "list.bullet.rectangle")
+                        Text("List")
+                    }
+                PreferencesView()
+                    .tabItem {
+                        Image(systemName: "gearshape.2.fill")
+                        Text("Preferences")
+                    }
+            }
+            .environmentObject(notification)
         }
-        .environmentObject(notification)
+        
                 
+    }
+    func showAppleLoginView() {
+        let provider = ASAuthorizationAppleIDProvider()
+        let request = provider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.performRequests()
     }
     func updateProductsandNotifications() {
         for product in products {
