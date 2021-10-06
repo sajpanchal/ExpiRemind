@@ -117,6 +117,13 @@ struct ContentView: View {
         notification.saveContext(viewContext: viewContext)
         productName = ""
         expiryDate = Date()
+        notification.notificationRequest()
+        notification.removeAllNotifications()
+        for product in products {
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            notification.saveContext(viewContext: viewContext)
+        }
     }
     
     
