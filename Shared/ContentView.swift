@@ -90,12 +90,13 @@ struct ContentView: View {
                 .onAppear(perform: {
                     notification.removeAllNotifications()
                     notification.notificationRequest()
+                    
                     updateProductsandNotifications()
                 })
                 .onDisappear(perform: {
                     notification.notificationRequest()
                     notification.removeAllNotifications()
-                    updateProductsandNotifications()
+                   // updateProductsandNotifications()
                 })
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -144,8 +145,9 @@ struct ContentView: View {
         let product = Product(context: viewContext)
         product.name = productName
         product.type = productType
-        product.expiryDate = expiryDate
+        product.expiryDate = modifyDate(date: expiryDate)
         product.dateStamp = Date()
+        
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
         notification.saveContext(viewContext: viewContext)
         productName = ""
@@ -153,9 +155,20 @@ struct ContentView: View {
         
         notification.notificationRequest()
         notification.removeAllNotifications()
-        updateProductsandNotifications()
+        notification.sendTimeNotification(product: product)
+        //updateProductsandNotifications()
     }
-    
+    func modifyDate(date: Date) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        let dateStr = formatter.string(from: date)
+        let modifiedDateStr = "\(dateStr), 8:30 AM"
+        formatter.timeStyle = .short
+        let modifiedDate = formatter.date(from: modifiedDateStr)
+        print("modified date:\(String(describing: modifiedDate))")
+        return modifiedDate ?? date
+    }
     
 }
 
