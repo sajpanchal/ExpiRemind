@@ -77,11 +77,22 @@ class CustomNotification: ObservableObject {
         print("expiry Date: \(product.expiryDate!)")
         print("today: \(Date())")
         print("difference: \(timeInterval.second!)")
-        let content = UNMutableNotificationContent()
-        content.title = "Expiry Date Reminder"
-        content.body = "Your product '\(product.getName)' \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "has been expired!": "is expiring soon!")"
-        content.sound = UNNotificationSound.default
+       
         let addRequest =  { (seconds: Int) -> Void in
+            let content = UNMutableNotificationContent()
+            content.title = "Expiry Date Reminder"
+            if seconds == 0 {
+                content.body = "Your product '\(product.getName)' has been expired today!"
+            }
+            else if seconds == 86400 {
+                content.body = "Your product '\(product.getName)' is expiring soon tommorrow!"
+            }
+            else {
+                content.body = "Your product '\(product.getName)' is expiring soon in 2 days!"
+            }
+
+            
+            content.sound = UNNotificationSound.default
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(timeInterval.second! - seconds), repeats: false)
         //    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(seconds), repeats: false)
             let request = UNNotificationRequest(identifier: "\(product.id)\(seconds)", content: content, trigger: trigger)
