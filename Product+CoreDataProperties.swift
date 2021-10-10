@@ -36,7 +36,7 @@ extension Product {
         dateFormatter.dateStyle = .medium // Jan 1, 2021
         dateFormatter.timeStyle = .none
         
-        return dateFormatter.string(from: expiryDate ?? Date())
+        return dateFormatter.string(from: expiryDate ?? Date().dayAfter)
     }
     
     public var DateStamp: String {

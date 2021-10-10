@@ -32,7 +32,7 @@ struct EditProductView: View {
                     }
                 }
                 Section(header:Text("Expiry Date")) {
-                    DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
+                    DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
                         Text("Set Expiry Date")
                     }
                 }
@@ -40,7 +40,7 @@ struct EditProductView: View {
             Button("Save Changes") {
                 // save the product changes, remove notification of old changes.
                 saveChanges()
-                notification.removeAllNotifications()
+               
                 notification.notificationRequest()
                 
                 updateProductsandNotifications()
@@ -57,7 +57,7 @@ struct EditProductView: View {
     }
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
             notification.saveContext(viewContext: viewContext)
         }
@@ -71,6 +71,7 @@ struct EditProductView: View {
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
             notification.saveContext(viewContext: viewContext)
+            notification.sendTimeNotification(product: product)
             // dismiss the view.
             presentationMode.wrappedValue.dismiss()
         }
@@ -79,6 +80,7 @@ struct EditProductView: View {
     func deleteProduct() {
         viewContext.delete(product)
         notification.saveContext(viewContext: viewContext)
+        notification.removeNotification(product: product)
         resetFormInputs()
         presentationMode.wrappedValue.dismiss()
     }
@@ -86,13 +88,13 @@ struct EditProductView: View {
     func resetFormInputs() {
         productName = ""
         productType = "Grocery"
-        expiryDate = Date()
+        expiryDate = Date().dayAfter
     }
     
 }
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView(product: Product(), productName: "",productType: "", expiryDate: Date())
+        EditProductView(product: Product(), productName: "",productType: "", expiryDate: Date().dayAfter)
     }
 }

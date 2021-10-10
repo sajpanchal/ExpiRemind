@@ -12,22 +12,16 @@ import CoreData
 
 class CustomNotification: ObservableObject {
     @Published var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
+      
     var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-        
-    }
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter
+            
+        }
    
-    var date: DateComponents {
-        var date = DateComponents()
-        date.hour = 8
-        date.minute = 30
-        return date
-    }
-    
-    func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
+   func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
         let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
             if let days = diff.day {
                 print("\n------------------------\(product.id)-----------------------------")
@@ -53,10 +47,8 @@ class CustomNotification: ObservableObject {
                     if days <= 3 {
                         print("\(product.getName)")
                         if self.isNotificationEnabled {
-                            sendNotification(product: product)
                             print("calling notifcation for \(product.getName)")
                         }
-                           
                         return "Near Expiry"
                     }
                     //expiry date is far away.
@@ -79,55 +71,7 @@ class CustomNotification: ObservableObject {
                 }
             }
         }
-    
-    func sendNotification(product: Product) {
-        let content = UNMutableNotificationContent()
-        content.title = "Expiry Date Reminder"
-        content.body = "Your product '\(product.getName)' \(product.ExpiryDate == dateFormatter.string(from: Date()) ? "has been expired!": "is expiring soon!")"
-        content.sound = UNNotificationSound.default
-        let addRequest =  {
-            let trigger = UNCalendarNotificationTrigger(dateMatching: self.date, repeats: true)
-            let request = UNNotificationRequest(identifier: "\(product.id)", content: content, trigger: trigger)
             
-            UNUserNotificationCenter.current().add(request) { error in
-                guard let error = error else {
-                    return
-                }
-                fatalError(error.localizedDescription)
-            }
-           
-        }
-        
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
-                if settings.authorizationStatus == .authorized {
-                    addRequest()
-                    
-                    print("Notification request has been sent...")
-                    
-                }
-                else if settings.authorizationStatus == .notDetermined {
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                    print("Notification request is not authorized by the user yet.")
-                    if success {
-                            addRequest()
-                           
-                            print("Notification request has been now sent...")
-                        }
-                    else {
-                       
-                            fatalError((error != nil) ? error!.localizedDescription : "Unknown Error." )
-                        }
-                    }
-                }
-                else {
-                    return
-                }
-            }
-        
-        
-     
-        
-    }
     func sendTimeNotification(product: Product) {
         let timeInterval = Calendar.current.dateComponents([.second], from: Date(), to: product.expiryDate!)
         print("expiry Date: \(product.expiryDate!)")
@@ -140,7 +84,7 @@ class CustomNotification: ObservableObject {
         let addRequest =  { (seconds: Int) -> Void in
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(timeInterval.second! - seconds), repeats: false)
         //    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(seconds), repeats: false)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "\(product.id)\(seconds)", content: content, trigger: trigger)
             print("trigger for \(timeInterval.second! - seconds) secs.")
             UNUserNotificationCenter.current().add(request) { error in
                 guard let error = error else {
@@ -191,8 +135,12 @@ class CustomNotification: ObservableObject {
     }
     func removeNotification(product: Product) {
             
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)"])
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)"])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(0)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(0)"])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(86400)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(86400)"])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(2*86400)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(2*86400)"])
     print("product notification is deleted for \(product.getName)")
     }
     func removeAllNotifications() {

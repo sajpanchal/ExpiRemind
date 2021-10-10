@@ -25,7 +25,7 @@ struct ListRowView: View {
                     Text("Expiry Date")
                         .foregroundColor(.primary)
                         .font(.caption)
-                    Text(isExpired(expiryDate: product.expiryDate ?? Date()) ? product.ExpiryDate: product.ExpiryDate)
+                    Text(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? product.ExpiryDate: product.ExpiryDate)
                         .fontWeight(.bold)
                         .font(.body)
                         .foregroundColor(.red)
@@ -40,7 +40,7 @@ struct ListRowView: View {
                     .font(.system(size: 10))
             }
             .frame(alignment: .trailing)
-        }.foregroundColor(isExpired(expiryDate: product.expiryDate ?? Date()) ? .red : .clear)
+        }.foregroundColor(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? .red : .clear)
     }
     func isExpired(expiryDate: Date) -> Bool {
        let result = Calendar.current.compare(Date(), to: expiryDate, toGranularity: .day)

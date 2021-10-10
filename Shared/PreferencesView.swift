@@ -43,7 +43,6 @@ struct PreferencesView: View {
             .navigationBarItems( trailing: Button("Save") {
                 if isNotificationEnabled {
                     notification.isNotificationEnabled = true
-                    notification.removeAllNotifications()
                     notification.notificationRequest()
                     updateProductsandNotifications()
                    
@@ -64,7 +63,7 @@ struct PreferencesView: View {
     }
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
             notification.saveContext(viewContext: viewContext)
         }
