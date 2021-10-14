@@ -40,7 +40,8 @@ struct ContentView: View {
                         print(error.localizedDescription)
                     }
                 }
-                .frame(width: 250, height: 50, alignment: .center)
+                .frame(maxWidth: .infinity, maxHeight: 50, alignment: .center)
+                .padding()
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
                 
             }
