@@ -17,7 +17,7 @@ struct ContentView: View {
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
     @State var productName: String = ""
     @State var productType = "Grocery"
-    @State var expiryDate = Date()
+    @State var expiryDate = Date().dayAfter
     @State var alertTitle = ""
     @State var alertMessage = ""
     @State var showAlert = false
@@ -39,8 +39,6 @@ struct ContentView: View {
                         isSignedIn = false
                         print(error.localizedDescription)
                     }
-                    
-                    
                 }
                 .frame(width: 250, height: 50, alignment: .center)
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
@@ -63,7 +61,7 @@ struct ContentView: View {
                                 }
                             }
                             Section(header:Text("Expiry Date")) {
-                                DatePicker(selection: $expiryDate, in: Date()..., displayedComponents: .date) {
+                                DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
                                     Text("Set Expiry Date")
                                 }
                             }
@@ -71,7 +69,7 @@ struct ContentView: View {
                     }
                     .navigationBarItems(leading:Button("Discard") {
                         productName = ""
-                        expiryDate = Date()
+                        expiryDate = Date().dayAfter
                         productType = "Grocery"
                         prepareAlertContent(title: "Discarded!", message: "New Product has been discarded successfully.")
                        
@@ -88,15 +86,10 @@ struct ContentView: View {
                     .navigationBarTitle("Add New Product")
                 }
                 .onAppear(perform: {
-                    notification.removeAllNotifications()
                     notification.notificationRequest()
                     updateProductsandNotifications()
                 })
-                .onDisappear(perform: {
-                    notification.notificationRequest()
-                    notification.removeAllNotifications()
-                    updateProductsandNotifications()
-                })
+                .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
@@ -129,7 +122,7 @@ struct ContentView: View {
     }
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
             notification.saveContext(viewContext: viewContext)
         }
@@ -144,23 +137,44 @@ struct ContentView: View {
         let product = Product(context: viewContext)
         product.name = productName
         product.type = productType
-        product.expiryDate = expiryDate
+        print("-------------addProduct()---------------")
+        print("expiryDate:",expiryDate)
+        product.expiryDate = modifyDate(date: expiryDate)
         product.dateStamp = Date()
+        
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
         notification.saveContext(viewContext: viewContext)
         productName = ""
-        expiryDate = Date()
-        
+        expiryDate = Date().dayAfter
         notification.notificationRequest()
-        notification.removeAllNotifications()
-        updateProductsandNotifications()
+        notification.sendTimeNotification(product: product)
     }
-    
+    func modifyDate(date: Date) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        let dateStr = formatter.string(from: date)
+        let modifiedDateStr = "\(dateStr), 8:30 AM"
+        formatter.timeStyle = .short
+        let modifiedDate = formatter.date(from: modifiedDateStr)
+        print("modified date:\(String(describing: modifiedDate))")
+        return modifiedDate ?? date
+    }
     
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    }
+}
+
+
+extension Date {
+    static var tomorrow: Date {
+        return Date().dayAfter
+    }
+    var dayAfter: Date {
+        return Calendar.current.date(byAdding: .day, value: 1, to: Date())!
     }
 }
