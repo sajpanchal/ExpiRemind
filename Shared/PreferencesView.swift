@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PreferencesView: View {
-    @State var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
+    //@State var isNotificationEnabled: Bool = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
     let daysCollection = [1, 3, 7, 30]
     @State var numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
     @State var isAlertOn = false
@@ -20,7 +20,8 @@ struct PreferencesView: View {
             VStack {
                 Form {
                     Section(header: Text("Reminders")) {
-                        Toggle("Remind before product(s) Expire:", isOn: $isNotificationEnabled)
+                        Toggle("Remind before product(s) Expire:", isOn: $notification.isNotificationEnabled)
+                        
                     }
                     Section(header: Text("Delete product after 'x' days of expiry")) {
                         Picker("Select the number of days", selection: $numberOfDays) {
@@ -37,11 +38,11 @@ struct PreferencesView: View {
             .onAppear(perform: {
                print("on appear")
                 UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
-                UserDefaults.standard.set(self.isNotificationEnabled, forKey: "isNotificationEnabled")
+                UserDefaults.standard.set(self.notification.isNotificationEnabled, forKey: "isNotificationEnabled")
             })
             .navigationTitle("Preferences")
             .navigationBarItems( trailing: Button("Save") {
-                if isNotificationEnabled {
+                if notification.isNotificationEnabled {
                     notification.isNotificationEnabled = true
                     notification.notificationRequest()
                     updateProductsandNotifications()
@@ -57,7 +58,7 @@ struct PreferencesView: View {
                 notification.saveContext(viewContext: viewContext)
                isAlertOn = true
                 UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
-                UserDefaults.standard.set(self.isNotificationEnabled, forKey: "isNotificationEnabled")
+                UserDefaults.standard.set(!self.notification.isNotificationEnabled, forKey: "isNotificationDisabled")
             })
         }
     }

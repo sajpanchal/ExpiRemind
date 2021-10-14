@@ -11,7 +11,7 @@ import CoreData
 
 
 class CustomNotification: ObservableObject {
-    @Published var isNotificationEnabled: Bool = UserDefaults.standard.bool(forKey: "isNotificationEnabled")
+    @Published var isNotificationEnabled: Bool = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
       
     var dateFormatter: DateFormatter {
             let formatter = DateFormatter()
@@ -20,7 +20,11 @@ class CustomNotification: ObservableObject {
             return formatter
             
         }
-   
+    init() {
+
+        isNotificationEnabled = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
+        print("initilier called: ", isNotificationEnabled)
+    }
    func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
         let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
             if let days = diff.day {
