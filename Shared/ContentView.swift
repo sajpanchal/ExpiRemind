@@ -26,8 +26,14 @@ struct ContentView: View {
         if !isSignedIn {
             VStack {
                 Spacer()
-                Color.blue
+                Image("appstore")
+                    .resizable()
                     .frame(width: 250, height: 250, alignment: .center)
+                    .cornerRadius(10.0)
+                Text("Expiry Reminder")
+                    .font(.title)
+                    .fontWeight(.black)
+                    .foregroundColor(Color(red: 0.832, green: 0.316, blue: 0.16, opacity: 1))
                 Spacer()
                 SignInWithAppleButton(.signIn) { request in
                     request.requestedScopes = [.fullName, .email]
@@ -57,6 +63,7 @@ struct ContentView: View {
                             Section(header: Text("Product Type")) {
                                 Picker("Select Product Type", selection: $productType) {
                                     ForEach(productTypes, id: \.self) {
+              
                                         Text($0)
                                     }
                                 }
