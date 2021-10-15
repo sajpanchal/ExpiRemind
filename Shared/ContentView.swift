@@ -30,7 +30,7 @@ struct ContentView: View {
                     .resizable()
                     .frame(width: 250, height: 250, alignment: .center)
                     .cornerRadius(10.0)
-                Text("Expiry Reminder")
+                Text("ExpiRemind")
                     .font(.title)
                     .fontWeight(.black)
                     .foregroundColor(Color(red: 0.832, green: 0.316, blue: 0.16, opacity: 1))
