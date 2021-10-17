@@ -162,7 +162,7 @@ struct ContentView: View {
                         Text("List")
                     }
                     .tag(1)
-                PreferencesView()
+                PreferencesView(showTab: $showTab)
                     .tabItem {
                         Image(systemName: "gearshape.2.fill")
                         Text("Preferences")
