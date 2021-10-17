@@ -75,14 +75,18 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .navigationBarItems(leading:Button("Discard") {
+                    .navigationBarItems(leading:HStack { Button("Discard") {
                         productName = ""
                         expiryDate = Date().dayAfter
                         productType = "Grocery"
                         prepareAlertContent(title: "Discarded!", message: "New Product has been discarded successfully.")
                        
                     }
-                    .foregroundColor(.red), trailing: Button("Done") {
+                    .disabled(productName.isEmpty)
+                    .foregroundColor(.red)
+               
+                    }
+                                        , trailing: HStack { Button("Done") {
                         if productName.count >= 2 {
                             addProduct()
                             prepareAlertContent(title: "Saved!", message: "New Product has been saved successfully.")
@@ -90,8 +94,12 @@ struct ContentView: View {
                         else {
                             prepareAlertContent(title: "Something went wrong!", message: "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!")
                         }
-                    })
+                    }
+                                        .disabled(productName.isEmpty)
+                    }
+                        )
                     .navigationBarTitle("Add New Product")
+                   
                 }
                 .onAppear(perform: {
                     notification.notificationRequest()
