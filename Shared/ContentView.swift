@@ -25,6 +25,7 @@ struct ContentView: View {
     @State var showAlert = false
     @State var isSignedIn = false
     @State var color: Color = .green
+    @State var showTab = 0
     var body: some View {
         if !isSignedIn {
             VStack {
@@ -56,7 +57,7 @@ struct ContentView: View {
             }
             }
         else {
-            TabView() {
+            TabView(selection: $showTab) {
                 NavigationView {
                     ZStack {
                         
@@ -103,7 +104,7 @@ struct ContentView: View {
                             if productName.count >= 2 {
                                 addProduct()
                                 alertTitle = "Product Saved!"
-                                alertImage = "checkmark.seal.filled"
+                                alertImage = "checkmark.seal.fill"
                                 color = .green
                                 withAnimation {
                                 
@@ -130,7 +131,7 @@ struct ContentView: View {
                                 withAnimation {
                                 showCard = false
                                     if color == .green {
-                                        
+                                        showTab = 1
                                     }
                                 }
                             }
@@ -153,17 +154,20 @@ struct ContentView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
+                .tag(0)
                 
                 ProductsListView()
                     .tabItem {
                         Image(systemName: "list.bullet.rectangle")
                         Text("List")
                     }
+                    .tag(1)
                 PreferencesView()
                     .tabItem {
                         Image(systemName: "gearshape.2.fill")
                         Text("Preferences")
                     }
+                    .tag(2)
             }
             .environmentObject(notification)
         }
