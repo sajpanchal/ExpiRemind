@@ -11,6 +11,7 @@
 		720B9A35270B5368009039EE /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B9A33270B5368009039EE /* PreferencesView.swift */; };
 		720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */; };
 		720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */; };
+		721D3BC5271B3C1D0035CB60 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 721D3BC4271B3C1D0035CB60 /* CloudKit.framework */; };
 		7234F4C826FA232800504155 /* ProductsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4C726FA232800504155 /* ProductsListView.swift */; };
 		7234F4C926FA232800504155 /* ProductsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4C726FA232800504155 /* ProductsListView.swift */; };
 		7234F4EB26FA2C9500504155 /* ListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7234F4EA26FA2C9500504155 /* ListRowView.swift */; };
@@ -35,6 +36,7 @@
 		720B9A33270B5368009039EE /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
 		720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		721D3BC4271B3C1D0035CB60 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		7234F4C726FA232800504155 /* ProductsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListView.swift; sourceTree = "<group>"; };
 		7234F4EA26FA2C9500504155 /* ListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRowView.swift; sourceTree = "<group>"; };
 		724E7FFA26F792900007D122 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				721D3BC5271B3C1D0035CB60 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +73,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		721D3BC3271B3C1D0035CB60 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				721D3BC4271B3C1D0035CB60 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +91,7 @@
 				724E800526F792910007D122 /* iOS */,
 				724E800C26F792910007D122 /* macOS */,
 				724E800426F792910007D122 /* Products */,
+				721D3BC3271B3C1D0035CB60 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
