@@ -11,37 +11,47 @@ struct Card: View {
     @State var title: String
     @State var image: String
     @State var color: Color
+    @State var showIcon = false
+    
     var body: some View {
         ZStack {
-            Color(red: 0.917, green: 0.917, blue: 0.917, opacity: 1)
+           // Color(red: 0.917, green: 0.917, blue:  0.917, opacity: 1)
+            color
                 .frame(width: 250, height: 180, alignment: .center)
                 .cornerRadius(10)
                 .shadow(radius: 5.0)
             VStack {
                 Spacer()
+                    if showIcon {
+                        ZStack {
+                            Circle()
+                                .frame(width: 50, height: 50, alignment: .center)
+                              //  .foregroundColor(color)
+                            Image(systemName: image)
+                                .font(.title)
+                                .foregroundColor(color)
+                        }
+                        .frame(width: 50, height: 50, alignment: .leading)
+                        .transition(.scale)
+                    }
                 Text(title)
-                    .font(.title)
+                    .font(.body)
                     .fontWeight(.bold)
-                    .padding()
-                    .foregroundColor(color)
-                ZStack {
-                    Circle()
-                        .frame(width: 50, height: 50, alignment: .center)
-                        .foregroundColor(color)
-                    Image(systemName: image)
-                        .font(.title)
-                        .foregroundColor(Color(red: 0.917, green: 0.917, blue: 0.917, opacity: 1))
-                }
-                
+//                    .foregroundColor(color)
+                    .multilineTextAlignment(.center)
                 Spacer()
             }
             .frame(width: 250, height: 250, alignment: .center)
             .foregroundColor(.white)
-           
         }
-        
-        
-        
+        .onAppear( perform: {
+            withAnimation {
+                showIcon = true
+            }
+        })
+        .onDisappear(perform: {
+            showIcon = false
+        })
     }
 }
 
