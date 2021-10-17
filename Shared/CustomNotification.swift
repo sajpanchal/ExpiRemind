@@ -170,7 +170,7 @@ class CustomNotification: ObservableObject {
             print("product is saved.")
         }
         catch {
-            fatalError(error.localizedDescription)
+            print(error.localizedDescription)
         }
     }
     func handleProducts(viewContext: NSManagedObjectContext, result: String, product: Product) {
