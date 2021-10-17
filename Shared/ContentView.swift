@@ -19,9 +19,12 @@ struct ContentView: View {
     @State var productType = "Grocery"
     @State var expiryDate = Date().dayAfter
     @State var alertTitle = ""
+    @State var alertImage = ""
     @State var alertMessage = ""
+    @State var showCard = false
     @State var showAlert = false
     @State var isSignedIn = false
+    @State var color: Color = .green
     var body: some View {
         if !isSignedIn {
             VStack {
@@ -55,50 +58,87 @@ struct ContentView: View {
         else {
             TabView() {
                 NavigationView {
-                    VStack {
-                        Form {
-                            Section(header: Text("Product Name")) {
-                                TextField("Enter Product Name", text:$productName)
-                            }
-                            Section(header: Text("Product Type")) {
-                                Picker("Select Product Type", selection: $productType) {
-                                    ForEach(productTypes, id: \.self) {
-              
-                                        Text($0)
+                    ZStack {
+                        
+                        VStack {
+                            Form {
+                                Section(header: Text("Product Name")) {
+                                    TextField("Enter Product Name", text:$productName)
+                                }
+                                Section(header: Text("Product Type")) {
+                                    Picker("Select Product Type", selection: $productType) {
+                                        ForEach(productTypes, id: \.self) {
+                  
+                                            Text($0)
+                                        }
+                                    }
+                                }
+                                Section(header:Text("Expiry Date")) {
+                                    DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
+                                        Text("Set Expiry Date")
                                     }
                                 }
                             }
-                            Section(header:Text("Expiry Date")) {
-                                DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                                    Text("Set Expiry Date")
+                        }
+                        .navigationBarItems(leading:HStack { Button("Discard") {
+                            productName = ""
+                            expiryDate = Date().dayAfter
+                            productType = "Grocery"
+                            alertTitle = "Product Discarded!"
+                            alertImage = "xmark.seal.fill"
+                            color = .red
+                            withAnimation {
+                            
+                                self.showCard = true
+                                
+                             
+                            }
+                                                   
+                        }
+                        .disabled(productName.isEmpty)
+                        .foregroundColor(.red)
+                   
+                        }
+                                            , trailing: HStack { Button("Done") {
+                            if productName.count >= 2 {
+                                addProduct()
+                                alertTitle = "Product Saved!"
+                                alertImage = "checkmark.seal.filled"
+                                color = .green
+                                withAnimation {
+                                
+                                    self.showCard = true
+                                    
+                                 
+                                }
+                            }
+                            else {
+                                alertTitle =  "Something went wrong!"
+                            alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
+                                showAlert = true
+                            }
+                        }
+                        .disabled(productName.isEmpty)
+                            
+                        }
+                            )
+                        .navigationBarTitle("Add New Product")
+                        if showCard {
+                            Card(title: alertTitle, image: alertImage, color: color)
+                                .transition(.opacity)
+                            let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                                withAnimation {
+                                showCard = false
+                                    if color == .green {
+                                        
+                                    }
                                 }
                             }
                         }
+                        
+                            
                     }
-                    .navigationBarItems(leading:HStack { Button("Discard") {
-                        productName = ""
-                        expiryDate = Date().dayAfter
-                        productType = "Grocery"
-                        prepareAlertContent(title: "Discarded!", message: "New Product has been discarded successfully.")
-                       
-                    }
-                    .disabled(productName.isEmpty)
-                    .foregroundColor(.red)
-               
-                    }
-                                        , trailing: HStack { Button("Done") {
-                        if productName.count >= 2 {
-                            addProduct()
-                            prepareAlertContent(title: "Saved!", message: "New Product has been saved successfully.")
-                        }
-                        else {
-                            prepareAlertContent(title: "Something went wrong!", message: "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!")
-                        }
-                    }
-                                        .disabled(productName.isEmpty)
-                    }
-                        )
-                    .navigationBarTitle("Add New Product")
+              
                    
                 }
                 .onAppear(perform: {
@@ -113,6 +153,7 @@ struct ContentView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
+                
                 ProductsListView()
                     .tabItem {
                         Image(systemName: "list.bullet.rectangle")
@@ -143,11 +184,7 @@ struct ContentView: View {
             notification.saveContext(viewContext: viewContext)
         }
     }
-    func prepareAlertContent(title: String, message: String) {
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
-    }
+    
    
     func addProduct() {
         let product = Product(context: viewContext)
