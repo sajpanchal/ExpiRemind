@@ -43,15 +43,16 @@ struct EditProductView: View {
                 }
                 Button("Save Changes") {
                     // save the product changes, remove notification of old changes.
+                    notification.notificationRequest()
+                    
+                    updateProductsandNotifications()
                     alertTitle = "Saved Changes!"
                     alertImage = "checkmark.seal.fill"
                     color = .green
                     
                     saveChanges()
                    
-                    notification.notificationRequest()
-                    
-                    updateProductsandNotifications()
+                   
                     withAnimation {
                         showCard = true
                     }
@@ -103,6 +104,7 @@ struct EditProductView: View {
     
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
+            print("product is found.................")
             notification.removeNotification(product: product)
             prod.name = productName
             prod.type = productType
