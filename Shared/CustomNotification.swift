@@ -12,7 +12,7 @@ import CoreData
 
 class CustomNotification: ObservableObject {
     @Published var isNotificationEnabled: Bool = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
-      
+    
     var dateFormatter: DateFormatter {
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
@@ -23,17 +23,17 @@ class CustomNotification: ObservableObject {
     init() {
 
         isNotificationEnabled = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
-        print("initilier called: ", isNotificationEnabled)
+      //  print("initilier called: ", isNotificationEnabled)
     }
    func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
         let diff = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
             if let days = diff.day {
-                print("\n------------------------\(product.id)-----------------------------")
+                /*print("\n------------------------\(product.id)-----------------------------")
                 print("name: ",product.getName)
                 print("expiry date:",product.ExpiryDate)
                 print("today is: \(Date())")
                 print("days to expiry:",days)
-                print(product.ExpiryDate)
+                print(product.ExpiryDate)*/
                 // Expiry date is passed
                 if days < 0 {
                     // deletion days are passed.
@@ -49,9 +49,9 @@ class CustomNotification: ObservableObject {
                 else {
                     // expiry date is 3 or less days away.
                     if days <= 3 {
-                        print("\(product.getName)")
+                       // print("\(product.getName)")
                         if self.isNotificationEnabled {
-                            print("calling notifcation for \(product.getName)")
+                         //   print("calling notifcation for \(product.getName)")
                         }
                         return "Near Expiry"
                     }
@@ -68,7 +68,7 @@ class CustomNotification: ObservableObject {
             let center = UNUserNotificationCenter.current()
             center.requestAuthorization(options: [.alert,.badge, .sound]) { success, error in
                 if success {
-                    print("Notification request has been set for user to authorize.")
+                   // print("Notification request has been set for user to authorize.")
                 }
                 else if let error = error {
                     print(error.localizedDescription)
@@ -152,11 +152,14 @@ class CustomNotification: ObservableObject {
             
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(0)"])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(0)"])
+        print("product notification is deleted for \(product.getName) with id: \(product.id)\(0)")
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(86400)"])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(86400)"])
+        print("product notification is deleted for \(product.getName) with id: \(product.id)\(86400)")
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(2*86400)"])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(2*86400)"])
-    print("product notification is deleted for \(product.getName)")
+        print("product notification is deleted for \(product.getName) with id: \(product.id)\(2*86400)")
+    
     }
     func removeAllNotifications() {
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
@@ -174,7 +177,7 @@ class CustomNotification: ObservableObject {
         }
     }
     func handleProducts(viewContext: NSManagedObjectContext, result: String, product: Product) {
-        print("result for \(product.getName) is: \(result)")
+     //   print("result for \(product.getName) is: \(result)")
         switch result {
             //remove the product notification and delete from core data
             case "Delete" :
@@ -182,12 +185,14 @@ class CustomNotification: ObservableObject {
                 viewContext.delete(product)
             // once notification is sent
             case "Near Expiry":
-                print("\(product.getName): is Near Expiry")
+           //    print("\(product.getName): is Near Expiry")
+            print("")
             case "Expired":
             removeNotification(product: product)
                 break
         case "Alive":
-            print("\(product.getName): is Alive")
+           // print("\(product.getName): is Alive")
+            print("")
             default:
             break
         }

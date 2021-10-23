@@ -38,6 +38,14 @@ struct PersistenceController {
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "NotifyExpiryDate")
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy       
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        do {
+            try container.viewContext.setQueryGenerationFrom(.current)
+        } catch {
+            fatalError("###\(#function): Failed to pin viewContext to the current generation:\(error)")
+        }
+        
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }

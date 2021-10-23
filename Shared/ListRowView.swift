@@ -43,7 +43,7 @@ struct ListRowView: View {
         }.foregroundColor(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? .red : .clear)
     }
     func isExpired(expiryDate: Date) -> Bool {
-       let result = Calendar.current.compare(Date(), to: expiryDate, toGranularity: .day)
+       let result = Calendar.current.compare((Date()), to: expiryDate, toGranularity: .day)
         switch result {
         case .orderedDescending :
             return true
