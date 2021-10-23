@@ -11,6 +11,7 @@ import UserNotifications
 import AuthenticationServices
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     var notification = CustomNotification()
@@ -26,6 +27,7 @@ struct ContentView: View {
     @State var isSignedIn = false
     @State var color: Color = .green
     @State var showTab = 0
+    @State var showScanningView = false
     var body: some View {
         if !isSignedIn {
             VStack {
@@ -64,12 +66,18 @@ struct ContentView: View {
                         VStack {
                             Form {
                                 Section(header: Text("Product Name")) {
-                                    TextField("Enter Product Name", text:$productName)
+                                    HStack {
+                                        TextField("Enter Product Name", text:$productName)
+                                        Spacer()
+                                        Image(systemName: "camera.viewfinder")
+                                            .onTapGesture {
+                                                showScanningView = true
+                                            }
+                                    }
                                 }
                                 Section(header: Text("Product Type")) {
                                     Picker("Select Product Type", selection: $productType) {
                                         ForEach(productTypes, id: \.self) {
-                  
                                             Text($0)
                                         }
                                     }
@@ -129,11 +137,7 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        
-                            
                     }
-              
-                   
                 }
                 .onAppear(perform: {
                     notification.notificationRequest()
@@ -143,6 +147,11 @@ struct ContentView: View {
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
+               
+                .sheet(isPresented: $showScanningView) {
+                    ScanDocumentView(recognizedText: $productName)
+                }
+               
                 .tabItem {
                     Image(systemName: "house")
                     Text("Home")
