@@ -89,12 +89,8 @@ struct ContentView: View {
                             alertImage = "xmark.seal.fill"
                             color = .red
                             withAnimation {
-                            
                                 self.showCard = true
-                                
-                             
                             }
-                                                   
                         }
                         .disabled(productName.isEmpty)
                         .foregroundColor(.red)
@@ -107,10 +103,7 @@ struct ContentView: View {
                                 alertImage = "checkmark.seal.fill"
                                 color = .green
                                 withAnimation {
-                                
-                                    self.showCard = true
-                                    
-                                 
+                                    self.showCard = true                                                                     
                                 }
                             }
                             else {
