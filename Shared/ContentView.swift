@@ -63,35 +63,11 @@ struct ContentView: View {
                 NavigationView {
                     ZStack {
                         VStack {
-                            Form {
-                                Section(header: Text("Product Name")) {
-                                    HStack {
-                                        TextField("Enter Product Name", text:$productName)
-                                        Spacer()
-                                        Image(systemName: "camera.viewfinder")
-                                            .onTapGesture {
-                                                showScanningView = true
-                                            }
-                                    }
-                                }
-                                Section(header: Text("Product Type")) {
-                                    Picker("Select Product Type", selection: $productType) {
-                                        ForEach(productTypes, id: \.self) {
-                                            Text($0)
-                                        }
-                                    }
-                                }
-                                Section(header: Text("Expiry Date")) {
-                                    DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                                        Text("Set Expiry Date")
-                                    }
-                                }
-                            }
+                           ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showScanningView: $showScanningView)
                         }
-                        .navigationBarItems(leading:HStack { Button("Discard") {
-                            productName = ""
-                            expiryDate = Date().dayAfter
-                            productType = "Grocery"
+                        .navigationBarItems(leading: HStack {
+                            Button("Discard") {
+                            resetForm()
                             alertTitle = "Product Discarded!"
                             alertImage = "xmark.seal.fill"
                             color = .red
@@ -102,8 +78,8 @@ struct ContentView: View {
                         .disabled(productName.isEmpty)
                         .foregroundColor(.red)
                    
-                        }
-                                            , trailing: HStack { Button("Done") {
+                        }, trailing: HStack {
+                            Button("Done") {
                             if productName.count >= 2 {
                                 addProduct()
                                 alertTitle = "Product Saved!"
@@ -145,7 +121,7 @@ struct ContentView: View {
                 .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                }               
+                }
                 .sheet(isPresented: $showScanningView) {
                     ScanDocumentView(recognizedText: $productName)
                 }
@@ -200,13 +176,16 @@ struct ContentView: View {
         notification.saveContext(viewContext: viewContext)
        
         notification.sendTimeNotification(product: product)
+        resetForm()
         
+    }
+    func resetForm() {
         DispatchQueue.main.async {
             productName = ""
+            productType = "grocery"
             expiryDate = Date().dayAfter
         }
     }
-    
     func modifyDate(date: Date) -> Date {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
