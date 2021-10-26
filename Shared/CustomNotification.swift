@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 import CoreData
-
+import CloudKit
 
 class CustomNotification: ObservableObject {
     

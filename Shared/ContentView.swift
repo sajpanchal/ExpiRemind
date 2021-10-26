@@ -7,15 +7,17 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
 import UserNotifications
-import AuthenticationServices
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
-    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
+    
     var notification = CustomNotification()
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
+    
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date().dayAfter
@@ -28,35 +30,10 @@ struct ContentView: View {
     @State var color: Color = .green
     @State var showTab = 0
     @State var showScanningView = false
+    
     var body: some View {
         if !isSignedIn {
-            VStack {
-                Spacer()
-                Image("appstore")
-                    .resizable()
-                    .frame(width: 250, height: 250, alignment: .center)
-                    .cornerRadius(10.0)
-                Text("ExpiRemind")
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(Color(red: 0.832, green: 0.316, blue: 0.16, opacity: 1))
-                Spacer()
-                SignInWithAppleButton(.signIn) { request in
-                    request.requestedScopes = [.fullName, .email]
-                } onCompletion: { result in
-                    switch result {
-                    case .success:
-                        isSignedIn = true
-                    case .failure(let error):
-                        isSignedIn = false
-                        print(error.localizedDescription)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: 50, alignment: .center)
-                .padding()
-                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                
-            }
+            LaunchScreen(isSignedIn: $isSignedIn)
             }
         else {
             TabView(selection: $showTab) {
@@ -149,13 +126,7 @@ struct ContentView: View {
         }
     }
     
-    func showAppleLoginView() {
-        let provider = ASAuthorizationAppleIDProvider()
-        let request = provider.createRequest()
-        request.requestedScopes = [.fullName, .email]
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.performRequests()
-    }
+    
     
     func updateProductsandNotifications() {
         for product in products {

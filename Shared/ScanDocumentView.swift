@@ -9,6 +9,7 @@ import SwiftUI
 import VisionKit
 import UIKit
 import Vision
+
 struct ScanDocumentView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var recognizedText: String

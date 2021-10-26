@@ -10,6 +10,7 @@
 		720B9A34270B5368009039EE /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B9A33270B5368009039EE /* PreferencesView.swift */; };
 		720B9A35270B5368009039EE /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B9A33270B5368009039EE /* PreferencesView.swift */; };
 		720D912227286AE300AB32B6 /* ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720D912127286AE300AB32B6 /* ProductForm.swift */; };
+		720D912427286DCD00AB32B6 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720D912327286DCD00AB32B6 /* LaunchScreen.swift */; };
 		720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */; };
 		720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */; };
 		721D3BC5271B3C1D0035CB60 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 721D3BC4271B3C1D0035CB60 /* CloudKit.framework */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		720B9A33270B5368009039EE /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		720D912127286AE300AB32B6 /* ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductForm.swift; sourceTree = "<group>"; };
+		720D912327286DCD00AB32B6 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
 		720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		721D3BC4271B3C1D0035CB60 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -92,6 +94,7 @@
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
+				720D912327286DCD00AB32B6 /* LaunchScreen.swift */,
 				720D912127286AE300AB32B6 /* ProductForm.swift */,
 				7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */,
 				720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */,
@@ -248,6 +251,7 @@
 			files = (
 				724E800F26F792910007D122 /* NotifyExpiryDate.xcdatamodeld in Sources */,
 				724E801526F792910007D122 /* Persistence.swift in Sources */,
+				720D912427286DCD00AB32B6 /* LaunchScreen.swift in Sources */,
 				720DF39526F8CE4800638DA6 /* Product+CoreDataProperties.swift in Sources */,
 				720B9A34270B5368009039EE /* PreferencesView.swift in Sources */,
 				7251B75326FE13130014FEE3 /* EditProductView.swift in Sources */,

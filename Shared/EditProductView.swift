@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
+
 struct EditProductView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) var viewContext

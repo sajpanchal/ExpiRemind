@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import CoreData
+import CloudKit
 
 struct PreferencesView: View {
     //@State var isNotificationEnabled: Bool = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")

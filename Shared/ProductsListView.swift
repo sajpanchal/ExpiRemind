@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
+
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
