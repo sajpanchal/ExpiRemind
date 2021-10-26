@@ -62,7 +62,6 @@ struct ContentView: View {
             TabView(selection: $showTab) {
                 NavigationView {
                     ZStack {
-                        
                         VStack {
                             Form {
                                 Section(header: Text("Product Name")) {
@@ -82,7 +81,7 @@ struct ContentView: View {
                                         }
                                     }
                                 }
-                                Section(header:Text("Expiry Date")) {
+                                Section(header: Text("Expiry Date")) {
                                     DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
                                         Text("Set Expiry Date")
                                     }
@@ -128,7 +127,7 @@ struct ContentView: View {
                         if showCard {
                             Card(title: alertTitle, image: alertImage, color: color)
                                 .transition(.opacity)
-                            let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                            let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                                 withAnimation {
                                 showCard = false
                                     if color == .green {
@@ -146,12 +145,10 @@ struct ContentView: View {
                 .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                }
-               
+                }               
                 .sheet(isPresented: $showScanningView) {
                     ScanDocumentView(recognizedText: $productName)
                 }
-               
                 .tabItem {
                     Image(systemName: "house")
                     Text("Home")
@@ -164,6 +161,7 @@ struct ContentView: View {
                         Text("List")
                     }
                     .tag(1)
+                
                 PreferencesView(showTab: $showTab)
                     .tabItem {
                         Image(systemName: "gearshape.2.fill")
@@ -173,9 +171,8 @@ struct ContentView: View {
             }
             .environmentObject(notification)
         }
-        
-                
     }
+    
     func showAppleLoginView() {
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()
@@ -183,31 +180,33 @@ struct ContentView: View {
         let controller = ASAuthorizationController(authorizationRequests: [request])
         controller.performRequests()
     }
+    
     func updateProductsandNotifications() {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+      
         }
     }
-    
    
     func addProduct() {
         let product = Product(context: viewContext)
         product.name = productName
         product.type = productType
-        print("-------------addProduct()---------------")
-        print("expiryDate:",expiryDate)
         product.expiryDate = modifyDate(date: expiryDate)
         product.dateStamp = Date()
-        
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
+        
         notification.saveContext(viewContext: viewContext)
-        productName = ""
-        expiryDate = Date().dayAfter
-        notification.notificationRequest()
+       
         notification.sendTimeNotification(product: product)
+        
+        DispatchQueue.main.async {
+            productName = ""
+            expiryDate = Date().dayAfter
+        }
     }
+    
     func modifyDate(date: Date) -> Date {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -216,10 +215,9 @@ struct ContentView: View {
         let modifiedDateStr = "\(dateStr), 8:30 AM"
         formatter.timeStyle = .short
         let modifiedDate = formatter.date(from: modifiedDateStr)
-        print("modified date:\(String(describing: modifiedDate))")
+        //print("modified date:\(String(describing: modifiedDate))")
         return modifiedDate ?? date
     }
-    
 }
 
 struct ContentView_Previews: PreviewProvider {

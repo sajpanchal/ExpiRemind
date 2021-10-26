@@ -74,7 +74,7 @@ struct PreferencesView: View {
                 if showCard {
                     Card(title: alertTitle, image: alertImage, color: color)
                         .transition(.opacity)
-                    let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                    let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                         withAnimation {
                         showCard = false
                          showTab = 0

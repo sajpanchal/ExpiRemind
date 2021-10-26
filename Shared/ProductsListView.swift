@@ -43,8 +43,8 @@ struct ProductsListView: View {
                 }
             }
             .onAppear(perform: {
-                notification.notificationRequest()
-                updateProductsandNotifications()
+               // notification.notificationRequest()
+                //updateProductsandNotifications()
             })
             .navigationTitle("List of Products")
         }
@@ -54,7 +54,7 @@ struct ProductsListView: View {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+            
         }
     }
     
@@ -73,13 +73,16 @@ struct ProductsListView: View {
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {
             let product = products[offset]
-            notification.removeNotification(product: product)
+           // DispatchQueue.main.async {
+                notification.removeNotification(product: product)
+            //}
+           
             viewContext.delete(product)
         }
         notification.saveContext(viewContext: viewContext)
        
-        notification.notificationRequest()
-        updateProductsandNotifications()
+        //notification.notificationRequest()
+        //updateProductsandNotifications()
     }
 }
 

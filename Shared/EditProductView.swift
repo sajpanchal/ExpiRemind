@@ -43,9 +43,9 @@ struct EditProductView: View {
                 }
                 Button("Save Changes") {
                     // save the product changes, remove notification of old changes.
-                    notification.notificationRequest()
+                  //  notification.notificationRequest()
                     
-                    updateProductsandNotifications()
+                  //  updateProductsandNotifications()
                     alertTitle = "Saved Changes!"
                     alertImage = "checkmark.seal.fill"
                     color = .green
@@ -84,7 +84,7 @@ struct EditProductView: View {
             if showCard {
                 Card(title: alertTitle, image: alertImage, color: color)
                     .transition(.opacity)
-                let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                     withAnimation {
                     showCard = false
                         presentationMode.wrappedValue.dismiss()
@@ -98,30 +98,38 @@ struct EditProductView: View {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+          
         }
     }
     
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
-            print("product is found.................")
+            print("------------Saving changes for \(prod.getName)------------")
+            
             notification.removeNotification(product: product)
+            
             prod.name = productName
             prod.type = productType
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
+            
             notification.saveContext(viewContext: viewContext)
             notification.sendTimeNotification(product: product)
+            
             // dismiss the view.
         
         }
     }
     
     func deleteProduct() {
+        notification.removeNotification(product: product)       
+        
         viewContext.delete(product)
         notification.saveContext(viewContext: viewContext)
-        notification.removeNotification(product: product)
-        resetFormInputs()
+        
+        DispatchQueue.main.async {
+            resetFormInputs()
+        }
        
     }
     
