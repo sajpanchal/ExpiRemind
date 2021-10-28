@@ -80,6 +80,7 @@ struct EditProductView: View {
                 
             }
                                                  ))
+            .onAppear(perform: printProducts)
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
             })
@@ -103,7 +104,12 @@ struct EditProductView: View {
           
         }
     }
-    
+    func printProducts() {
+        print("----------list of products in EditProductView------------")
+        for prod in products {
+            print(prod.getName)
+        }
+    }
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
             print("------------Saving changes for \(prod.getName)------------")
@@ -145,6 +151,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView(product: Product(), productName: "",productType: "", expiryDate: Date().dayAfter)
+        EditProductView(product: Product(), productName: "",productType: "Grocery", expiryDate: Date().dayAfter)
     }
 }

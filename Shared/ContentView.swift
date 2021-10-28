@@ -29,7 +29,8 @@ struct ContentView: View {
     @State var isSignedIn = false
     @State var color: Color = .green
     @State var showTab = 0
-    @State var showScanningView = false
+    @State var showProductScanningView = false
+    @State var showDateScanningView = false
     
     var body: some View {
         if !isSignedIn {
@@ -40,7 +41,7 @@ struct ContentView: View {
                 NavigationView {
                     ZStack {
                         VStack {
-                           ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showScanningView: $showScanningView)
+                            ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView)
                         }
                         .navigationBarItems(leading: HStack {
                             Button("Discard") {
@@ -94,13 +95,17 @@ struct ContentView: View {
                 .onAppear(perform: {
                     notification.notificationRequest()
                     updateProductsandNotifications()
+                    printProducts()
                 })
                 .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
-                .sheet(isPresented: $showScanningView) {
+                .sheet(isPresented: $showProductScanningView) {
                     ScanDocumentView(recognizedText: $productName)
+                }
+                .sheet(isPresented: $showDateScanningView) {
+                    ScanDateView(recognizedText: $expiryDate)
                 }
                 .tabItem {
                     Image(systemName: "house")
@@ -125,7 +130,12 @@ struct ContentView: View {
             .environmentObject(notification)
         }
     }
-    
+    func printProducts() {
+        print("----------list of products in ContentView------------")
+        for prod in products {
+            print(prod.getName)
+        }
+    }
     
     
     func updateProductsandNotifications() {
@@ -153,7 +163,7 @@ struct ContentView: View {
     func resetForm() {
         DispatchQueue.main.async {
             productName = ""
-            productType = "grocery"
+            productType = "Grocery"
             expiryDate = Date().dayAfter
         }
     }

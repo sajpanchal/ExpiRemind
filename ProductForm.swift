@@ -12,7 +12,8 @@ struct ProductForm: View {
     @Binding var productName: String
     @Binding var productType: String
     @Binding var expiryDate: Date
-    @Binding var showScanningView: Bool
+    @Binding var showProductScanningView: Bool
+    @Binding var showDateScanningView: Bool
     var body: some View {
         Form {
             Section(header: Text("Product Name")) {
@@ -21,7 +22,7 @@ struct ProductForm: View {
                     Spacer()
                     Image(systemName: "camera.viewfinder")
                         .onTapGesture {
-                            showScanningView = true
+                            showProductScanningView = true
                         }
                 }
             }
@@ -33,9 +34,17 @@ struct ProductForm: View {
                 }
             }
             Section(header: Text("Expiry Date")) {
-                DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                    Text("Set Expiry Date")
+                HStack {
+                    DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
+                        Text("Set Expiry Date")
+                    }
+                    Spacer()
+                    Image(systemName: "camera.viewfinder")
+                        .onTapGesture {
+                            showDateScanningView = true
+                        }
                 }
+                
             }
         }
     }
@@ -43,6 +52,6 @@ struct ProductForm: View {
 
 struct ProductForm_Previews: PreviewProvider {
     static var previews: some View {
-        ProductForm(productName: .constant(""), productType: .constant(""), expiryDate: .constant(Date().dayAfter), showScanningView: .constant(false))
+        ProductForm(productName: .constant(""), productType: .constant(""), expiryDate: .constant(Date().dayAfter), showProductScanningView: .constant(false), showDateScanningView: .constant(false))
     }
 }

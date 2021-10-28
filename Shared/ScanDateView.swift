@@ -10,14 +10,14 @@ import VisionKit
 import UIKit
 import Vision
 
-struct ScanDocumentView: UIViewControllerRepresentable {
+struct ScanDateView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var recognizedText: String
+    @Binding var recognizedText: Date
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        var recognizedText: Binding<String>
-        var parent: ScanDocumentView
+        var recognizedText: Binding<Date>
+        var parent: ScanDateView
         
-        init(recognizedText: Binding<String>, parent: ScanDocumentView) {
+        init(recognizedText: Binding<Date>, parent: ScanDateView) {
             self.recognizedText = recognizedText
             self.parent = parent
         }
@@ -39,7 +39,7 @@ struct ScanDocumentView: UIViewControllerRepresentable {
             }
             return extractedImages
         }
-        func recognizeText(from images: [CGImage]) -> String {
+        func recognizeText(from images: [CGImage]) -> Date {
             var entireRecognizedText = ""
             let recognizeTextRequest = VNRecognizeTextRequest { (request, error) in
                 guard error == nil else {
@@ -61,9 +61,9 @@ struct ScanDocumentView: UIViewControllerRepresentable {
                 let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
                 try? requestHandler.perform([recognizeTextRequest])
             }
-            
-            
-            return entireRecognizedText
+            let formattedDate = getFormattedDate(subString: entireRecognizedText)
+            print("Scanned date is: \(formattedDate)")
+            return formattedDate
         }
     }
     

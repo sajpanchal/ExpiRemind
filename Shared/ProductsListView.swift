@@ -45,6 +45,10 @@ struct ProductsListView: View {
                 }
             }
             .onAppear(perform: {
+                print("-------------Product list--------------")
+                for prod in products {
+                    print(prod.name)
+                }
                // notification.notificationRequest()
                 //updateProductsandNotifications()
             })
