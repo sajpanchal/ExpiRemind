@@ -76,20 +76,20 @@ class CustomNotification: ObservableObject {
             content.title = "Expiry Date Reminder"
             if seconds == 0 {
                 //content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' has been expired today! \nid: \(product.id)\(seconds)"
+                content.body = "Your product '\(product.getName)' has been expired today! \nid: \(product.getProductID)\(seconds)"
             }
             else if seconds == 86400 {
                 //content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' is expiring soon tommorrow! \nid: \(product.id)\(seconds)"
+                content.body = "Your product '\(product.getName)' is expiring soon tommorrow! \nid: \(product.getProductID)\(seconds)"
             }
             else {
               //  content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' is expiring soon in 2 days! \nid: \(product.id)\(seconds)"
+                content.body = "Your product '\(product.getName)' is expiring soon in 2 days! \nid: \(product.getProductID)\(seconds)"
             }
             content.sound = UNNotificationSound.default
             
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(timeInterval.second! - seconds), repeats: false)
-            let request = UNNotificationRequest(identifier: "\(product.id)\(seconds)", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "\(product.getProductID)\(seconds)", content: content, trigger: trigger)
         
             UNUserNotificationCenter.current().add(request) { error in
                 guard let error = error else {
@@ -132,13 +132,13 @@ class CustomNotification: ObservableObject {
     }
     
     func removeNotification(product: Product) {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.id)\(0)","\(product.id)\(86400)","\(product.id)\(2*86400)"])
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.id)\(0)","\(product.id)\(86400)","\(product.id)\(2*86400)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.getProductID)\(0)","\(product.getProductID)\(86400)","\(product.getProductID)\(2*86400)"])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.getProductID)\(0)","\(product.getProductID)\(86400)","\(product.getProductID)\(2*86400)"])
       
-        print("product notification is deleted for \(product.getName) with id: \(product.id)\(0)")
-        print("product notification is deleted for \(product.getName) with id: \(product.id)\(86400)")
-        print("product notification is deleted for \(product.getName) with id: \(product.id)\(2*86400)")
-    
+        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(0)")
+        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(86400)")
+        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(2*86400)")
+       
     }
     
     func removeAllNotifications() {
@@ -174,6 +174,17 @@ class CustomNotification: ObservableObject {
             print("")
             default:
             break
+        }
+    }
+    func listOfPendingNotifications() {
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (notifications) in
+            print("-----------------List of Pending notifications------------------")
+            for notification in notifications {
+                UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [notification.identifier])
+                print(notification.content.body)
+            }
+            
         }
     }
 }

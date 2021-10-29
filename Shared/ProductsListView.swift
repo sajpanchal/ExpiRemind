@@ -47,7 +47,7 @@ struct ProductsListView: View {
             .onAppear(perform: {
                 print("-------------Product list--------------")
                 for prod in products {
-                    print(prod.name)
+                    print("\(prod.getProductID): ",prod.name)
                 }
                // notification.notificationRequest()
                 //updateProductsandNotifications()
@@ -79,9 +79,24 @@ struct ProductsListView: View {
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {
             let product = products[offset]
-           // DispatchQueue.main.async {
-                notification.removeNotification(product: product)
-            //}
+          
+              notification.removeNotification(product: product)
+          /* UNUserNotificationCenter.current().getPendingNotificationRequests { (notifications) in
+                print("in getPendingNotificationRequest()...")
+                for noti in notifications {
+                    print("identifier: ",noti.identifier)
+                    print("product ID: ",product.getProductID, " \(product.getName)")
+                    if noti.identifier.contains(product.getProductID) {
+                        print("set to true")
+                     //   DispatchQueue.main.async {
+                            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [noti.identifier])
+                            print("removed.")
+                   //    }
+                       
+                    }
+                }
+            }*/
+            
            
             viewContext.delete(product)
         }

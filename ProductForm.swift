@@ -37,7 +37,11 @@ struct ProductForm: View {
                 HStack {
                     DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
                         Text("Set Expiry Date")
+                        
                     }
+                    .datePickerStyle(.compact)
+                    .accentColor(.secondary)
+                    
                     Spacer()
                     Image(systemName: "camera.viewfinder")
                         .onTapGesture {

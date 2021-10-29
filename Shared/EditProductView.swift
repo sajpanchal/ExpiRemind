@@ -23,26 +23,12 @@ struct EditProductView: View {
     @State var alertImage = ""
     @State var showCard = false
     @State var color: Color = .green
+    @State var showProductScanningView = false
+    @State var showDateScanningView = false
     var body: some View {
         ZStack {
             VStack {
-                Form {
-                    Section(header: Text("Product Name")) {
-                        TextField("Enter Product Name", text:$productName)
-                    }
-                    Section(header: Text("Product Type")) {
-                        Picker("Select Product Type", selection: $productType) {
-                            ForEach(productTypes, id: \.self) {
-                                Text($0)
-                            }
-                        }
-                    }
-                    Section(header:Text("Expiry Date")) {
-                        DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                            Text("Set Expiry Date")
-                        }
-                    }
-                }
+                ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView)
                 Button("Save Changes") {
                     // save the product changes, remove notification of old changes.
                   //  notification.notificationRequest()
@@ -84,6 +70,12 @@ struct EditProductView: View {
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
             })
+            .sheet(isPresented: $showProductScanningView) {
+                ScanDocumentView(recognizedText: $productName)
+            }
+            .sheet(isPresented: $showDateScanningView) {
+                ScanDateView(recognizedText: $expiryDate)
+            }
             if showCard {
                 Card(title: alertTitle, image: alertImage, color: color)
                     .transition(.opacity)
@@ -107,7 +99,7 @@ struct EditProductView: View {
     func printProducts() {
         print("----------list of products in EditProductView------------")
         for prod in products {
-            print(prod.getName)
+            print("\(prod.getProductID):",prod.getName)
         }
     }
     func saveChanges() {

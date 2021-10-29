@@ -96,6 +96,9 @@ struct ContentView: View {
                     notification.notificationRequest()
                     updateProductsandNotifications()
                     printProducts()
+                    notification.listOfPendingNotifications()
+                 //   notification.removeAllNotifications()
+                   
                 })
                 .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
@@ -133,7 +136,8 @@ struct ContentView: View {
     func printProducts() {
         print("----------list of products in ContentView------------")
         for prod in products {
-            print(prod.getName)
+            print("\(prod.getProductID): ",prod.getName)
+         
         }
     }
     
@@ -148,6 +152,7 @@ struct ContentView: View {
    
     func addProduct() {
         let product = Product(context: viewContext)
+        product.productID = UUID()
         product.name = productName
         product.type = productType
         product.expiryDate = modifyDate(date: expiryDate)

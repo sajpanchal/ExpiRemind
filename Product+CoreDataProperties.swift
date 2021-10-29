@@ -21,11 +21,16 @@ extension Product {
     @NSManaged public var name: String?
     @NSManaged public var type: String?
     @NSManaged public var deleteAfter: Int16
-   
+    @NSManaged public var productID: UUID?
+    
+    public var getProductID: String {
+        return "\(productID ?? UUID())"
+    }
     
     public var getName: String {
         name?.trimmingCharacters(in: .whitespaces) ?? "N/A"
     }
+    
     
     public var getType: String {
         type ?? "N/A"
