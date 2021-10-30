@@ -41,9 +41,10 @@ struct ContentView: View {
                 NavigationView {
                     ZStack {
                         VStack {
-                            ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView)
+                            ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert)
+                           
                         }
-                        .navigationBarItems(leading: HStack {
+                        /*.navigationBarItems(leading: HStack {
                             Button("Discard") {
                             resetForm()
                             alertTitle = "Product Discarded!"
@@ -76,7 +77,7 @@ struct ContentView: View {
                         .disabled(productName.isEmpty)
                             
                         }
-                            )
+                            )*/
                         .navigationBarTitle("Add New Product")
                         if showCard {
                             Card(title: alertTitle, image: alertImage, color: color)
@@ -84,7 +85,7 @@ struct ContentView: View {
                             let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                                 withAnimation {
                                 showCard = false
-                                    if color == .green {
+                                    if alertTitle == "Product Saved \n&\n All Done!" {
                                         showTab = 1
                                     }
                                 }
@@ -150,7 +151,7 @@ struct ContentView: View {
         }
     }
    
-    func addProduct() {
+   /* func addProduct() {
         let product = Product(context: viewContext)
         product.productID = UUID()
         product.name = productName
@@ -182,7 +183,7 @@ struct ContentView: View {
         let modifiedDate = formatter.date(from: modifiedDateStr)
         //print("modified date:\(String(describing: modifiedDate))")
         return modifiedDate ?? date
-    }
+    }*/
 }
 
 struct ContentView_Previews: PreviewProvider {

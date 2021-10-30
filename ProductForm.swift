@@ -14,6 +14,14 @@ struct ProductForm: View {
     @Binding var expiryDate: Date
     @Binding var showProductScanningView: Bool
     @Binding var showDateScanningView: Bool
+    @Binding var alertTitle: String
+    @Binding var alertImage: String
+    @Binding var alertMessage: String
+    @Environment(\.managedObjectContext) var viewContext
+    @Binding var color: Color
+    @Binding var showCard: Bool
+    @Binding var showAlert: Bool
+    @EnvironmentObject var notification: CustomNotification
     var body: some View {
         Form {
             Section(header: Text("Product Name")) {
@@ -50,12 +58,135 @@ struct ProductForm: View {
                 }
                 
             }
+            VStack {
+                Button {
+                    if productName.count >= 2 {
+                        addProduct()
+                        alertTitle = "Product Saved!"
+                        alertImage = "checkmark.seal.fill"
+                        color = .green
+                        withAnimation {
+                            self.showCard = true
+                        }
+                    }
+                    else {
+                        alertTitle =  "Something went wrong!"
+                    alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
+                        showAlert = true
+                    }
+                } label : {
+                    HStack {
+                        Spacer()
+                        Text("Save")
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        Spacer()
+                    }
+                    .frame(height: 50, alignment: .center)
+                                                        
+                }
+                .background(Color.gray)
+                .buttonStyle(BorderlessButtonStyle())
+                .cornerRadius(10)
+                .padding(.bottom, 10)
+               
+                Button {
+                    if productName.count >= 2 {
+                        addProduct()
+                        alertTitle = "Product Saved \n&\n All Done!"
+                        alertImage = "checkmark.seal.fill"
+                        color = .green
+                        withAnimation {
+                            self.showCard = true
+                        }
+                    }
+                    else {
+                        alertTitle =  "Something went wrong!"
+                    alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
+                        showAlert = true
+                    }
+                } label : {
+                    HStack {
+                        Spacer()
+                        Text("Save & Done")
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        Spacer()
+                    }
+                    .frame(height: 50, alignment: .center)
+                                                        
+                }
+                .background(Color.blue)
+                .buttonStyle(BorderlessButtonStyle())
+                .cornerRadius(10)
+                .padding(.bottom, 10)
+                           
+                Button {
+                    resetForm()
+                    alertTitle = "Product Discarded!"
+                    alertImage = "xmark.seal.fill"
+                    color = .red
+                    withAnimation {
+                        self.showCard = true
+                    }
+                } label : {
+                    HStack {
+                        Spacer()
+                        Text("Discard")
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        Spacer()
+                    }
+                    .frame(height: 50, alignment: .center)
+                                                        
+                }
+                .background(Color.red)
+                .buttonStyle(BorderlessButtonStyle())
+                .cornerRadius(10)
+                .padding(.bottom, 0)
+            }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets())
+            
         }
+    }
+    func resetForm() {
+        DispatchQueue.main.async {
+            productName = ""
+            productType = "Grocery"
+            expiryDate = Date().dayAfter
+        }
+    }
+    func addProduct() {
+        let product = Product(context: viewContext)
+        product.productID = UUID()
+        product.name = productName
+        product.type = productType
+        product.expiryDate = modifyDate(date: expiryDate)
+        product.dateStamp = Date()
+        product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
+        
+        notification.saveContext(viewContext: viewContext)
+       
+        notification.sendTimeNotification(product: product)
+        resetForm()
+        
+    }
+    func modifyDate(date: Date) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        let dateStr = formatter.string(from: date)
+        let modifiedDateStr = "\(dateStr), 8:30 AM"
+        formatter.timeStyle = .short
+        let modifiedDate = formatter.date(from: modifiedDateStr)
+        //print("modified date:\(String(describing: modifiedDate))")
+        return modifiedDate ?? date
     }
 }
 
 struct ProductForm_Previews: PreviewProvider {
     static var previews: some View {
-        ProductForm(productName: .constant(""), productType: .constant(""), expiryDate: .constant(Date().dayAfter), showProductScanningView: .constant(false), showDateScanningView: .constant(false))
+        ProductForm(productName: .constant(""), productType: .constant(""), expiryDate: .constant(Date().dayAfter), showProductScanningView: .constant(false), showDateScanningView: .constant(false), alertTitle: .constant(""), alertImage: .constant(""), alertMessage: .constant(""), color: .constant(.green), showCard: .constant(false), showAlert: .constant(false))
     }
 }

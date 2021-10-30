@@ -21,14 +21,16 @@ struct EditProductView: View {
     @State var expiryDate: Date
     @State var alertTitle = ""
     @State var alertImage = ""
+    @State var alertMessage = ""
     @State var showCard = false
+    @State var showAlert = false
     @State var color: Color = .green
     @State var showProductScanningView = false
     @State var showDateScanningView = false
     var body: some View {
         ZStack {
             VStack {
-                ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView)
+                ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert)
                 Button("Save Changes") {
                     // save the product changes, remove notification of old changes.
                   //  notification.notificationRequest()
