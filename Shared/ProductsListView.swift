@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
+
 struct ProductsListView: View {
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
@@ -30,7 +32,6 @@ struct ProductsListView: View {
                                                     Text("Expired")
                                                         .font(.largeTitle)
                                                         .foregroundColor(.gray)
-                                                        
                                                 }
                                             }
                                         })
@@ -43,8 +44,12 @@ struct ProductsListView: View {
                 }
             }
             .onAppear(perform: {
-                notification.notificationRequest()
-                updateProductsandNotifications()
+                print("-------------Product list--------------")
+                for prod in products {
+                    print("\(prod.getProductID): ",prod.name)
+                }
+               // notification.notificationRequest()
+                //updateProductsandNotifications()
             })
             .navigationTitle("List of Products")
         }
@@ -54,7 +59,7 @@ struct ProductsListView: View {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+            
         }
     }
     
@@ -68,8 +73,8 @@ struct ProductsListView: View {
         case .orderedSame :
             return true
         }
-       
     }
+    
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {
             let product = products[offset]
@@ -77,12 +82,8 @@ struct ProductsListView: View {
             viewContext.delete(product)
         }
         notification.saveContext(viewContext: viewContext)
-       
-        notification.notificationRequest()
-        updateProductsandNotifications()
     }
 }
-
 
 struct ProductsListView_Previews: PreviewProvider {
     static var previews: some View {

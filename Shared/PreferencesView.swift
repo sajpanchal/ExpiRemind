@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import CoreData
+import CloudKit
 
 struct PreferencesView: View {
-    //@State var isNotificationEnabled: Bool = !UserDefaults.standard.bool(forKey: "isNotificationDisabled")
     let daysCollection = [1, 3, 7, 30]
     @Binding var showTab: Int
     @State var numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
@@ -20,14 +21,14 @@ struct PreferencesView: View {
     @EnvironmentObject var notification: CustomNotification
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
+    
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
                     Form {
                         Section(header: Text("Reminders")) {
-                            Toggle("Remind before product(s) Expire:", isOn: $notification.isNotificationEnabled)
-                            
+                            Toggle("Remind before product(s) Expire:", isOn: $notification.isNotificationEnabled)                            
                         }
                         Section(header: Text("Delete product after 'x' days of expiry")) {
                             Picker("Select the number of days", selection: $numberOfDays) {
@@ -74,7 +75,7 @@ struct PreferencesView: View {
                 if showCard {
                     Card(title: alertTitle, image: alertImage, color: color)
                         .transition(.opacity)
-                    let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                    let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                         withAnimation {
                         showCard = false
                          showTab = 0

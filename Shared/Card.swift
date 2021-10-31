@@ -15,7 +15,6 @@ struct Card: View {
     
     var body: some View {
         ZStack {
-           // Color(red: 0.917, green: 0.917, blue:  0.917, opacity: 1)
             color
                 .frame(width: 250, height: 180, alignment: .center)
                 .cornerRadius(10)
@@ -26,7 +25,6 @@ struct Card: View {
                         ZStack {
                             Circle()
                                 .frame(width: 50, height: 50, alignment: .center)
-                              //  .foregroundColor(color)
                             Image(systemName: image)
                                 .font(.title)
                                 .foregroundColor(color)
@@ -37,7 +35,6 @@ struct Card: View {
                 Text(title)
                     .font(.body)
                     .fontWeight(.bold)
-//                    .foregroundColor(color)
                     .multilineTextAlignment(.center)
                 Spacer()
             }
