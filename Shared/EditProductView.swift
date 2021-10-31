@@ -19,7 +19,7 @@ struct EditProductView: View {
     @State var productName: String
     @State var productType: String
     @State var expiryDate: Date
-    @State var alertTitle = ""
+    @State var alertTitle = "Edit Product"
     @State var alertImage = ""
     @State var alertMessage = ""
     @State var showCard = false
@@ -27,11 +27,12 @@ struct EditProductView: View {
     @State var color: Color = .green
     @State var showProductScanningView = false
     @State var showDateScanningView = false
+    @State var viewTag = 1
     var body: some View {
         ZStack {
             VStack {
-                ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert)
-                Button("Save Changes") {
+                ProductForm(product: product,productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
+                /*Button("Save Changes") {
                     // save the product changes, remove notification of old changes.
                   //  notification.notificationRequest()
                     
@@ -48,10 +49,10 @@ struct EditProductView: View {
                     }
                    // presentationMode.wrappedValue.dismiss()
                 }
-                Spacer()
+                Spacer()*/
             }
             .navigationTitle("Edit Product")
-            .navigationBarItems(trailing: Image(systemName: "trash.fill")
+           /* .navigationBarItems(trailing: Image(systemName: "trash.fill")
                                     .foregroundColor(.red)
                                     .onTapGesture(perform: {
                 alertTitle = "Product Discarded!"
@@ -67,7 +68,7 @@ struct EditProductView: View {
                
                 
             }
-                                                 ))
+                                                 ))*/
             .onAppear(perform: printProducts)
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
@@ -104,7 +105,7 @@ struct EditProductView: View {
             print("\(prod.getProductID):",prod.getName)
         }
     }
-    func saveChanges() {
+    /*func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
             print("------------Saving changes for \(prod.getName)------------")
             
@@ -121,25 +122,9 @@ struct EditProductView: View {
             // dismiss the view.
         
         }
-    }
+    }*/
     
-    func deleteProduct() {
-        notification.removeNotification(product: product)       
-        
-        viewContext.delete(product)
-        notification.saveContext(viewContext: viewContext)
-        
-        DispatchQueue.main.async {
-            resetFormInputs()
-        }
-       
-    }
-    
-    func resetFormInputs() {
-        productName = ""
-        productType = "Grocery"
-        expiryDate = Date().dayAfter
-    }
+  
     
 }
 

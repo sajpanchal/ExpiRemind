@@ -31,7 +31,7 @@ struct ContentView: View {
     @State var showTab = 0
     @State var showProductScanningView = false
     @State var showDateScanningView = false
-    
+    @State var viewTag = 0
     var body: some View {
         if !isSignedIn {
             LaunchScreen(isSignedIn: $isSignedIn)
@@ -41,7 +41,7 @@ struct ContentView: View {
                 NavigationView {
                     ZStack {
                         VStack {
-                            ProductForm(productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert)
+                            ProductForm( product: Product(),productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
                            
                         }
                         /*.navigationBarItems(leading: HStack {
