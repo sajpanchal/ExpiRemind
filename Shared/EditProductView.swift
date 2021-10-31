@@ -28,47 +28,13 @@ struct EditProductView: View {
     @State var showProductScanningView = false
     @State var showDateScanningView = false
     @State var viewTag = 1
+    
     var body: some View {
         ZStack {
             VStack {
                 ProductForm(product: product,productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
-                /*Button("Save Changes") {
-                    // save the product changes, remove notification of old changes.
-                  //  notification.notificationRequest()
-                    
-                  //  updateProductsandNotifications()
-                    alertTitle = "Saved Changes!"
-                    alertImage = "checkmark.seal.fill"
-                    color = .green
-                    
-                    saveChanges()
-                   
-                   
-                    withAnimation {
-                        showCard = true
-                    }
-                   // presentationMode.wrappedValue.dismiss()
-                }
-                Spacer()*/
             }
             .navigationTitle("Edit Product")
-           /* .navigationBarItems(trailing: Image(systemName: "trash.fill")
-                                    .foregroundColor(.red)
-                                    .onTapGesture(perform: {
-                alertTitle = "Product Discarded!"
-                alertImage = "xmark.seal.fill"
-                color = .red
-                deleteProduct()
-                withAnimation {
-                
-                    self.showCard = true
-                    
-                 
-                }
-               
-                
-            }
-                                                 ))*/
             .onAppear(perform: printProducts)
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
@@ -90,42 +56,21 @@ struct EditProductView: View {
                 }
             }
         }
-         
     }
+    
     func updateProductsandNotifications() {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
-          
         }
     }
+    
     func printProducts() {
         print("----------list of products in EditProductView------------")
         for prod in products {
             print("\(prod.getProductID):",prod.getName)
         }
     }
-    /*func saveChanges() {
-        if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {
-            print("------------Saving changes for \(prod.getName)------------")
-            
-            notification.removeNotification(product: product)
-            
-            prod.name = productName
-            prod.type = productType
-            prod.expiryDate = expiryDate
-            prod.dateStamp = Date()
-            
-            notification.saveContext(viewContext: viewContext)
-            notification.sendTimeNotification(product: product)
-            
-            // dismiss the view.
-        
-        }
-    }*/
-    
-  
-    
 }
 
 struct EditProductView_Previews: PreviewProvider {

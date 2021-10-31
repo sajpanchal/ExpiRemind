@@ -32,7 +32,6 @@ struct ProductsListView: View {
                                                     Text("Expired")
                                                         .font(.largeTitle)
                                                         .foregroundColor(.gray)
-                                                        
                                                 }
                                             }
                                         })
@@ -74,39 +73,17 @@ struct ProductsListView: View {
         case .orderedSame :
             return true
         }
-       
     }
+    
     func deleteProduct(at offsets: IndexSet) {
         for offset in offsets {
             let product = products[offset]
-          
-              notification.removeNotification(product: product)
-          /* UNUserNotificationCenter.current().getPendingNotificationRequests { (notifications) in
-                print("in getPendingNotificationRequest()...")
-                for noti in notifications {
-                    print("identifier: ",noti.identifier)
-                    print("product ID: ",product.getProductID, " \(product.getName)")
-                    if noti.identifier.contains(product.getProductID) {
-                        print("set to true")
-                     //   DispatchQueue.main.async {
-                            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [noti.identifier])
-                            print("removed.")
-                   //    }
-                       
-                    }
-                }
-            }*/
-            
-           
+            notification.removeNotification(product: product)
             viewContext.delete(product)
         }
         notification.saveContext(viewContext: viewContext)
-       
-        //notification.notificationRequest()
-        //updateProductsandNotifications()
     }
 }
-
 
 struct ProductsListView_Previews: PreviewProvider {
     static var previews: some View {

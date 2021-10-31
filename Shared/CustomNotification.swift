@@ -75,16 +75,13 @@ class CustomNotification: ObservableObject {
             let content = UNMutableNotificationContent()
             content.title = "Expiry Date Reminder"
             if seconds == 0 {
-                //content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' has been expired today! \nid: \(product.getProductID)\(seconds)"
+                content.body = "Your product '\(product.getName)' has been expired today!"
             }
             else if seconds == 86400 {
-                //content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' is expiring soon tommorrow! \nid: \(product.getProductID)\(seconds)"
+                content.body = "Your product '\(product.getName)' is expiring soon tommorrow!"
             }
             else {
-              //  content.subtitle = "id: \(product.id)\(seconds)"
-                content.body = "Your product '\(product.getName)' is expiring soon in 2 days! \nid: \(product.getProductID)\(seconds)"
+                content.body = "Your product '\(product.getName)' is expiring soon in 2 days!"
             }
             content.sound = UNNotificationSound.default
             

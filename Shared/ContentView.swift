@@ -44,41 +44,8 @@ struct ContentView: View {
                             ProductForm( product: Product(),productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
                            
                         }
-                        /*.navigationBarItems(leading: HStack {
-                            Button("Discard") {
-                            resetForm()
-                            alertTitle = "Product Discarded!"
-                            alertImage = "xmark.seal.fill"
-                            color = .red
-                            withAnimation {
-                                self.showCard = true
-                            }
-                        }
-                        .disabled(productName.isEmpty)
-                        .foregroundColor(.red)
-                   
-                        }, trailing: HStack {
-                            Button("Done") {
-                            if productName.count >= 2 {
-                                addProduct()
-                                alertTitle = "Product Saved!"
-                                alertImage = "checkmark.seal.fill"
-                                color = .green
-                                withAnimation {
-                                    self.showCard = true                                                                     
-                                }
-                            }
-                            else {
-                                alertTitle =  "Something went wrong!"
-                            alertMessage = "Please enter the product name with atleast 2 characters length. Make sure to set its type and expiry date too!"
-                                showAlert = true
-                            }
-                        }
-                        .disabled(productName.isEmpty)
-                            
-                        }
-                            )*/
                         .navigationBarTitle("Add New Product")
+                        
                         if showCard {
                             Card(title: alertTitle, image: alertImage, color: color)
                                 .transition(.opacity)
@@ -98,8 +65,6 @@ struct ContentView: View {
                     updateProductsandNotifications()
                     printProducts()
                     notification.listOfPendingNotifications()
-                 //   notification.removeAllNotifications()
-                   
                 })
                 .onDisappear(perform: updateProductsandNotifications)
                 .alert(isPresented: $showAlert) {
@@ -134,6 +99,7 @@ struct ContentView: View {
             .environmentObject(notification)
         }
     }
+    
     func printProducts() {
         print("----------list of products in ContentView------------")
         for prod in products {
@@ -142,7 +108,6 @@ struct ContentView: View {
         }
     }
     
-    
     func updateProductsandNotifications() {
         for product in products {
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
@@ -150,40 +115,6 @@ struct ContentView: View {
       
         }
     }
-   
-   /* func addProduct() {
-        let product = Product(context: viewContext)
-        product.productID = UUID()
-        product.name = productName
-        product.type = productType
-        product.expiryDate = modifyDate(date: expiryDate)
-        product.dateStamp = Date()
-        product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
-        
-        notification.saveContext(viewContext: viewContext)
-       
-        notification.sendTimeNotification(product: product)
-        resetForm()
-        
-    }
-    func resetForm() {
-        DispatchQueue.main.async {
-            productName = ""
-            productType = "Grocery"
-            expiryDate = Date().dayAfter
-        }
-    }
-    func modifyDate(date: Date) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        let dateStr = formatter.string(from: date)
-        let modifiedDateStr = "\(dateStr), 8:30 AM"
-        formatter.timeStyle = .short
-        let modifiedDate = formatter.date(from: modifiedDateStr)
-        //print("modified date:\(String(describing: modifiedDate))")
-        return modifiedDate ?? date
-    }*/
 }
 
 struct ContentView_Previews: PreviewProvider {
