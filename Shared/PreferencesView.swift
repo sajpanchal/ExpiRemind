@@ -18,7 +18,7 @@ struct PreferencesView: View {
     @State var alertImage = ""
     @State var showCard = false
     @State var color: Color = .green
-    @State var reminderTime: Date = Date()
+    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
     @EnvironmentObject var notification: CustomNotification
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
@@ -51,6 +51,7 @@ struct PreferencesView: View {
                    print("on appear")
                     UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
                     UserDefaults.standard.set(self.notification.isNotificationEnabled, forKey: "isNotificationEnabled")
+                
                 })
                 .navigationTitle("Preferences")
                 .navigationBarItems( trailing: Button("Save") {
@@ -58,6 +59,7 @@ struct PreferencesView: View {
                         notification.isNotificationEnabled = true
                         notification.notificationRequest()
                         updateProductsandNotifications()
+                        setReminderTime()
                        
                     }
                     else {
@@ -89,6 +91,9 @@ struct PreferencesView: View {
                 }
             }
         }
+    }
+    func setReminderTime() {
+        UserDefaults.standard.set(reminderTime, forKey: "reminderTime")
     }
     func updateProductsandNotifications() {
         for product in products {
