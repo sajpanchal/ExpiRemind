@@ -18,6 +18,7 @@ struct PreferencesView: View {
     @State var alertImage = ""
     @State var showCard = false
     @State var color: Color = .green
+    @State var reminderTime: Date = Date()
     @EnvironmentObject var notification: CustomNotification
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
@@ -36,6 +37,10 @@ struct PreferencesView: View {
                                     Text("\($0) Days")
                                 }
                             }
+                        }
+                        Section(header: Text("Set Reminder time:")) {
+                            DatePicker("Set Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                                
                         }
                     }
                 }
