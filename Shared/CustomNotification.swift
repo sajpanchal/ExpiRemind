@@ -85,7 +85,7 @@ class CustomNotification: ObservableObject {
                 content.body = "Your product '\(product.getName)' is expiring in 2 days!"
             }
             else {
-                content.body = "Your product '\(product.getName)' is expiring soon!"
+                content.body = "Your product '\(product.getName)' is expiring on \(product.ExpiryDate.capitalized)!"
             }
             content.sound = UNNotificationSound.default
             
@@ -113,7 +113,7 @@ class CustomNotification: ObservableObject {
                         if timeInterval.second! > i*86400 {
                         addRequest(i*86400)
                         }
-                    }                    
+                    }
                 }
                 else if settings.authorizationStatus == .notDetermined {
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
