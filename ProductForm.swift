@@ -217,7 +217,7 @@ struct ProductForm: View {
         product.productID = UUID()
         product.name = productName
         product.type = productType
-        product.expiryDate = modifyDate(date: expiryDate)
+        product.expiryDate = notification.modifyDate(date: expiryDate)
         product.dateStamp = Date()
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
         
@@ -227,17 +227,7 @@ struct ProductForm: View {
         resetForm()
         
     }
-    func modifyDate(date: Date) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        let dateStr = formatter.string(from: date)
-        let modifiedDateStr = "\(dateStr), 8:30 AM"
-        formatter.timeStyle = .short
-        let modifiedDate = formatter.date(from: modifiedDateStr)
-        //print("modified date:\(String(describing: modifiedDate))")
-        return modifiedDate ?? date
-    }
+    
     
     func saveChanges() {
         if let prod = products.first(where: {$0.DateStamp == product.DateStamp})  {

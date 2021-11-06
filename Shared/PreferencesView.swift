@@ -18,6 +18,7 @@ struct PreferencesView: View {
     @State var alertImage = ""
     @State var showCard = false
     @State var color: Color = .green
+    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
     @EnvironmentObject var notification: CustomNotification
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
@@ -37,6 +38,10 @@ struct PreferencesView: View {
                                 }
                             }
                         }
+                        Section(header: Text("Set Reminder time:")) {
+                            DatePicker("Set Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                                
+                        }
                     }
                 }
                 .alert(isPresented: $isAlertOn) {
@@ -46,13 +51,16 @@ struct PreferencesView: View {
                    print("on appear")
                     UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
                     UserDefaults.standard.set(self.notification.isNotificationEnabled, forKey: "isNotificationEnabled")
+                
                 })
                 .navigationTitle("Preferences")
                 .navigationBarItems( trailing: Button("Save") {
                     if notification.isNotificationEnabled {
+                        setReminderTime()
                         notification.isNotificationEnabled = true
                         notification.notificationRequest()
                         updateProductsandNotifications()
+                     
                        
                     }
                     else {
@@ -85,8 +93,13 @@ struct PreferencesView: View {
             }
         }
     }
+    func setReminderTime() {
+        UserDefaults.standard.set(reminderTime, forKey: "reminderTime")
+    }
     func updateProductsandNotifications() {
         for product in products {
+            product.expiryDate = notification.modifyDate(date: product.expiryDate!)
+            print("\(product.getName) expiry date is \(product.expiryDate!)")
             let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
             notification.handleProducts(viewContext:viewContext, result: result, product: product)
             notification.saveContext(viewContext: viewContext)

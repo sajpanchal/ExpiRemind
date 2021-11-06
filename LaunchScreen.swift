@@ -39,6 +39,17 @@ struct LaunchScreen: View {
             .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
             
         }
+        .onAppear(perform: {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .none
+            dateFormatter.timeStyle = .short
+            print("Reminder Time:",UserDefaults.standard.object(forKey: "reminderTime")as? Date ?? "found nil")
+            if UserDefaults.standard.object(forKey: "reminderTime") as? Date == nil {
+                UserDefaults.standard.set(dateFormatter.date(from: "12:00 AM"), forKey: "reminderTime")
+                print("reminder time is set.")
+            }
+        })
+       
     }
     func showAppleLoginView() {
         let provider = ASAuthorizationAppleIDProvider()
