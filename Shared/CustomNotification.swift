@@ -71,6 +71,7 @@ class CustomNotification: ObservableObject {
             
     func sendTimeNotification(product: Product) {
         let timeInterval = Calendar.current.dateComponents([.second], from: Date(), to: product.expiryDate!)
+       
         let addRequest =  { (seconds: Int) -> Void in
             let content = UNMutableNotificationContent()
             content.title = "Expiry Date Reminder"
@@ -78,10 +79,13 @@ class CustomNotification: ObservableObject {
                 content.body = "Your product '\(product.getName)' has been expired today!"
             }
             else if seconds == 86400 {
-                content.body = "Your product '\(product.getName)' is expiring soon tommorrow!"
+                content.body = "Your product '\(product.getName)' is expiring tommorrow!"
+            }
+            else if seconds == 2*86400 {
+                content.body = "Your product '\(product.getName)' is expiring in 2 days!"
             }
             else {
-                content.body = "Your product '\(product.getName)' is expiring soon in 2 days!"
+                content.body = "Your product '\(product.getName)' is expiring soon!"
             }
             content.sound = UNNotificationSound.default
             
@@ -95,26 +99,33 @@ class CustomNotification: ObservableObject {
                 fatalError(error.localizedDescription)
             }
         }
+        var daysCount = 2
+        if timeInterval.second! >= 15552000 {
+            daysCount = 30
+        }
+        else {
+            daysCount = 2
+        }
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 if settings.authorizationStatus == .authorized {
-                    addRequest(0)
-                    if timeInterval.second! > 86400 {
-                        addRequest(86400)
-                    }
-                    if timeInterval.second! > (2*86400) {
-                        addRequest(2*86400)
-                    }
-                    print("----------------Notifications----------------")
-                    print("Notification request has been sent for \(product.getName)...")
-                    
+                    print("----------------Notifications for \(product.getName)----------------")
+                    for i in 0...daysCount {
+                        if timeInterval.second! > i*86400 {
+                        addRequest(i*86400)
+                        }
+                    }                    
                 }
                 else if settings.authorizationStatus == .notDetermined {
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                     print("Notification request is not authorized by the user yet.")
-                    if success {
-                        addRequest(0)
-                        addRequest(86400)
-                        addRequest(2*86400)
+                        
+                        if success {
+                        for i in 0...daysCount {
+                            if timeInterval.second! > i*86400 {
+                            addRequest(i*86400)
+                            }
+                        }
+                       
                         print("Notification request has been now sent...")
                         }
                     else {
