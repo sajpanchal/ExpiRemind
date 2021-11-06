@@ -59,7 +59,8 @@ struct ListRowView: View {
         switch result {
         case "Alive":
             return Color.green
-            
+        case "Far From Expiry":
+            return Color.yellow
         case "Near Expiry":
             return Color.red
 

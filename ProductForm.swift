@@ -27,9 +27,9 @@ struct ProductForm: View {
     @EnvironmentObject var notification: CustomNotification
     var body: some View {
         Form {
-            Section(header: Text("Product Name")) {
+            Section(header: Text("Product Name:")) {
                 HStack {
-                    TextField("Enter Product Name", text:$productName)
+                    TextField("Enter/Scan Product Name", text:$productName)
                     Spacer()
                     Image(systemName: "camera.viewfinder")
                         .onTapGesture {
@@ -37,17 +37,17 @@ struct ProductForm: View {
                         }
                 }
             }
-            Section(header: Text("Product Type")) {
-                Picker("Select Product Type", selection: $productType) {
+            Section(header: Text("Product Type:")) {
+                Picker("Select Type", selection: $productType) {
                     ForEach(productTypes, id: \.self) {
                         Text($0)
                     }
                 }
             }
-            Section(header: Text("Expiry Date")) {
+            Section(header: Text("Product Expiry:")) {
                 HStack {
                     DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                        Text("Set Expiry Date")
+                        Text("Select/Scan Date")
                         
                     }
                     .datePickerStyle(.compact)

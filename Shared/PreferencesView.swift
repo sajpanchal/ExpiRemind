@@ -28,19 +28,18 @@ struct PreferencesView: View {
             ZStack {
                 VStack {
                     Form {
-                        Section(header: Text("Reminders")) {
-                            Toggle("Remind before product(s) Expire:", isOn: $notification.isNotificationEnabled)                            
+                        Section(header: Text("Enable Notifications:")) {
+                            Toggle("Product Expiry Reminder", isOn: $notification.isNotificationEnabled)
+                        }                        
+                        Section(header: Text("Reminder Time:")) {
+                            DatePicker("Set Reminder At", selection: $reminderTime, displayedComponents: .hourAndMinute)
                         }
-                        Section(header: Text("Delete product after 'x' days of expiry")) {
-                            Picker("Select the number of days", selection: $numberOfDays) {
+                        Section(header: Text("Delete Expired Product:")) {
+                            Picker("Delete Product(s) After", selection: $numberOfDays) {
                                 ForEach(daysCollection, id: \.self) {
                                     Text("\($0) Days")
                                 }
                             }
-                        }
-                        Section(header: Text("Set Reminder time:")) {
-                            DatePicker("Set Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
-                                
                         }
                     }
                 }

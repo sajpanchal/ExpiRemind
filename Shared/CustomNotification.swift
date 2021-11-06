@@ -48,7 +48,9 @@ class CustomNotification: ObservableObject {
                         }
                         return "Near Expiry"
                     }
-                    //expiry date is far away.
+                    else if days <= 30 && days > 3 {
+                        return "Far From Expiry"
+                    }
                     else {
                         return "Alive"
                     }
