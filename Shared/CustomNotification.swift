@@ -184,4 +184,24 @@ class CustomNotification: ObservableObject {
             
         }
     }
+    func modifyDate(date: Date) -> Date {
+        let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateStyle = .none
+        timeFormatter.timeStyle = .short
+        let reminderTimeString = timeFormatter.string(from: reminderTime)
+        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        let dateStr = formatter.string(from: date)
+        let modifiedDateStr = "\(dateStr), \(reminderTimeString)"
+        print("Modified Date String is : \(modifiedDateStr)")
+        formatter.timeStyle = .short
+        let modifiedDate = formatter.date(from: modifiedDateStr)
+        //print("modified date:\(String(describing: modifiedDate))")
+        return modifiedDate ?? date
+    }
+    
+    
 }
