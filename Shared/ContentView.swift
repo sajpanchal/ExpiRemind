@@ -104,6 +104,9 @@ struct ContentView: View {
         print("----------list of products in ContentView------------")
         for prod in products {
             print("\(prod.getProductID): ",prod.getName)
+            print("exp date: \(prod.ExpiryDate)")
+            print("red zone: \(prod.redZoneExpiry)")
+            print("yellow zeon: \(prod.yellowZoneExpiry)")
          
         }
     }

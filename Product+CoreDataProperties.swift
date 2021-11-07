@@ -59,6 +59,43 @@ extension Product {
             return Int(deleteAfter)
         }
     }
+    public var redZoneExpiry: Int {
+        let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
+        if dateComponent.day! >= 180 {
+            return 30
+        }
+        else if dateComponent.day! >= 90 {
+            return 10
+        }
+        else if dateComponent.day! >= 30 {
+            return 5
+        }
+        else if dateComponent.day! >= 7 {
+            return 2
+        }
+        else {
+            return 2
+        }
+    }
+    
+    public var yellowZoneExpiry: Int {
+        let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
+        if dateComponent.day! >= 180 {
+            return 60
+        }
+        else if dateComponent.day! >= 90 {
+            return 20
+        }
+        else if dateComponent.day! >= 30 {
+            return 10
+        }
+        else if dateComponent.day! >= 7 {
+            return 4
+        }
+        else {
+            return 4
+        }
+    }
     
     
 

@@ -42,13 +42,13 @@ class CustomNotification: ObservableObject {
                 // Expiry date is not passed yet.
                 else {
                     // expiry date is 3 or less days away.
-                    if days <= 3 {
+                    if days <= product.redZoneExpiry {
                         if self.isNotificationEnabled {
                          //   print("calling notifcation for \(product.getName)")
                         }
                         return "Near Expiry"
                     }
-                    else if days <= 30 && days > 3 {
+                    else if days <= product.yellowZoneExpiry && days > product.redZoneExpiry {
                         return "Far From Expiry"
                     }
                     else {
@@ -101,18 +101,13 @@ class CustomNotification: ObservableObject {
                 fatalError(error.localizedDescription)
             }
         }
-        var daysCount = 2
-        if timeInterval.second! >= 15552000 {
-            daysCount = 30
-        }
-        else {
-            daysCount = 2
-        }
+      
+    
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 if settings.authorizationStatus == .authorized {
                     print("----------------Notifications for \(product.getName)----------------")
-                    for i in 0...daysCount {
-                        if timeInterval.second! > i*86400 {
+                    for i in 0...product.redZoneExpiry {
+                       if timeInterval.second! > i*86400 {
                         addRequest(i*86400)
                         }
                     }
@@ -122,7 +117,7 @@ class CustomNotification: ObservableObject {
                     print("Notification request is not authorized by the user yet.")
                         
                         if success {
-                        for i in 0...daysCount {
+                            for i in 0...product.redZoneExpiry {
                             if timeInterval.second! > i*86400 {
                             addRequest(i*86400)
                             }
@@ -143,7 +138,7 @@ class CustomNotification: ObservableObject {
     
     func removeNotification(product: Product) {
         var productIDs: [String] = []
-        for i in 0...30 {
+        for i in 0...product.redZoneExpiry {
             productIDs.insert("\(product.getProductID)\(i*86400)", at: i)
         }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: productIDs)
@@ -188,16 +183,18 @@ class CustomNotification: ObservableObject {
             break
         }
     }
-    func listOfPendingNotifications() {
-        
+    func listOfPendingNotifications() -> Int {
+        var counts = 0
         UNUserNotificationCenter.current().getPendingNotificationRequests { (notifications) in
-            print("-----------------List of Pending notifications------------------")
+            print("number of pending notifications are \(notifications.count)")
+            
+            counts = notifications.count
+            print("---------------List of Notifications----------------")
             for notification in notifications {
-                UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [notification.identifier])
                 print(notification.content.body)
             }
-            
         }
+        return counts
     }
     func modifyDate(date: Date) -> Date {
         let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
@@ -220,3 +217,20 @@ class CustomNotification: ObservableObject {
     
     
 }
+
+
+
+
+
+/*
+ var daysCount = 2
+   if timeInterval.day! >= 180 {
+       daysCount = 30
+   }
+   else if timeInterval.day! >= 30 {
+       daysCount = 7
+   }
+   else {
+       daysCount = 2
+   }
+ */

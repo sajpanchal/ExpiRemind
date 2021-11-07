@@ -55,10 +55,13 @@ struct PreferencesView: View {
                 .navigationTitle("Preferences")
                 .navigationBarItems( trailing: Button("Save") {
                     if notification.isNotificationEnabled {
+                        print("notification now enabled.")
                         setReminderTime()
                         notification.isNotificationEnabled = true
                         notification.notificationRequest()
-                        updateProductsandNotifications()
+                        if notification.listOfPendingNotifications() == 0 {
+                            updateProductsandNotifications()
+                        }
                      
                        
                     }
@@ -93,15 +96,20 @@ struct PreferencesView: View {
         }
     }
     func setReminderTime() {
+        notification.removeAllNotifications()
         UserDefaults.standard.set(reminderTime, forKey: "reminderTime")
+        
     }
     func updateProductsandNotifications() {
+        print("update products and notifications.")
         for product in products {
             product.expiryDate = notification.modifyDate(date: product.expiryDate!)
             print("\(product.getName) expiry date is \(product.expiryDate!)")
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+            notification.sendTimeNotification(product: product)
+            
+            // let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
+            // notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            // notification.saveContext(viewContext: viewContext)
         }
     }
 }
