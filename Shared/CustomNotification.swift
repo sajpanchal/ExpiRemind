@@ -142,12 +142,14 @@ class CustomNotification: ObservableObject {
     }
     
     func removeNotification(product: Product) {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["\(product.getProductID)\(0)","\(product.getProductID)\(86400)","\(product.getProductID)\(2*86400)"])
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["\(product.getProductID)\(0)","\(product.getProductID)\(86400)","\(product.getProductID)\(2*86400)"])
+        var productIDs: [String] = []
+        for i in 0...30 {
+            productIDs.insert("\(product.getProductID)\(i*86400)", at: i)
+        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: productIDs)
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: productIDs)
       
-        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(0)")
-        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(86400)")
-        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)\(2*86400)")
+        print("product notification is deleted for \(product.getName) with id: \(product.getProductID)")
        
     }
     
