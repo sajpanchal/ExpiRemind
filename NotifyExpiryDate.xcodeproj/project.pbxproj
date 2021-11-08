@@ -98,8 +98,6 @@
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
-				720D912327286DCD00AB32B6 /* LaunchScreen.swift */,
-				720D912127286AE300AB32B6 /* ProductForm.swift */,
 				7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */,
 				720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */,
 				720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */,
@@ -114,6 +112,8 @@
 		724E7FF826F792900007D122 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				720D912327286DCD00AB32B6 /* LaunchScreen.swift */,
+				720D912127286AE300AB32B6 /* ProductForm.swift */,
 				7234F4EA26FA2C9500504155 /* ListRowView.swift */,
 				724E7FFB26F792900007D122 /* NotifyExpiryDateApp.swift */,
 				724E7FFC26F792900007D122 /* ContentView.swift */,
