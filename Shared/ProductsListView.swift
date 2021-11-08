@@ -46,7 +46,7 @@ struct ProductsListView: View {
             .onAppear(perform: {
                 print("-------------Product list--------------")
                 for prod in products {
-                    print("\(prod.getProductID): ",prod.name)
+                    print("\(prod.getProductID): ",prod.getName)
                 }
                // notification.notificationRequest()
                 //updateProductsandNotifications()
@@ -57,8 +57,8 @@ struct ProductsListView: View {
     
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
+            Product.handleProducts(viewContext:viewContext, result: result, product: product, notification:notification)
             
         }
     }
@@ -81,7 +81,7 @@ struct ProductsListView: View {
             notification.removeNotification(product: product)
             viewContext.delete(product)
         }
-        notification.saveContext(viewContext: viewContext)
+        Product.saveContext(viewContext: viewContext)
     }
 }
 

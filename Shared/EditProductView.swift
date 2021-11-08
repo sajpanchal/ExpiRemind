@@ -60,8 +60,8 @@ struct EditProductView: View {
     
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
+            Product.handleProducts(viewContext:viewContext, result: result, product: product, notification: notification)
         }
     }
     

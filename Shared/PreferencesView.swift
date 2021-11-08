@@ -72,7 +72,7 @@ struct PreferencesView: View {
                     for product in products {
                         product.deleteAfter = Int16(numberOfDays)
                     }
-                    notification.saveContext(viewContext: viewContext)
+                    Product.saveContext(viewContext: viewContext)
                     alertTitle = "Preferences Saved!"
                     alertImage = "checkmark.seal.fill"
                     color = .green
@@ -103,7 +103,7 @@ struct PreferencesView: View {
     func updateProductsandNotifications() {
         print("update products and notifications.")
         for product in products {
-            product.expiryDate = notification.modifyDate(date: product.expiryDate!)
+            product.expiryDate = Product.modifyDate(date: product.expiryDate!)
             print("\(product.getName) expiry date is \(product.expiryDate!)")
             notification.sendTimeNotification(product: product)
             

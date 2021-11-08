@@ -11,10 +11,13 @@ import CloudKit
 import UserNotifications
 
 struct ContentView: View {
+    //cloudKit view context
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    
+    //fetched records from cloudkit entity 'Product'
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     
+    //custom notification object to handle notifications and product
     var notification = CustomNotification()
     
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
@@ -32,17 +35,19 @@ struct ContentView: View {
     @State var showProductScanningView = false
     @State var showDateScanningView = false
     @State var viewTag = 0
+    
     var body: some View {
+        
         if !isSignedIn {
             LaunchScreen(isSignedIn: $isSignedIn)
             }
+        
         else {
             TabView(selection: $showTab) {
                 NavigationView {
                     ZStack {
                         VStack {
                             ProductForm( product: Product(),productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
-                           
                         }
                         .navigationBarTitle("Add New Product")
                         
@@ -103,7 +108,7 @@ struct ContentView: View {
     func printProducts() {
         print("----------list of products in ContentView------------")
         for prod in products {
-            print("\(prod.getProductID): ",prod.getName)
+            print("\(prod.getProductID):", prod.getName)
             print("exp date: \(prod.ExpiryDate)")
             print("red zone: \(prod.redZoneExpiry)")
             print("yellow zeon: \(prod.yellowZoneExpiry)")
@@ -113,8 +118,8 @@ struct ContentView: View {
     
     func updateProductsandNotifications() {
         for product in products {
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
+            Product.handleProducts(viewContext:viewContext, result: result, product: product, notification: notification)
       
         }
     }

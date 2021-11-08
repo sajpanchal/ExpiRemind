@@ -55,7 +55,7 @@ struct ListRowView: View {
        
     }
     func setForgroundColor() -> Color {
-        let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+        let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
         switch result {
         case "Alive":
             return Color.green

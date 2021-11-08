@@ -217,11 +217,11 @@ struct ProductForm: View {
         product.productID = UUID()
         product.name = productName
         product.type = productType
-        product.expiryDate = notification.modifyDate(date: expiryDate)
+        product.expiryDate = Product.modifyDate(date: expiryDate)
         product.dateStamp = Date()
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
         
-        notification.saveContext(viewContext: viewContext)
+        Product.saveContext(viewContext: viewContext)
        
         notification.sendTimeNotification(product: product)
         resetForm()
@@ -240,7 +240,7 @@ struct ProductForm: View {
             prod.expiryDate = expiryDate
             prod.dateStamp = Date()
             
-            notification.saveContext(viewContext: viewContext)
+            Product.saveContext(viewContext: viewContext)
             notification.sendTimeNotification(product: product)
             
             // dismiss the view.
@@ -252,7 +252,7 @@ struct ProductForm: View {
         notification.removeNotification(product: product)
         
         viewContext.delete(product)
-        notification.saveContext(viewContext: viewContext)
+        Product.saveContext(viewContext: viewContext)
         
         DispatchQueue.main.async {
             resetFormInputs()

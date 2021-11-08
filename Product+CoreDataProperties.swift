@@ -98,6 +98,101 @@ extension Product {
         }       
     }
     
+    //date formatter with format mm/dd/yyyy
+    static var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        return formatter
+    }
+    
+    //time formatter with format hh:mm AM/PM
+    static var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }
+    
+    static func saveContext(viewContext: NSManagedObjectContext) {
+        do {
+            try viewContext.save()
+            print("product is saved in cloudKit.")
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    static func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
+        // dateComponent object that stores number of days from this day to expiry day.
+        // let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
+        // if day is not nil
+        if let days = CustomNotification.dateComponent(expiryDate).days {
+             // if Expiry date is passed
+             if days < 0 {
+                 // if product's deletion days are passed.
+                 if abs(days) >= deleteAfter {
+                     return "Delete"
+                 }
+                 // otherwise
+                 else {
+                     return "Expired"
+                 }
+             }
+             // if product Expiry date is not passed yet.
+             else {
+                 // if expiry date is in red zone
+                 if days <= product.redZoneExpiry {
+                     return "Near Expiry"
+                 }
+                 // if expiry date is in yellow zone.
+                 else if days <= product.yellowZoneExpiry && days > product.redZoneExpiry {
+                     return "Far From Expiry"
+                 }
+                 //if expiry date is in green zone
+                 else {
+                     return "Alive"
+                 }
+             }
+                 
+             }
+         return "Undefined"
+     }
+    
+    static func handleProducts(viewContext: NSManagedObjectContext, result: String, product: Product, notification:CustomNotification) {
+        switch result {
+            //remove the product notification and delete from core data
+            case "Delete" :
+            notification.removeNotification(product: product)
+                viewContext.delete(product)
+            Product.saveContext(viewContext: viewContext)
+            // once notification is sent
+            case "Near Expiry":
+            print("")
+            case "Expired":
+            notification.removeNotification(product: product)
+                break
+        case "Alive":
+            print("")
+            default:
+            break
+        }
+    }
+   static func modifyDate(date: Date) -> Date {
+        
+        let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+       let reminderTimeString = timeFormatter.string(from: reminderTime)
+        
+        let dateStr = dateFormatter.string(from: date)
+        let modifiedDateStr = "\(dateStr), \(reminderTimeString)"
+        print("Modified Date String is : \(modifiedDateStr)")
+        dateFormatter.timeStyle = .short
+        let modifiedDate = dateFormatter.date(from: modifiedDateStr)
+        //print("modified date:\(String(describing: modifiedDate))")
+        return modifiedDate ?? date
+    }
+    
     
 
 }
