@@ -16,8 +16,8 @@ struct ContentView: View {
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     
     var notification = CustomNotification()
-    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"] 
     
+    let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date().dayAfter
