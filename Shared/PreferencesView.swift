@@ -28,19 +28,18 @@ struct PreferencesView: View {
             ZStack {
                 VStack {
                     Form {
-                        Section(header: Text("Reminders")) {
-                            Toggle("Remind before product(s) Expire:", isOn: $notification.isNotificationEnabled)                            
+                        Section(header: Text("Enable Notifications:")) {
+                            Toggle("Product Expiry Reminder", isOn: $notification.isNotificationEnabled)
+                        }                        
+                        Section(header: Text("Reminder Time:")) {
+                            DatePicker("Set Reminder At", selection: $reminderTime, displayedComponents: .hourAndMinute)
                         }
-                        Section(header: Text("Delete product after 'x' days of expiry")) {
-                            Picker("Select the number of days", selection: $numberOfDays) {
+                        Section(header: Text("Delete Expired Product:")) {
+                            Picker("Delete Product(s) After", selection: $numberOfDays) {
                                 ForEach(daysCollection, id: \.self) {
                                     Text("\($0) Days")
                                 }
                             }
-                        }
-                        Section(header: Text("Set Reminder time:")) {
-                            DatePicker("Set Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
-                                
                         }
                     }
                 }
@@ -56,10 +55,13 @@ struct PreferencesView: View {
                 .navigationTitle("Preferences")
                 .navigationBarItems( trailing: Button("Save") {
                     if notification.isNotificationEnabled {
+                        print("notification now enabled.")
                         setReminderTime()
                         notification.isNotificationEnabled = true
                         notification.notificationRequest()
-                        updateProductsandNotifications()
+                        if notification.listOfPendingNotifications() == 0 {
+                            updateProductsandNotifications()
+                        }
                      
                        
                     }
@@ -94,15 +96,20 @@ struct PreferencesView: View {
         }
     }
     func setReminderTime() {
+        notification.removeAllNotifications()
         UserDefaults.standard.set(reminderTime, forKey: "reminderTime")
+        
     }
     func updateProductsandNotifications() {
+        print("update products and notifications.")
         for product in products {
             product.expiryDate = notification.modifyDate(date: product.expiryDate!)
             print("\(product.getName) expiry date is \(product.expiryDate!)")
-            let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
-            notification.handleProducts(viewContext:viewContext, result: result, product: product)
-            notification.saveContext(viewContext: viewContext)
+            notification.sendTimeNotification(product: product)
+            
+            // let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date().dayAfter, deleteAfter: product.DeleteAfter, product: product)
+            // notification.handleProducts(viewContext:viewContext, result: result, product: product)
+            // notification.saveContext(viewContext: viewContext)
         }
     }
 }

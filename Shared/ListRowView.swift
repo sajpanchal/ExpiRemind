@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListRowView: View {
-
+    @EnvironmentObject var notification: CustomNotification
     @ObservedObject var product: Product
     var body: some View {
         VStack {
@@ -28,7 +28,7 @@ struct ListRowView: View {
                     Text(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? product.ExpiryDate: product.ExpiryDate)
                         .fontWeight(.bold)
                         .font(.body)
-                        .foregroundColor(.red)
+                        .foregroundColor(setForgroundColor())
                         
                 }
                 .frame(alignment: .trailing)
@@ -36,7 +36,7 @@ struct ListRowView: View {
             Spacer()
             HStack {
                 Text(product.DateStamp)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .font(.system(size: 10))
             }
             .frame(alignment: .trailing)
@@ -53,6 +53,23 @@ struct ListRowView: View {
             return false
         }
        
+    }
+    func setForgroundColor() -> Color {
+        let result = notification.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+        switch result {
+        case "Alive":
+            return Color.green
+        case "Far From Expiry":
+            return Color.yellow
+        case "Near Expiry":
+            return Color.red
+
+        case "Expired":
+            return Color.red
+            
+        default:
+            return Color.green
+        }
     }
 }
 

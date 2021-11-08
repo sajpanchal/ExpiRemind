@@ -60,6 +60,44 @@ extension Product {
         }
     }
     
+    public var redZoneExpiry: Int {
+        let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
+        
+        switch dateComponent.day! {
+        case 180... :
+            return 30
+        case 90..<180:
+            return 15
+        case 30..<90:
+            return 10
+        case 15..<30:
+            return 5
+        case 7..<15:
+            return 2
+        default:
+            return 2
+        }
+    }
+    
+    public var yellowZoneExpiry: Int {
+        let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
+        
+        switch dateComponent.day! {
+        case 180... :
+            return 60
+        case 90..<180:
+            return 30
+        case 30..<90:
+            return 15
+        case 15..<30:
+            return 10
+        case 7..<15:
+            return 4
+        default:
+            return 4
+        }       
+    }
+    
     
 
 }

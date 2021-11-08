@@ -16,7 +16,7 @@ struct LaunchScreen: View {
             Spacer()
             Image("appstore")
                 .resizable()
-                .frame(width: 250, height: 250, alignment: .center)
+                .frame(width: 150, height: 150, alignment: .center)
                 .cornerRadius(10.0)
             Text("ExpiRemind")
                 .font(.title)
