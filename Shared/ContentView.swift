@@ -19,45 +19,64 @@ struct ContentView: View {
     
     //custom notification object to handle notifications and product
     var notification = CustomNotification()
+
+    //to show/hide launch screen.
+    @State var isSignedIn = false
     
+    //variables used in product form
     let productTypes = ["Document","Electronics","Grocery","Subscription", "Other"]
     @State var productName: String = ""
     @State var productType = "Grocery"
     @State var expiryDate = Date().dayAfter
+    
+    //variables to create alerts and cards.
     @State var alertTitle = ""
     @State var alertImage = ""
     @State var alertMessage = ""
     @State var showCard = false
     @State var showAlert = false
-    @State var isSignedIn = false
     @State var color: Color = .green
+    
+    //variable to render tab view.
     @State var showTab = 0
+    
+    //variables to render Camera view to scan text from images.
     @State var showProductScanningView = false
     @State var showDateScanningView = false
+    
+    //variable used in product form to determine whether to show form to create product or edit product.
     @State var viewTag = 0
     
     var body: some View {
-        
+        // if user is not signed in show launch screen.
         if !isSignedIn {
             LaunchScreen(isSignedIn: $isSignedIn)
             }
-        
+        // if user is signed in show the tab view.
         else {
             TabView(selection: $showTab) {
+                // navigation view with product form.
                 NavigationView {
                     ZStack {
                         VStack {
+                            //product form
                             ProductForm( product: Product(),productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
                         }
                         .navigationBarTitle("Add New Product")
                         
+                        // if card is rendered by user actions.
                         if showCard {
+                            // render the card view.
                             Card(title: alertTitle, image: alertImage, color: color)
                                 .transition(.opacity)
+                            // timer with delay of 3 seconds to hide the card after 3 seconds.
                             let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+                                // hide the card with animation.
                                 withAnimation {
                                 showCard = false
+                                    // if card is having this title
                                     if alertTitle == "Product Saved \n&\n All Done!" {
+                                        //show the list of products tab view right away.
                                         showTab = 1
                                     }
                                 }
@@ -66,6 +85,7 @@ struct ContentView: View {
                     }
                 }
                 .onAppear(perform: {
+                    //method to
                     notification.notificationRequest()
                     updateProductsandNotifications()
                     printProducts()
