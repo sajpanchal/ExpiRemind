@@ -125,8 +125,6 @@ extension Product {
     }
     
     static func checkExpiry(expiryDate: Date, deleteAfter: Int, product: Product) -> String {
-        // dateComponent object that stores number of days from this day to expiry day.
-        // let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate)
         // if day is not nil
         if let days = CustomNotification.dateComponent(expiryDate).days {
              // if Expiry date is passed
@@ -155,8 +153,7 @@ extension Product {
                      return "Alive"
                  }
              }
-                 
-             }
+        }
          return "Undefined"
      }
     

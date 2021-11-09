@@ -10,7 +10,7 @@ extension ScanDateView.Coordinator {
     func getFormattedDate(subString: String) -> Date {
         var subString = subString
         var formattedDate = Date().dayAfter
-        var patternArray = [#"^EXP(.| |/|-|)(0[1-9]|1[0-2])(.| |/|-|)[2-9][0-9]$"#, //EXP.MM.YY //0
+        let patternArray = [#"^EXP(.| |/|-|)(0[1-9]|1[0-2])(.| |/|-|)[2-9][0-9]$"#, //EXP.MM.YY //0
                             #"^EXP(.| |\/|-|)(2[0-9][0-9][0-9])(.| |\/|-|)(0[1-9]|1[0-2])$"#, //EXP.YYYY.MM //1
                             #"^EXP(.| |\/|-|)(0[1-9]|1[0-2])(.| |\/|-|)(2[0-9][0-9][0-9])$"#, //EXP.MM.YYYY //2
                             #"^EXP(.| |\/|-|)(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(.| |\/|-|)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //3
