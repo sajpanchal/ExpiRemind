@@ -46,7 +46,7 @@ struct ProductsListView: View {
                                                 ListRowView(product: product)
                                                 
                                                 //if product is expired.
-                                                if isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) {
+                                                if Product.checkExpiry(expiryDate: product.expiryDate!, deleteAfter: product.DeleteAfter, product: product) == "Expired" || Product.checkExpiry(expiryDate: product.expiryDate!, deleteAfter: product.DeleteAfter, product: product) == "Delete" {
                                                     //show the text in watermark format.
                                                     Text("Expired")
                                                         .font(.largeTitle)

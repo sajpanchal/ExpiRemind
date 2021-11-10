@@ -337,7 +337,7 @@ struct ProductForm: View {
             //replace the product properties with new changes.
             prod.name = productName
             prod.type = productType
-            prod.expiryDate = expiryDate
+            prod.expiryDate = Product.modifyDate(date: expiryDate)
             prod.dateStamp = Date()
             
             //save the changes made in managedObjectContext

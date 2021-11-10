@@ -8,41 +8,53 @@
 import SwiftUI
 
 struct ListRowView: View {
+    //shared notification object
     @EnvironmentObject var notification: CustomNotification
+    
+    //shared product object
     @ObservedObject var product: Product
     var body: some View {
         VStack {
             HStack {
                 VStack {
+                    //display product name
                     Text(product.getName)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
                 }
                 .frame(alignment: .leading)
+                
                 Spacer()
+                
+                //display expiry date
                 VStack {
                     Text("Expiry Date")
                         .foregroundColor(.primary)
                         .font(.caption)
-                    Text(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? product.ExpiryDate: product.ExpiryDate)
+                    
+                    Text(product.ExpiryDate)
                         .fontWeight(.bold)
                         .font(.body)
+                        //set forground color of the expiry date based on expiry date zone.
                         .foregroundColor(setForgroundColor())
                         
                 }
                 .frame(alignment: .trailing)
             }
+            
             Spacer()
+            //display date stamp of last updates.
             HStack {
                 Text(product.DateStamp)
                     .foregroundColor(.secondary)
                     .font(.system(size: 10))
             }
             .frame(alignment: .trailing)
-        }.foregroundColor(isExpired(expiryDate: product.expiryDate ?? Date().dayAfter) ? .red : .clear)
+        }
     }
-    func isExpired(expiryDate: Date) -> Bool {
+    
+    /*func isExpired(expiryDate: Date) -> Bool {
        let result = Calendar.current.compare((Date()), to: expiryDate, toGranularity: .day)
         switch result {
         case .orderedDescending :
@@ -53,7 +65,7 @@ struct ListRowView: View {
             return false
         }
        
-    }
+    }*/
     func setForgroundColor() -> Color {
         let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
         switch result {

@@ -101,7 +101,7 @@ extension Product {
     //date formatter with format mm/dd/yyyy
     static var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
+        formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter
     }
@@ -110,6 +110,12 @@ extension Product {
     static var timeFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }
+    static var dateAndTimeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter
     }
@@ -177,17 +183,20 @@ extension Product {
         }
     }
    static func modifyDate(date: Date) -> Date {
-        
-        let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+       print("----------modifyDate--------------")
+    let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+       print("reminder time", reminderTime )
        let reminderTimeString = timeFormatter.string(from: reminderTime)
-        
-        let dateStr = dateFormatter.string(from: date)
-        let modifiedDateStr = "\(dateStr), \(reminderTimeString)"
+       print("reminder time string", reminderTimeString )
+      
+       let dateStr:String = dateFormatter.string(from: date)
+       print("product actual date",dateStr)
+        let modifiedDateStr = "\(dateStr) at \(reminderTimeString)"
         print("Modified Date String is : \(modifiedDateStr)")
-        dateFormatter.timeStyle = .short
-        let modifiedDate = dateFormatter.date(from: modifiedDateStr)
-        //print("modified date:\(String(describing: modifiedDate))")
-        return modifiedDate ?? date
+    
+       let modifiedDate: Date = dateAndTimeFormatter.date(from: modifiedDateStr)!
+        print("modified date:", modifiedDate)
+        return modifiedDate
     }
     
     

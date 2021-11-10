@@ -53,6 +53,7 @@ class CustomNotification: ObservableObject {
     func sendTimeNotification(product: Product) {
         
         //date component that will get the seconds passed from this day to product expiry
+        print(product.expiryDate.debugDescription.localizedLowercase)
         let expirySeconds = Self.dateComponent(product.expiryDate!).seconds ?? 0
         print("expiry seconds are:\(expirySeconds)")
         
@@ -67,6 +68,7 @@ class CustomNotification: ObservableObject {
                    if expirySeconds > i*86400 {
                        // add notification trigger request.
                        self.addRequest(seconds:i*86400, product:product, expirySeconds:expirySeconds)
+                       print("for day \(i) from expiry is sent")
                     }
                 }
             }
@@ -103,15 +105,19 @@ class CustomNotification: ObservableObject {
         // create content body.
         let createContentBody = { (productName: String) -> String in
             if seconds == 0 {
+                print("Your product '\(product.getName)' has been expired today!")
                 return "Your product '\(product.getName)' has been expired today!"
             }
             else if seconds == 86400 {
+                print("Your product '\(product.getName)' is expiring tommorrow!")
                 return "Your product '\(product.getName)' is expiring tommorrow!"
             }
             else if seconds == 2*86400 {
+                print("Your product '\(product.getName)' is expiring in 2 days!")
                return "Your product '\(product.getName)' is expiring in 2 days!"
             }
             else {
+                print("Your product '\(product.getName)' is expiring on \(product.ExpiryDate.capitalized)!")
                 return "Your product '\(product.getName)' is expiring on \(product.ExpiryDate.capitalized)!"
             }
         }
@@ -124,13 +130,14 @@ class CustomNotification: ObservableObject {
         
         //create a time interval notification trigger from time starting now to red zone days.
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(expirySeconds - seconds), repeats: false)
-        
+        print("trigger seconds are: \(TimeInterval(expirySeconds - seconds))")
         //send the by unique id, content and trigger
         let request = UNNotificationRequest(identifier: "\(product.getProductID)\(seconds)", content: content, trigger: trigger)
-    
+        print("ID is \(product.getProductID)\(seconds)")
         //add all such requests to notification center object.
         UNUserNotificationCenter.current().add(request) { error in
             guard let error = error else {
+                print("request added.")
                 return
             }
             fatalError(error.localizedDescription)
