@@ -53,21 +53,12 @@ struct ListRowView: View {
             .frame(alignment: .trailing)
         }
     }
-    
-    /*func isExpired(expiryDate: Date) -> Bool {
-       let result = Calendar.current.compare((Date()), to: expiryDate, toGranularity: .day)
-        switch result {
-        case .orderedDescending :
-            return true
-        case .orderedAscending :
-            return false
-        case .orderedSame :
-            return false
-        }
-       
-    }*/
+  
+    //set forground color of expiry date text
     func setForgroundColor() -> Color {
+        // check the status of expiry date
         let result = Product.checkExpiry(expiryDate: product.expiryDate ?? Date(), deleteAfter: product.DeleteAfter, product: product)
+        // return the color based on result.
         switch result {
         case "Alive":
             return Color.green
@@ -75,10 +66,8 @@ struct ListRowView: View {
             return Color.yellow
         case "Near Expiry":
             return Color.red
-
         case "Expired":
             return Color.red
-            
         default:
             return Color.green
         }
