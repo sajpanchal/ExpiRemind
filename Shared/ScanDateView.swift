@@ -13,6 +13,7 @@ import Vision
 struct ScanDateView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var recognizedText: Date
+    @Binding var isDateNotFound: Bool
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         var recognizedText: Binding<Date>
         var parent: ScanDateView
@@ -23,7 +24,7 @@ struct ScanDateView: UIViewControllerRepresentable {
         }
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
             let extractedImages =  extractImages(from: scan)
-            let processedText = recognizeText(from: extractedImages)
+            let processedText = recognizeText(from: extractedImages).0
             recognizedText.wrappedValue = processedText
             parent.presentationMode.wrappedValue.dismiss()
         }
@@ -39,7 +40,7 @@ struct ScanDateView: UIViewControllerRepresentable {
             }
             return extractedImages
         }
-        func recognizeText(from images: [CGImage]) -> Date {
+        func recognizeText(from images: [CGImage]) -> (Date,Bool) {
             var entireRecognizedText = ""
             let recognizeTextRequest = VNRecognizeTextRequest { (request, error) in
                 guard error == nil else {
@@ -61,9 +62,11 @@ struct ScanDateView: UIViewControllerRepresentable {
                 let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
                 try? requestHandler.perform([recognizeTextRequest])
             }
-            let formattedDate = getFormattedDate(subString: entireRecognizedText)
+            let formattedDate = getFormattedDate(subString: entireRecognizedText).0
+            parent.isDateNotFound = getFormattedDate(subString: entireRecognizedText).1
             print("Scanned date is: \(formattedDate)")
-            return formattedDate
+            print("date not found?:\(parent.isDateNotFound)")
+            return (formattedDate,parent.isDateNotFound)
         }
     }
     

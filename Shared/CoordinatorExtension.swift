@@ -7,9 +7,15 @@
 
 import Foundation
 extension ScanDateView.Coordinator {
-    func getFormattedDate(subString: String) -> Date {
-        var subString = subString
+    func getFormattedDate(subString: String) -> (Date,Bool) {
+        var subString = subString.filter {
+            !$0.isWhitespace && !$0.isPunctuation
+        }
+        print(subString)
+        subString = convertMonth(dateString: subString)
+        print("Converted month:",subString)
         var formattedDate = Date().dayAfter
+        var isDateNotFound = true
         let patternArray = [#"^EXP(.| |/|-|)(0[1-9]|1[0-2])(.| |/|-|)[2-9][0-9]$"#, //EXP.MM.YY //0
                             #"^EXP(.| |\/|-|)(2[0-9][0-9][0-9])(.| |\/|-|)(0[1-9]|1[0-2])$"#, //EXP.YYYY.MM //1
                             #"^EXP(.| |\/|-|)(0[1-9]|1[0-2])(.| |\/|-|)(2[0-9][0-9][0-9])$"#, //EXP.MM.YYYY //2
@@ -35,7 +41,8 @@ extension ScanDateView.Coordinator {
                             #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(.| |/|-|)[0-9][0-9]$"#, //mm.DD //22
                             #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(.| |/|-|)[0-9][0-9]$"#, //mm.DD //23
                             #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(.| |/|-|)[0-9][0-9]$"#, //mm.DD //24
-                            #"^[0-9]{2}(.| |\/|-|)(0[1-9]|1[0-2])(.| |\/|-|)(2[0-9][0-9][0-9])$"#, //MM.DD.YYYY //20
+                            #"^[0-9]{2}(.| |\/|-|)(0[1-9]|1[0-2])(.| |\/|-|)(2[0-9][0-9][0-9])$"#, //MM.DD.YYYY //25
+                            #"^(2[0-9][0-9][0-9])(.| |\/|-|)[0-9]{2}(.| |\/|-|)(0[1-9]|1[0-2])$"#, //YYYY.DD.YY //26
         ]
       
         var counter = 0
@@ -46,8 +53,8 @@ extension ScanDateView.Coordinator {
             
             let regex = try! NSRegularExpression(pattern: pattern)
             if findSubString(regex: regex, subString: subString) != "" {
-                let dateStr = findSubString(regex: regex, subString: subString)
-               // let dateformatter = DateFormatter()
+                var dateStr = findSubString(regex: regex, subString: subString)
+                dateStr = splitDateString(counter: counter, dateString:dateStr)
                 var dt = dateStr.split {[".","/"," "].contains($0)}
                 dt.removeAll(where: { i in
                     if Int(i) == nil {
@@ -113,13 +120,17 @@ extension ScanDateView.Coordinator {
                 //dateFormatter.dateStyle = .medium
                 //formattedDate = dateFormatter.string(from: currDate)
                 formattedDate = currDate
+               isDateNotFound = false
                 print("formatted date:\(formattedDate)")
                 
                 break
             }
+            
             counter += 1
         }
-         return formattedDate
+        
+       
+         return (formattedDate, isDateNotFound)
     }
 
 
@@ -259,6 +270,11 @@ extension ScanDateView.Coordinator {
             ddmmyy[1] = Int(dateArr[1])!
             ddmmyy[2] = Int(dateArr[2])!
             return ddmmyy
+        case 26:
+            ddmmyy[0] = Int(dateArr[1])!
+            ddmmyy[1] = Int(dateArr[2])!
+            ddmmyy[2] =  Int(dateArr[0])!
+            return ddmmyy
         default:
             return ddmmyy
         }
@@ -281,6 +297,97 @@ extension ScanDateView.Coordinator {
         let components = DateComponents(year: year, month: month, day: day)
         
         return Calendar.current.date(from: components)!
+    }
+    
+    func convertMonth(dateString: String) -> String {
+        var dateString: String = dateString
+        var arrayOfMonths = ["JA", "JAN", "JANUARY","FE","FEB","FEBRUARY","MR","MAR","MARCH", "AP","AL","APR","APRIL","MY","MA","MAY","JN","JU","JUN","JUNE","JL","JUL","JULY","AU","AUG","AUGUST","SE","SEP","SEPT","SEPTEMBER","OC","OCT","OCTOBER","0C","0CT","0CTOBER","NO", "NV","NOV","NOVEMBER","N0","N0V","N0VEMBER","DE","DEC","DECEMBER"]
+        var newString = ""
+        var flag = true
+        forloop: for month in arrayOfMonths {
+            switch month {
+            case "JA","JAN","JANUARY":
+                newString = dateString.replacingOccurrences(of: month, with: "01")
+                break
+            case "FE","FEB","FEBRUARY":
+                newString = dateString.replacingOccurrences(of: month, with: "02")
+                break
+            case "MR","MAR","MARCH":
+                newString = dateString.replacingOccurrences(of: month, with: "03")
+                break
+            case "AP","AL","APR","APRIL":
+                newString = dateString.replacingOccurrences(of: month, with: "04")
+                break
+            case "MY","MA","MAY":
+                newString = dateString.replacingOccurrences(of: month, with: "05")
+                break
+            case "JN","JU","JUN","JUNE":
+                newString = dateString.replacingOccurrences(of: month, with: "06")
+                break
+            case "JL","JUL","JULY":
+                newString = dateString.replacingOccurrences(of: month, with: "07")
+                break
+            case "AU","AUG","AUGUST":
+                newString = dateString.replacingOccurrences(of: month, with: "08")
+                break
+            case "SE","SEP","SEPT","SEPTEMBER":
+                newString = dateString.replacingOccurrences(of: month, with: "09")
+                break
+            case "OC","OCT","OCTOBER","0C","0CT","0CTOBER":
+                newString = dateString.replacingOccurrences(of: month, with: "10")
+                break
+            case "NO", "NV","NOV","NOVEMBER","N0","N0V","N0VEMBER":
+                newString = dateString.replacingOccurrences(of: month, with: "11")
+                break
+            case "DE","DEC","DECEMBER":
+                newString = dateString.replacingOccurrences(of: month, with: "12")
+                break
+            default:
+                newString = dateString
+            }
+            print("newString is: \(newString)")
+            if newString != dateString {
+                break forloop
+            }
+          
+            
+        }
+            
+         print(newString)
+        return newString
+            
+    }
+
+    func splitDateString(counter: Int, dateString:String) -> String {
+        var dateString = dateString
+        switch counter {
+        case 0,2,3,4,5:
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 3))
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 6))
+            print(dateString, " at ", counter)
+            return dateString
+        case 1:
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 3))
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 8))
+            print(dateString, " at ", counter)
+            return dateString
+        case 6...15,20,21,25:
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 2))
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 5))
+            print(dateString, " at ", counter)
+            return dateString
+        case 16...19,26:
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 4))
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 7))
+            print(dateString, " at ", counter)
+            return dateString
+        case 22...24:
+            dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 2))
+            print(dateString, " at ", counter)
+            return dateString
+        default:
+            return dateString
+        }
     }
 
 }

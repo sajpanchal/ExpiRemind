@@ -44,6 +44,7 @@ struct EditProductView: View {
     //variables to show/hide cameraviews to scan product name or expiry date from images.
     @State var showProductScanningView = false
     @State var showDateScanningView = false
+    @State var isDateNotFound = false
     //variable to determine which camera view to render.
     @State var viewTag = 1
     
@@ -64,7 +65,7 @@ struct EditProductView: View {
             }
             //pop up the camera view to scan and diplay product expiry
             .sheet(isPresented: $showDateScanningView) {
-                ScanDateView(recognizedText: $expiryDate)
+                ScanDateView(recognizedText: $expiryDate, isDateNotFound: $isDateNotFound)
             }
             //show the card if this variable is true
             if showCard {
