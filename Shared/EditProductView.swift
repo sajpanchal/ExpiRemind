@@ -66,6 +66,19 @@ struct EditProductView: View {
             //pop up the camera view to scan and diplay product expiry
             .sheet(isPresented: $showDateScanningView) {
                 ScanDateView(recognizedText: $expiryDate, isDateNotFound: $isDateNotFound)
+                    .onDisappear(perform: {
+                        if isDateNotFound {
+                            alertTitle = "Couldn't scan the expiry date!\n"
+                            alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping only the expiry date text only! Expiry date snippet must be showing the date in clear and full view.\n\n(3) Bad Text - Exiry date printed on a product bad to scan the date accurately!\n\n(4) Unsupported Date Format - Date format of the product exipry may not be supported by our app."
+                            showAlert = true
+                        }
+                        else {
+                            alertTitle = "Expiry Date Scan Successful!"
+                            alertImage = "checkmark.seal.fill"
+                            color = .green
+                            showCard = true
+                        }
+                    })
             }
             //show the card if this variable is true
             if showCard {
