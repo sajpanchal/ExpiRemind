@@ -62,6 +62,20 @@ struct EditProductView: View {
             //pop up the camera view to scan and diplay product name
             .sheet(isPresented: $showProductScanningView) {
                 ScanDocumentView(recognizedText: $productName)
+                    .onDisappear(perform: {
+                        if productName == "error" {
+                            productName = ""
+                            alertTitle = "Couldn't scan the product name!\n"
+                            alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping the valid texts. Product Name snippet must be showing the product's name in clear and full view.\n\n(3) Bad Text - text printed on a product is bad to scan it accurately!\n"
+                            showAlert = true
+                        }
+                        else {
+                            alertTitle = "Product Name Scan Successful!"
+                            alertImage = "checkmark.seal.fill"
+                            color = .green
+                            showCard = true
+                        }
+                    })
             }
             //pop up the camera view to scan and diplay product expiry
             .sheet(isPresented: $showDateScanningView) {

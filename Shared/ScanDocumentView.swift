@@ -61,7 +61,9 @@ struct ScanDocumentView: UIViewControllerRepresentable {
                 let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
                 try? requestHandler.perform([recognizeTextRequest])
             }
-            
+            if entireRecognizedText == "" {
+                entireRecognizedText = "error"
+            }
             
             return entireRecognizedText
         }
