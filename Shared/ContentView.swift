@@ -43,7 +43,7 @@ struct ContentView: View {
     //variables to render Camera view to scan text from images.
     @State var showProductScanningView = false
     @State var showDateScanningView = false
-    
+    @State var isDateNotFound = false
     //variable used in product form to determine whether to show form to create product or edit product.
     @State var viewTag = 0
     
@@ -91,24 +91,53 @@ struct ContentView: View {
                     //check expiry dates and handle product for delete or update and then save it.
                     updateProductsandNotifications()
                     printProducts()
-                    
                     //list pending notifications and display number of pending notifications.
                     let counts = notification.listOfPendingNotifications()
                     print("Number of pending notifications are: \(counts)")
+                    print("date scan not found? :\(isDateNotFound)")
                 })
                 //on view disappearance, update the product and notifications again.
                 .onDisappear(perform: updateProductsandNotifications)
+               
                 //alert to be shown on invalid entries.
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+               .alert(isPresented: $showAlert) {
+                   Alert(title: Text(alertTitle).font(.title).fontWeight(.bold), message: Text(alertMessage).font(.body), dismissButton: .default(Text("OK")))
                 }
+                
                 //show the camera view on product name scan tap.
                 .sheet(isPresented: $showProductScanningView) {
                     ScanDocumentView(recognizedText: $productName)
+                        .onDisappear(perform: {
+                            if productName == "error" {
+                                productName = ""
+                                alertTitle = "Couldn't scan the product name!\n"
+                                alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping the valid texts. Product Name snippet must be showing the product's name in clear and full view.\n\n(3) Bad Text - text printed on a product is bad to scan it accurately!\n"
+                                showAlert = true
+                            }
+                            else {
+                                alertTitle = "Product Name Scan Successful!"
+                                alertImage = "checkmark.seal.fill"
+                                color = .green
+                                showCard = true
+                            }
+                        })
                 }
                 //show the camera view on expiry date scan tap.
                 .sheet(isPresented: $showDateScanningView) {
-                    ScanDateView(recognizedText: $expiryDate)
+                    ScanDateView(recognizedText: $expiryDate, isDateNotFound: $isDateNotFound)
+                        .onDisappear(perform: {
+                            if isDateNotFound {
+                                alertTitle = "Couldn't scan the expiry date!\n"
+                                alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping only the expiry date text only! Expiry date snippet must be showing the date in clear and full view.\n\n(3) Bad Text - Exiry date printed on a product is bad to scan the date accurately!\n\n(4) Unsupported Date Format - Date format of the product exipry may not be supported by our app."
+                                showAlert = true
+                            }
+                            else {
+                                alertTitle = "Expiry Date Scan Successful!"
+                                alertImage = "checkmark.seal.fill"
+                                color = .green
+                                showCard = true
+                            }
+                        })
                 }
                 // assign tab button with title and image this this view.
                 .tabItem {

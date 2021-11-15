@@ -46,12 +46,15 @@ struct ProductsListView: View {
                                                 ListRowView(product: product)
                                                 
                                                 //if product is expired.
-                                                if Product.checkExpiry(expiryDate: product.expiryDate!, deleteAfter: product.DeleteAfter, product: product) == "Expired" || Product.checkExpiry(expiryDate: product.expiryDate!, deleteAfter: product.DeleteAfter, product: product) == "Delete" {
+                                                if isExpired(expiryDate: product.expiryDate!) {
                                                     //show the text in watermark format.
                                                     Text("Expired")
                                                         .font(.largeTitle)
                                                         .fontWeight(.black)
-                                                        .foregroundColor(.blue)
+                                                        .foregroundColor(Color(red: 1.0, green: 0, blue: 0, opacity: 1))
+                                                        //.padding()
+                                                        .background(Color.primary)
+                                                        .cornerRadius(5.0)
                                                 }
                                             }
                                         })
