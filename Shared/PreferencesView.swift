@@ -53,6 +53,7 @@ struct PreferencesView: View {
                         Section(header: Text("Reminder Time:")) {
                             //date picker that will allow user to set time and it will be stored in a variable
                             DatePicker("Set Reminder At", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                                .accentColor(.secondary)
                         }
                         //input to set deletion day after expiry of product.
                         Section(header: Text("Delete Expired Product:")) {

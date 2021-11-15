@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+//framework that uses camera as a document scanner to scan texts from captured screenshots.
 import VisionKit
 import UIKit
+//framework that detects the text from the captured image.
 import Vision
 
 struct ScanDocumentView: UIViewControllerRepresentable {
