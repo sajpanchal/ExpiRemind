@@ -106,10 +106,10 @@ struct ScanDateView: UIViewControllerRepresentable {
                 try? requestHandler.perform([recognizeTextRequest])
             }
             // get the date from a string
-            let formattedDate = getFormattedDate(subString: entireRecognizedText).0
+            let formattedDate = getFormattedDate(scannedText: entireRecognizedText).0
             
             //get the scanned result
-            parent.isDateNotFound = getFormattedDate(subString: entireRecognizedText).1
+            parent.isDateNotFound = getFormattedDate(scannedText: entireRecognizedText).1
             
             print("Scanned date is: \(formattedDate)")
             print("date not found?:\(parent.isDateNotFound)")

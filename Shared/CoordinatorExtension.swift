@@ -7,76 +7,95 @@
 
 import Foundation
 extension ScanDateView.Coordinator {
-    func getFormattedDate(subString: String) -> (Date,Bool) {
-        var subString = subString.filter {
+    //a method that takes the scanned text from camera, performs validation by comparing it to regex patterns and converts it to a Date type and returns it.
+    func getFormattedDate(scannedText: String) -> (Date,Bool) {
+        // remove whitespaces and puntuation texts from a string
+        var scannedText = scannedText.filter {
             !$0.isWhitespace && !$0.isPunctuation
         }
-        print(subString)
+        print(scannedText)
        
+        //var that will hold the Date type to be returned back.
         var formattedDate = Date().dayAfter
+        
+        //variable that will determine whether a given scanned text is a valid date or not.
         var isDateNotFound = true
-        var patternArray = [#"^EXP(0[1-9]|1[0-2])[2-9][0-9]$"#, //EXP.MM.YY //0
-                            #"^EXP(2[0-9][0-9][0-9])(0[1-9]|1[0-2])$"#, //EXP.YYYY.MM //1
-                            #"^EXP(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //EXP.MM.YYYY //2
-                            #"^EXP(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //3
-                            #"^EXP(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //4
-                            #"^EXP(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //5
-                            #"^BB(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //BB.MM.YYYY //6
-                            #"^BB(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY //7
-                            #"^BB(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY  //8
-                            #"^BB(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY //9
-                            #"^[0-9]{2}(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //10
-                            #"^[0-9]{2}(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //11
-                            #"^[0-9]{2}(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //12
-                            #"^[0-9]{2}(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[2-9][0-9]$"#, //DD.mm.YY //13
-                            #"^[0-9]{2}(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[2-9][0-9]$"#, //DD.mm.YY //14
-                            #"^[0-9]{2}(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[2-9][0-9]$"#, //DD.mm.YY //15
-                            #"^(2[0-9][0-9][0-9])(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[0-9]{2}$"#, //YYYY.mm.DD //16
-                            #"^(2[0-9][0-9][0-9])(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[0-9]{2}$"#, //YYYY.mm.DD //17
-                            #"^(2[0-9][0-9][0-9])(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[0-9]{2}$"#, //YYYY.mm.DD //18
-                            #"^(2[0-9][0-9][0-9])(0[1-9]|1[0-2])[0-9]{2}$"#, //YYYY.MM.DD //19
-                            #"^(0[1-9]|1[0-2])[0-9]{2}(2[0-9][0-9][0-9])$"#, //MM.DD.YYYY //20
-                            #"^(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //MM.YYYY //21
-                            #"^(0[1-9]|1[0-2])[0-9]{2}[2-9][0-9]$"#, //MM.DD.YY //22
-                            #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[0-9][0-9]$"#, //mm.DD //23
-                            #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[0-9][0-9]$"#, //mm.DD //24
-                            #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[0-9][0-9]$"#, //mm.DD //25
-                            #"^(2[0-9][0-9][0-9])[0-9]{2}(0[1-9]|1[0-2])$"#, //YYYY.DD.MM //26
-                            #"^[0-9]{2}(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#,//DD.MM.YYYY //27
-                            #"^[0-9]{2}(0[1-9]|1[0-2])([0-9][0-9])$"#,//DD.MM.YY //28
-                            #"^(0[1-9]|1[0-2])[0-9][0-9]$"#,//MM.DD //29
-                            #"^[0-9][0-9](0[1-9]|1[0-2])$"#,//DD.MM //30
-                            #"^(0[1-9]|1[0-2])[2-9][0-9]$"#, //MM.YY //31
-                            #"^(2[0-9][0-9][0-9])(0[1-9]|1[0-2])$"#, //YYYY.MM //32
-                            #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //mm.YYYY //33
-                            #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //mm.YYYY //34
-                            #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //mm.YYYY //35
+       
+        //array of regex to identify valid date format for a scanned text.
+        let dateFormatsRegex = [#"^EXP(0[1-9]|1[0-2])[2-9][0-9]$"#, //EXP.MM.YY //0
+                                #"^EXP(2[0-9][0-9][0-9])(0[1-9]|1[0-2])$"#, //EXP.YYYY.MM //1
+                                #"^EXP(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //EXP.MM.YYYY //2
+                                #"^EXP(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //3
+                                #"^EXP(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //4
+                                #"^EXP(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //EXP.mm.YYYY //5
+                                #"^BB(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //BB.MM.YYYY //6
+                                #"^BB(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY //7
+                                #"^BB(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY  //8
+                                #"^BB(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //BB.mm.YYYY //9
+                                #"^[0-9]{2}(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //10
+                                #"^[0-9]{2}(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //11
+                                #"^[0-9]{2}(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //DD.mm.YYYY //12
+                                #"^[0-9]{2}(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[2-9][0-9]$"#, //DD.mm.YY //13
+                                #"^[0-9]{2}(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[2-9][0-9]$"#, //DD.mm.YY //14
+                                #"^[0-9]{2}(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[2-9][0-9]$"#, //DD.mm.YY //15
+                                #"^(2[0-9][0-9][0-9])(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[0-9]{2}$"#, //YYYY.mm.DD //16
+                                #"^(2[0-9][0-9][0-9])(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[0-9]{2}$"#, //YYYY.mm.DD //17
+                                #"^(2[0-9][0-9][0-9])(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[0-9]{2}$"#, //YYYY.mm.DD //18
+                                #"^(2[0-9][0-9][0-9])(0[1-9]|1[0-2])[0-9]{2}$"#, //YYYY.MM.DD //19
+                                #"^(0[1-9]|1[0-2])[0-9]{2}(2[0-9][0-9][0-9])$"#, //MM.DD.YYYY //20
+                                #"^(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#, //MM.YYYY //21
+                                #"^(0[1-9]|1[0-2])[0-9]{2}[2-9][0-9]$"#, //MM.DD.YY //22
+                                #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)[0-9][0-9]$"#, //mm.DD //23
+                                #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)[0-9][0-9]$"#, //mm.DD //24
+                                #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[0-9][0-9]$"#, //mm.DD //25
+                                #"^(2[0-9][0-9][0-9])[0-9]{2}(0[1-9]|1[0-2])$"#, //YYYY.DD.MM //26
+                                #"^[0-9]{2}(0[1-9]|1[0-2])(2[0-9][0-9][0-9])$"#,//DD.MM.YYYY //27
+                                #"^[0-9]{2}(0[1-9]|1[0-2])([0-9][0-9])$"#,//DD.MM.YY //28
+                                #"^(0[1-9]|1[0-2])[0-9][0-9]$"#,//MM.DD //29
+                                #"^[0-9][0-9](0[1-9]|1[0-2])$"#,//DD.MM //30
+                                #"^(0[1-9]|1[0-2])[2-9][0-9]$"#, //MM.YY //31
+                                #"^(2[0-9][0-9][0-9])(0[1-9]|1[0-2])$"#, //YYYY.MM //32
+                                #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //mm.YYYY //33
+                                #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //mm.YYYY //34
+                                #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //mm.YYYY //35
         ]
-      
+        
+        //counter will increment in regex iteration loop until a valid regex is found.
         var counter = 0
-        for pattern in patternArray {
+        
+        //iterate thorugh regex array of date formats.
+        for dateFormat in dateFormatsRegex {
           
-            print("Converted month:",subString)
-            subString = subString.replacingOccurrences(of: ". ", with: ".")
-            subString = subString.replacingOccurrences(of: "- ", with: "-")
-            subString = subString.replacingOccurrences(of: "/ ", with: "/")
+            print("Converted month:",scannedText)
             
-            let regex = try! NSRegularExpression(pattern: pattern)
-            if findSubString(regex: regex, subString: subString) != "" {
-              
-                var dateStr = findSubString(regex: regex, subString: subString)
-                dateStr = convertMonth(dateString: dateStr)
-                dateStr = splitDateString(counter: counter, dateString:dateStr)
-                var dt = dateStr.split {[".","/"," "].contains($0)}
-                dt.removeAll(where: { i in
+            //remove extra whitespaces from a scanned text if present.
+            scannedText = scannedText.replacingOccurrences(of: ". ", with: ".")
+            scannedText = scannedText.replacingOccurrences(of: "- ", with: "-")
+            scannedText = scannedText.replacingOccurrences(of: "/ ", with: "/")
+            
+            //create a Regular Expression type from regex string.
+            let regex = try! NSRegularExpression(pattern: dateFormat)
+            
+            //a method that will return the matched text by matching a regex with a scanned text.
+            if findSubString(regex: regex, subString: scannedText) != "" {
+                
+                //store validated text
+                var validatedScannedText = findSubString(regex: regex, subString: scannedText)
+                //replace the month abbreviation with 2 digit month.
+                validatedScannedText =  digitizeMonthAbbreviation(dateString: validatedScannedText)
+                //format the date with puncuations between date elements.
+                validatedScannedText = formatDateString(counter: counter, dateString:validatedScannedText)
+                
+                //split the validated text by puncuations and create a substring array with date, month and year.
+                var dateElementsArraySubString = validatedScannedText.split {[".","/"," "].contains($0)}
+                //remove prefixes
+                dateElementsArraySubString.removeAll(where: { i in
                     if Int(i) == nil {
                         switch i.uppercased() {
-                        case "JA","FE","MA","AP","MY","JU","JL","AU","SE","OC","NO","DE":
-                            return false
                         case "EXP", "BB","EXPY", "BEST BEFORE" :
                             return true
                         default:
-                            return false
+                            return true
                         }
                     }
                     else {
@@ -84,61 +103,46 @@ extension ScanDateView.Coordinator {
                     }
                 })
                 
-                print(dt)
-                var newdt: [String] = dt.map { i -> String in
-                    switch i.uppercased() {
-                    case "JA","JAN","JANUARY":
-                        return "01"
-                    case "FE","FEB","FEBRUARY":
-                        return "02"
-                    case "MR","MAR","MARCH":
-                        return "03"
-                    case "AP","AL","APR","APRIL":
-                        return "04"
-                    case "MY","MA","MAY":
-                        return "05"
-                    case "JN","JU","JUN","JUNE":
-                        return "06"
-                    case "JL","JUL","JULY":
-                        return "07"
-                    case "AU","AUG","AUGUST":
-                        return "08"
-                    case "SE","SEP","SEPT","SEPTEMBER":
-                        return "09"
-                    case "OC","OCT","OCTOBER":
-                        return "10"
-                    case "NO", "NV","NOV","NOVEMBER":
-                        return "11"
-                    case "DE","DEC","DECEMBER":
-                        return "12"
-                    default:
-                        return String(i)
-                    }
+                print(dateElementsArraySubString)
+                
+                //convert [SubString] to [String]
+                let dateElementsArrayString: [String] = dateElementsArraySubString.map { i -> String in
+                    return String(i)
                 }
                 print("array item index: \(counter)")
-                let ddmmyy = arrangeDateArray(dateArr: newdt, counter: counter)
-                let myYear: Int = ddmmyy[2]
-                let myMonth: Int = ddmmyy[1]
-                let myDay: Int = ddmmyy[0]
-                let currDate = getMyDate(year: myYear, month: myMonth, day: myDay)
-                print(currDate)
-               // let dateFormatter = DateFormatter()
-                //dateFormatter.dateStyle = .medium
-                //formattedDate = dateFormatter.string(from: currDate)
-                formattedDate = currDate
+                
+                //get the re-arranged array of [Int] having date, month and year digits.
+                let ddmmyy = arrangeDateArray(dateArr: dateElementsArrayString, counter: counter)
+                
+                //extract years, months and days from array.
+                let yy: Int = ddmmyy[2]
+                let mm: Int = ddmmyy[1]
+                let dd: Int = ddmmyy[0]
+                
+                //convert the date into swift Date type
+                formattedDate = getMyDate(year: yy, month: mm, day: dd)
+                //set the flag to false as date scanned is valid.
                 isDateNotFound = false
                 print("formatted date:\(formattedDate)")
+                //jump out of the loop
                 break
             }
+            //otherwise continue scanning the loop
             counter += 1
         }
+        //return the date and scan valid/invalid result.
          return (formattedDate, isDateNotFound)
     }
 
-
-    func arrangeDateArray(dateArr:[String], counter: Int) -> [Int]{
+    // method that takes date string array and re-arrange it to [dd,mm,yy] order and in [Int] format.
+    func arrangeDateArray(dateArr:[String], counter: Int) -> [Int] {
+        //variable with [Int] type
         var ddmmyy:[Int] = [00,00,00]
+        
+        //assign let to a new var type
         var dateArr = dateArr
+        
+        //based on the regex type modify, convert and rearrange [Stribg] type date array to [Int] type date array.
         switch counter {
         case 0,31:
             dateArr.insert("01", at: 0)
@@ -204,79 +208,95 @@ extension ScanDateView.Coordinator {
             return ddmmyy
         }
     }
+    
+    //method that will match the scanned Text with a regex and returns matched string.
     func findSubString(regex: NSRegularExpression, subString: String) -> String {
+        //return an array of all matches
         let matches = regex.matches(in: subString, options: [], range: NSRange(location: 0, length: subString.utf16.count))
+        
+        //return the first matched text from the matched texts
         if let match = matches.first {
+            //range of the matched text
             let range = match.range(at: 0)
+            // create a range instance of Range type for subString
             if let swiftRange = Range(range, in: subString) {
+                //return the range of characters from subString
                 let result = subString[swiftRange]
-               // print("substring is: ",result)
                 return String(result)
             }
         }
+        //if no match found return empty text
         return ""
     }
 
+    //using the day, month and year variables form the Date type and return it.
     func getMyDate(year: Int, month: Int, day: Int) -> Date {
         let components = DateComponents(year: year, month: month, day: day)
         return Calendar.current.date(from: components)!
     }
     
-    func convertMonth(dateString: String) -> String {
-        let dateString: String = dateString
-        let arrayOfMonths = ["JANUARY","JAN","JA","FEBRUARY","FEB","FE","MARCH","MAR","MR", "APRIL","APR","AP","AL","MAY","MY","MA","JUNE","JUN","JU","JN","JULY","JUL","JL","AUGUST","AUG","AU","SEPTEMBER","SEPT","SEP","SE","OCTOBER","OCT","OC","0CTOBER","0CT","0C","NOVEMBER","NOV","NO", "NV","N0VEMBER","N0V","N0","DECEMBER","DEC","DE"]
-        var newString = ""
-        forloop: for month in arrayOfMonths {
-            switch month {
+    //replace the month text/abbreviations with 2 digits month equvivalent
+    func digitizeMonthAbbreviation(dateString: String) -> String {
+        //array of month abbriviations
+        let monthAbbreviations = ["JANUARY","JAN","JA","FEBRUARY","FEB","FE","MARCH","MAR","MR", "APRIL","APR","AP","AL","MAY","MY","MA","JUNE","JUN","JU","JN","JULY","JUL","JL","AUGUST","AUG","AU","SEPTEMBER","SEPT","SEP","SE","OCTOBER","OCT","OC","0CTOBER","0CT","0C","NOVEMBER","NOV","NO", "NV","N0VEMBER","N0V","N0","DECEMBER","DEC","DE"]
+        //var to be returned after formatting
+        var digitizedDateString = ""
+        //iterate through all the month abbreviations
+forloop: for monthAbbreviation in monthAbbreviations {
+            //replace the matched abbreviation with respective 2 digit month equivalent.
+            switch monthAbbreviation {
             case "JA","JAN","JANUARY":
-                newString = dateString.replacingOccurrences(of: month, with: "01")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "01")
                 break
             case "FE","FEB","FEBRUARY":
-                newString = dateString.replacingOccurrences(of: month, with: "02")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "02")
                 break
             case "MR","MAR","MARCH":
-                newString = dateString.replacingOccurrences(of: month, with: "03")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "03")
                 break
             case "AP","AL","APR","APRIL":
-                newString = dateString.replacingOccurrences(of: month, with: "04")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "04")
                 break
             case "MY","MA","MAY":
-                newString = dateString.replacingOccurrences(of: month, with: "05")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "05")
                 break
             case "JN","JU","JUN","JUNE":
-                newString = dateString.replacingOccurrences(of: month, with: "06")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "06")
                 break
             case "JL","JUL","JULY":
-                newString = dateString.replacingOccurrences(of: month, with: "07")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "07")
                 break
             case "AU","AUG","AUGUST":
-                newString = dateString.replacingOccurrences(of: month, with: "08")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "08")
                 break
             case "SE","SEP","SEPT","SEPTEMBER":
-                newString = dateString.replacingOccurrences(of: month, with: "09")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "09")
                 break
             case "OC","OCT","OCTOBER","0C","0CT","0CTOBER":
-                newString = dateString.replacingOccurrences(of: month, with: "10")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "10")
                 break
             case "NO", "NV","NOV","NOVEMBER","N0","N0V","N0VEMBER":
-                newString = dateString.replacingOccurrences(of: month, with: "11")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "11")
                 break
             case "DE","DEC","DECEMBER":
-                newString = dateString.replacingOccurrences(of: month, with: "12")
+                digitizedDateString = dateString.replacingOccurrences(of: monthAbbreviation, with: "12")
                 break
             default:
-                newString = dateString
+                digitizedDateString = dateString
             }
-            if newString != dateString {
+            if digitizedDateString != dateString {
                 break forloop
             }
         }
-        print(newString)
-        return newString
+        print("Digitized date string: ",digitizedDateString)
+        //return the digitized date string
+        return digitizedDateString
     }
 
-    func splitDateString(counter: Int, dateString:String) -> String {
+    //method that will add puntuations to date string
+    func formatDateString(counter: Int, dateString:String) -> String {
         var dateString = dateString
+        //match the date String with the regex counter and based on matched result add puncuations to a given index of the string and return it.
         switch counter {
         case 0,2,3,4,5:
             dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 3))
