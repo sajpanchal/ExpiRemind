@@ -58,6 +58,9 @@ extension ScanDateView.Coordinator {
                                 #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(2[0-9][0-9][0-9])$"#, //mm.YYYY //33
                                 #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(2[0-9][0-9][0-9])$"#, //mm.YYYY //34
                                 #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(2[0-9][0-9][0-9])$"#, //mm.YYYY //35
+                                #"^(JA|FE|MR|AP|AL|MY|MA|JU|JN|JL|AU|SE|OC|NO|NV|DE)(0[0-9]|1[0-2])(20[0-9][0-9])$"#, //mm.DD.YYYY 36
+                                #"^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)(0[0-9]|1[0-2])(20[0-9][0-9])$"#, //mm.DD.YYYY 37
+                                #"^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)(0[0-9]|1[0-2])(20[0-9][0-9])$"#, //mm.DD.YYYY 38
         ]
         
         //counter will increment in regex iteration loop until a valid regex is found.
@@ -72,6 +75,7 @@ extension ScanDateView.Coordinator {
             scannedText = scannedText.replacingOccurrences(of: ". ", with: ".")
             scannedText = scannedText.replacingOccurrences(of: "- ", with: "-")
             scannedText = scannedText.replacingOccurrences(of: "/ ", with: "/")
+            scannedText = scannedText.replacingOccurrences(of: ", ", with: ",")
             
             //create a Regular Expression type from regex string.
             let regex = try! NSRegularExpression(pattern: dateFormat)
@@ -204,6 +208,11 @@ extension ScanDateView.Coordinator {
             let components = Calendar.current.dateComponents([.year], from: Date())
             ddmmyy[2] = (components.year)!
             return ddmmyy
+        case 36...38:
+            ddmmyy[0] = Int(dateArr[1])!
+            ddmmyy[1] = Int(dateArr[0])!
+            ddmmyy[2] = Int(dateArr[2])!
+            return ddmmyy
         default:
             return ddmmyy
         }
@@ -308,7 +317,7 @@ forloop: for monthAbbreviation in monthAbbreviations {
             dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 8))
             print(dateString, " at ", counter)
             return dateString
-        case 6...15,20,22,27,28,29,30,31:
+        case 6...15,20,22,27...31,36...38:
             dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 2))
             dateString.insert(".", at: dateString.index(dateString.startIndex, offsetBy: 5))
             print(dateString, " at ", counter)
