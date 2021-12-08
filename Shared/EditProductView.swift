@@ -44,7 +44,7 @@ struct EditProductView: View {
     //variables to show/hide cameraviews to scan product name or expiry date from images.
     @State var showProductScanningView = false
     @State var showDateScanningView = false
-    @State var isDateNotFound = false
+    @State var isDateNotFound: Int = 0
     //variable to determine which camera view to render.
     @State var viewTag = 1
     
@@ -81,12 +81,12 @@ struct EditProductView: View {
             .sheet(isPresented: $showDateScanningView) {
                 ScanDateView(recognizedText: $expiryDate, isDateNotFound: $isDateNotFound)
                     .onDisappear(perform: {
-                        if isDateNotFound {
+                        if isDateNotFound == 2 {
                             alertTitle = "Couldn't scan the expiry date!\n"
                             alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping only the expiry date text only! Expiry date snippet must be showing the date in clear and full view.\n\n(3) Bad Text - Exiry date printed on a product bad to scan the date accurately!\n\n(4) Unsupported Date Format - Date format of the product exipry may not be supported by our app."
                             showAlert = true
                         }
-                        else {
+                        else if isDateNotFound == 1 {
                             alertTitle = "Expiry Date Scan Successful!"
                             alertImage = "checkmark.seal.fill"
                             color = .green
