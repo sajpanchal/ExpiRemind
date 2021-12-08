@@ -45,20 +45,21 @@ struct PreferencesView: View {
                     // preferences form
                     Form {
                         //input to enable/disable notification
-                        Section(header: Text("Enable Notifications:")) {
+                        Section(header: Text("Enable/Disable Notifications:")) {
                             //toggle switch that will set/reset notification property.
-                            Toggle("Product Expiry Reminder", isOn: $notification.isNotificationEnabled)
+                            Toggle("Reminder for product exipiry is", isOn: $notification.isNotificationEnabled)
+                        
                         }
                         //input to set reminder time
-                        Section(header: Text("Reminder Time:")) {
+                        Section(header: Text("Expiry Reminder Time:")) {
                             //date picker that will allow user to set time and it will be stored in a variable
-                            DatePicker("Set Reminder At", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                            DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
                                 .accentColor(.secondary)
                         }
                         //input to set deletion day after expiry of product.
                         Section(header: Text("Delete Expired Product:")) {
                             // picker with a selection variable
-                            Picker("Delete Product(s) After", selection: $numberOfDays) {
+                            Picker("Delete product(s) after", selection: $numberOfDays) {
                                 //disply picker content from array of days.
                                 ForEach(daysCollection, id: \.self) {
                                     Text("\($0) Days")

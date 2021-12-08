@@ -42,9 +42,9 @@ struct ProductForm: View {
         Form {
             
             // text input for product name
-            Section(header: Text("Product Name:")) {
+            Section(header: Text("Enter/Scan Product Name:")) {
                 HStack {
-                    TextField("Enter/Scan Product Name", text:$productName)
+                    TextField("Product name", text:$productName)
                     
                     Spacer()
                     
@@ -58,10 +58,10 @@ struct ProductForm: View {
             }
             
             //picker input for product type
-            Section(header: Text("Product Type:")) {
+            Section(header: Text("Select Product Catergory:")) {
                 
                 //picker with text and selection (array element that has been selected and will assign that to this binding variable)
-                Picker("Select Type", selection: $productType) {
+                Picker("Product category is", selection: $productType) {
                     // content of the picker that will iterate through the product type array.
                     ForEach(productTypes, id: \.self) {
                         // show individual types in text format in a list.
@@ -71,11 +71,11 @@ struct ProductForm: View {
             }
             
             //date picker input to set product expiry date.
-            Section(header: Text("Product Expiry:")) {
+            Section(header: Text("Enter/Scan Product Expiry:")) {
                 HStack {
                     //date picker view with selection (stores selected date to binding variable), date range (from tomorrow to any future date), displayComponent (date or time or both).
                     DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                        Text("Select/Scan Date")
+                        Text("Expiry date is")
                     }
                     .datePickerStyle(.compact)
                     .accentColor(.secondary)
