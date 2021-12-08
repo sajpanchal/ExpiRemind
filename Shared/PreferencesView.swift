@@ -65,65 +65,122 @@ struct PreferencesView: View {
                                 }
                             }
                         }
+                        VStack{
+                            Button {
+                                // if notification is enabled.
+                                if notification.isNotificationEnabled {
+                                    
+                                    print("notification now enabled.")
+                                    //set the reminder time
+                                    setReminderTime()
+                                    
+                                    // set the flag redundantly.
+                                    notification.isNotificationEnabled = true
+                                    
+                                    // now send the notification request to add updated notifications for all products.
+                                    notification.notificationRequest()
+                                    
+                                    // if notifications are previously deleted.
+                                    if notification.listOfPendingNotifications() == 0 {
+                                        //create new notifications for all products.
+                                        updateProductsandNotifications()
+                                    }
+                                }
+                                else {
+                                    //reset the flag.
+                                    notification.isNotificationEnabled = false
+                                    //remove all pending or delivered notifications of all products.
+                                    notification.removeAllNotifications()
+                                }
+                                
+                                //set the deletion days.
+                                for product in products {
+                                    product.deleteAfter = Int16(numberOfDays)
+                                }
+                                //save the products context with latest updates to cloudkit
+                                Product.saveContext(viewContext: viewContext)
+                                
+                                //set card view appearance.
+                                alertTitle = "Preferences Saved!"
+                                alertImage = "checkmark.seal.fill"
+                                color = .green
+                                
+                                //show it with animation
+                                withAnimation {
+                                    showCard = true
+                                }
+                                UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
+                                UserDefaults.standard.set(!self.notification.isNotificationEnabled, forKey: "isNotificationDisabled")
+                            }
+                        label: {
+                            HStack {
+                                Spacer()
+                                
+                                Text("Save")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                            }
+                            .frame(height: 50, alignment: .center)
+                        }
+                            .background(Color.gray)
+                            .buttonStyle(BorderlessButtonStyle())
+                            .cornerRadius(10)
+                            .padding(.bottom, 10)
+                            Button {
+                                numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
+                              print("number of days:", numberOfDays)
+                                print("user defaults", UserDefaults.standard.integer(forKey: "numberOfDays"))
+                            reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+                                notification.isNotificationEnabled =   !(UserDefaults.standard.bool(forKey: "isNotificationDisabled"))
+                                
+                                //set card view appearance.
+                                alertTitle = "Preferences discards!"
+                                alertImage = "xmark.seal.fill"
+                                color = .red
+                                
+                                //show it with animation
+                                withAnimation {
+                              //      showCard = true
+                                }
+                            }
+                        label: {
+                            HStack {
+                                Spacer()
+                                
+                                Text("Discard")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                            }
+                            .frame(height: 50, alignment: .center)
+                        }
+                            .background(Color.red)
+                            .buttonStyle(BorderlessButtonStyle())
+                            .cornerRadius(10)
+                            .padding(.bottom, 10)
+                            
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                        
                     }
                 }
                 //when this view appears.
                 .onAppear(perform: {
                    print("on appear")
+                    print(UserDefaults.standard.integer(forKey: "numberOfDays"))
                     //save number of days to default value if it is not set or keep the default value and save it to user defaults.
-                    UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
+                 //   UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
                     //save the notification enabling flag to its default value in user defaults.
-                    UserDefaults.standard.set(self.notification.isNotificationEnabled, forKey: "isNotificationEnabled")
+                  //  UserDefaults.standard.set(self.notification.isNotificationEnabled, forKey: "isNotificationEnabled")
                 
                 })
                 .navigationTitle("Preferences")
                 //save button
-                .navigationBarItems( trailing: Button("Save") {
-                    // if notification is enabled.
-                    if notification.isNotificationEnabled {
-                        
-                        print("notification now enabled.")
-                        //set the reminder time
-                        setReminderTime()
-                        
-                        // set the flag redundantly.
-                        notification.isNotificationEnabled = true
-                        
-                        // now send the notification request to add updated notifications for all products.
-                        notification.notificationRequest()
-                        
-                        // if notifications are previously deleted.
-                        if notification.listOfPendingNotifications() == 0 {
-                            //create new notifications for all products.
-                            updateProductsandNotifications()
-                        }
-                    }
-                    else {
-                        //reset the flag.
-                        notification.isNotificationEnabled = false
-                        //remove all pending or delivered notifications of all products.
-                        notification.removeAllNotifications()
-                    }
-                    
-                    //set the deletion days.
-                    for product in products {
-                        product.deleteAfter = Int16(numberOfDays)
-                    }
-                    //save the products context with latest updates to cloudkit
-                    Product.saveContext(viewContext: viewContext)
-                    
-                    //set card view appearance.
-                    alertTitle = "Preferences Saved!"
-                    alertImage = "checkmark.seal.fill"
-                    color = .green
-                    
-                    //show it with animation
-                    withAnimation {
-                        showCard = true
-                    }
-                    UserDefaults.standard.set(self.numberOfDays == 0 ? 1 : self.numberOfDays, forKey: "numberOfDays")
-                    UserDefaults.standard.set(!self.notification.isNotificationEnabled, forKey: "isNotificationDisabled")
-                })
+               
                 //show the card if flag is set
                 if showCard {
                     Card(title: alertTitle, image: alertImage, color: color)
