@@ -32,7 +32,7 @@ struct ProductsListView: View {
                     // create sections based on product types.
                     ForEach(productTypes, id: \.self) { type in
                         // in each section render the list of products of that type only.
-                        Section(header: Text(type)) {
+                        Section(header: Text(type).foregroundColor(.secondary)) {
                             ForEach(products, id: \.self) { product in
                                 // if the type is matched
                                 if product.getType == type {
@@ -76,7 +76,8 @@ struct ProductsListView: View {
                // notification.notificationRequest()
                 //updateProductsandNotifications()
             })
-            .navigationTitle("List of Products")
+            .navigationTitle(Text("List of Products"))
+            
         }
     }
     

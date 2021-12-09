@@ -159,7 +159,7 @@ struct ContentView: View {
                     .tag(1)
                 
                 //preferences view.
-                PreferencesView(showTab: $showTab)
+                PreferencesView()
                 // assign tab button with title and image this this view.
                     .tabItem {
                         Image(systemName: "gearshape.2.fill")

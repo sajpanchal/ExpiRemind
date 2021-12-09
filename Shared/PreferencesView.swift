@@ -10,6 +10,7 @@ import CoreData
 import CloudKit
 
 struct PreferencesView: View {
+    @Environment(\.colorScheme) private var colorScheme
     //cloudkit managed object context
     @Environment(\.managedObjectContext) var viewContext
     //cloudkit fetched records from Product entity.
@@ -30,13 +31,9 @@ struct PreferencesView: View {
     
     //show/hide card or alert view.
     @State var showCard = false
-   
-    
-    //variable to show which tab view
-    @Binding var showTab: Int
-    
+       
     //set the reminder time from user default object value.
-    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date) ?? Date(timeIntervalSinceReferenceDate: -25200)
   
     var body: some View {
         NavigationView {
@@ -119,15 +116,15 @@ struct PreferencesView: View {
                                 
                                 Text("Save")
                                     .fontWeight(.bold)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(colorScheme == .dark ? .black : .white)
                                 
                                 Spacer()
                             }
-                            .frame(height: 50, alignment: .center)
+                            .frame(height: 40, alignment: .center)
                         }
                             .background(Color.gray)
                             .buttonStyle(BorderlessButtonStyle())
-                            .cornerRadius(10)
+                            .cornerRadius(100)
                             .padding(.bottom, 10)
                             Button {
                                 numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
@@ -137,13 +134,13 @@ struct PreferencesView: View {
                                 notification.isNotificationEnabled =   !(UserDefaults.standard.bool(forKey: "isNotificationDisabled"))
                                 
                                 //set card view appearance.
-                                alertTitle = "Preferences discards!"
+                                alertTitle = "Preferences discarded!"
                                 alertImage = "xmark.seal.fill"
                                 color = .red
                                 
                                 //show it with animation
                                 withAnimation {
-                              //      showCard = true
+                                    showCard = true
                                 }
                             }
                         label: {
@@ -152,15 +149,15 @@ struct PreferencesView: View {
                                 
                                 Text("Discard")
                                     .fontWeight(.bold)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(colorScheme == .dark ? .black : .white)
                                 
                                 Spacer()
                             }
-                            .frame(height: 50, alignment: .center)
+                            .frame(height: 40, alignment: .center)
                         }
                             .background(Color.red)
                             .buttonStyle(BorderlessButtonStyle())
-                            .cornerRadius(10)
+                            .cornerRadius(100)
                             .padding(.bottom, 10)
                             
                         }
@@ -171,6 +168,7 @@ struct PreferencesView: View {
                 }
                 //when this view appears.
                 .onAppear(perform: {
+                  //  showTab = 2
                    print("on appear")
                     print(UserDefaults.standard.integer(forKey: "numberOfDays"))
                     //save number of days to default value if it is not set or keep the default value and save it to user defaults.
@@ -192,7 +190,7 @@ struct PreferencesView: View {
                     let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                         withAnimation {
                         showCard = false
-                         showTab = 0
+                   
                         }
                     }
                 }
@@ -222,6 +220,6 @@ struct PreferencesView: View {
 
 struct PreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferencesView(showTab: .constant(0))
+        PreferencesView()
     }
 }

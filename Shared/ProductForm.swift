@@ -10,6 +10,7 @@ import SwiftUI
 struct ProductForm: View {
     //managed object context variable of cloudkit.
     @Environment(\.managedObjectContext) var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     //fetched records from cloudkit Product entity.
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     // product variable that is passed from content view is having a property wrapper ObservedObject. i.e. this object is going to be changed if the original object is changed. also, it will re-render this view if it's values are in use.
@@ -58,7 +59,7 @@ struct ProductForm: View {
             }
             
             //picker input for product type
-            Section(header: Text("Select Product Catergory:")) {
+            Section(header: Text("Select Product Category:")) {
                 
                 //picker with text and selection (array element that has been selected and will assign that to this binding variable)
                 Picker("Product category is", selection: $productType) {
@@ -116,15 +117,15 @@ struct ProductForm: View {
                             
                             Text("Save")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                     }
                     .background(Color.gray)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                     
                     //discard this product from cloudkit.
@@ -134,12 +135,20 @@ struct ProductForm: View {
                         alertImage = "xmark.seal.fill"
                         color = .red
                         
-                        //delete the product from cloudkit
-                        deleteProduct()
+                       
                         
                         //show card with animation
                         withAnimation {
                             self.showCard = true
+                          
+                        }
+                        let _ = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { (timer) in
+                            
+                        deleteProduct()
+                        }
+                        //delete the product from cloudkit
+                        if self.showCard == false {
+                       
                         }
                     }
                     // button appearance
@@ -149,15 +158,14 @@ struct ProductForm: View {
                             
                             Text("Delete")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                            
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                 }
                 .background(Color.red)
                 .buttonStyle(BorderlessButtonStyle())
-                .cornerRadius(10)
+                .cornerRadius(100)
                 .padding(.bottom, 10)
                 
                 }
@@ -200,16 +208,16 @@ struct ProductForm: View {
                             
                             Text("Save")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                                                             
                     }
                     .background(Color.gray)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                     
                     //save & done button
@@ -244,14 +252,14 @@ struct ProductForm: View {
                             Spacer()
                             Text("Save & Done")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                     }
                     .background(Color.blue)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                         
                     //discard button
@@ -276,16 +284,16 @@ struct ProductForm: View {
                             
                             Text("Discard")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                                                             
                     }
                     .background(Color.red)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 0)
                   
                
