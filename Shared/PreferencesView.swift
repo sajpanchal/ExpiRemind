@@ -114,7 +114,7 @@ struct PreferencesView: View {
                             HStack {
                                 Spacer()
                                 
-                                Text("Save")
+                                Text("Save Preferences")
                                     .fontWeight(.bold)
                                     .foregroundColor(colorScheme == .dark ? .black : .white)
                                 
@@ -134,7 +134,7 @@ struct PreferencesView: View {
                                 notification.isNotificationEnabled =   !(UserDefaults.standard.bool(forKey: "isNotificationDisabled"))
                                 
                                 //set card view appearance.
-                                alertTitle = "Preferences discarded!"
+                                alertTitle = "Form Cleared"
                                 alertImage = "xmark.seal.fill"
                                 color = .red
                                 
@@ -147,7 +147,7 @@ struct PreferencesView: View {
                             HStack {
                                 Spacer()
                                 
-                                Text("Discard")
+                                Text("Clear Form")
                                     .fontWeight(.bold)
                                     .foregroundColor(colorScheme == .dark ? .black : .white)
                                 

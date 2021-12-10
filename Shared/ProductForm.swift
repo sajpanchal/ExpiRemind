@@ -115,7 +115,7 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Save")
+                            Text("Save Product")
                                 .fontWeight(.bold)
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                             
@@ -156,7 +156,7 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Delete")
+                            Text("Delete Product")
                                 .fontWeight(.bold)
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
@@ -206,7 +206,7 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Save")
+                            Text("Save Product")
                                 .fontWeight(.bold)
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                             
@@ -250,7 +250,7 @@ struct ProductForm: View {
                     label : {
                         HStack {
                             Spacer()
-                            Text("Save & Done")
+                            Text("Save Product & Done")
                                 .fontWeight(.bold)
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
@@ -268,7 +268,7 @@ struct ProductForm: View {
                         resetForm()
                         
                         // manipulate the card text and bgcolor.
-                        alertTitle = "Product Discarded!"
+                        alertTitle = "Form Cleared!"
                         alertImage = "xmark.seal.fill"
                         color = .red
                         
@@ -282,7 +282,7 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Discard")
+                            Text("Clear Form")
                                 .fontWeight(.bold)
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                             
