@@ -184,7 +184,7 @@ extension Product {
     }
    static func modifyDate(date: Date) -> Date {
        print("----------modifyDate--------------")
-    let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+    let reminderTime = (UserDefaults.standard.object(forKey: "reminderTime") as? Date) ?? Date(timeIntervalSinceReferenceDate: -25200)
        print("reminder time", reminderTime )
        let reminderTimeString = timeFormatter.string(from: reminderTime)
        print("reminder time string", reminderTimeString )

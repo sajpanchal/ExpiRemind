@@ -10,6 +10,7 @@ import SwiftUI
 struct ProductForm: View {
     //managed object context variable of cloudkit.
     @Environment(\.managedObjectContext) var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     //fetched records from cloudkit Product entity.
     @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
     // product variable that is passed from content view is having a property wrapper ObservedObject. i.e. this object is going to be changed if the original object is changed. also, it will re-render this view if it's values are in use.
@@ -42,9 +43,9 @@ struct ProductForm: View {
         Form {
             
             // text input for product name
-            Section(header: Text("Product Name:")) {
+            Section(header: Text("Enter/Scan Product Name:")) {
                 HStack {
-                    TextField("Enter/Scan Product Name", text:$productName)
+                    TextField("Product name", text:$productName)
                     
                     Spacer()
                     
@@ -58,10 +59,10 @@ struct ProductForm: View {
             }
             
             //picker input for product type
-            Section(header: Text("Product Type:")) {
+            Section(header: Text("Select Product Category:")) {
                 
                 //picker with text and selection (array element that has been selected and will assign that to this binding variable)
-                Picker("Select Type", selection: $productType) {
+                Picker("Product category is", selection: $productType) {
                     // content of the picker that will iterate through the product type array.
                     ForEach(productTypes, id: \.self) {
                         // show individual types in text format in a list.
@@ -71,11 +72,11 @@ struct ProductForm: View {
             }
             
             //date picker input to set product expiry date.
-            Section(header: Text("Product Expiry:")) {
+            Section(header: Text("Enter/Scan Product Expiry:")) {
                 HStack {
                     //date picker view with selection (stores selected date to binding variable), date range (from tomorrow to any future date), displayComponent (date or time or both).
                     DatePicker(selection: $expiryDate, in: Date().dayAfter..., displayedComponents: .date) {
-                        Text("Select/Scan Date")
+                        Text("Expiry date is")
                     }
                     .datePickerStyle(.compact)
                     .accentColor(.secondary)
@@ -114,17 +115,17 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Save")
+                            Text("Save Product")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                     }
                     .background(Color.gray)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                     
                     //discard this product from cloudkit.
@@ -134,12 +135,20 @@ struct ProductForm: View {
                         alertImage = "xmark.seal.fill"
                         color = .red
                         
-                        //delete the product from cloudkit
-                        deleteProduct()
+                       
                         
                         //show card with animation
                         withAnimation {
                             self.showCard = true
+                          
+                        }
+                        let _ = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { (timer) in
+                            
+                        deleteProduct()
+                        }
+                        //delete the product from cloudkit
+                        if self.showCard == false {
+                       
                         }
                     }
                     // button appearance
@@ -147,17 +156,16 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Delete")
+                            Text("Delete Product")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                            
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                 }
                 .background(Color.red)
                 .buttonStyle(BorderlessButtonStyle())
-                .cornerRadius(10)
+                .cornerRadius(100)
                 .padding(.bottom, 10)
                 
                 }
@@ -198,18 +206,18 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Save")
+                            Text("Save Product")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                                                             
                     }
                     .background(Color.gray)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                     
                     //save & done button
@@ -242,16 +250,16 @@ struct ProductForm: View {
                     label : {
                         HStack {
                             Spacer()
-                            Text("Save & Done")
+                            Text("Save Product & Done")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                     }
                     .background(Color.blue)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 10)
                         
                     //discard button
@@ -260,7 +268,7 @@ struct ProductForm: View {
                         resetForm()
                         
                         // manipulate the card text and bgcolor.
-                        alertTitle = "Product Discarded!"
+                        alertTitle = "Form Cleared!"
                         alertImage = "xmark.seal.fill"
                         color = .red
                         
@@ -274,18 +282,18 @@ struct ProductForm: View {
                         HStack {
                             Spacer()
                             
-                            Text("Discard")
+                            Text("Clear Form")
                                 .fontWeight(.bold)
-                                .foregroundColor(.primary)
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
                             
                             Spacer()
                         }
-                        .frame(height: 50, alignment: .center)
+                        .frame(height: 40, alignment: .center)
                                                             
                     }
                     .background(Color.red)
                     .buttonStyle(BorderlessButtonStyle())
-                    .cornerRadius(10)
+                    .cornerRadius(100)
                     .padding(.bottom, 0)
                   
                

@@ -43,7 +43,7 @@ struct ContentView: View {
     //variables to render Camera view to scan text from images.
     @State var showProductScanningView = false
     @State var showDateScanningView = false
-    @State var isDateNotFound = false
+    @State var isDateNotFound: Int = 0
     //variable used in product form to determine whether to show form to create product or edit product.
     @State var viewTag = 0
     
@@ -114,6 +114,9 @@ struct ContentView: View {
                                 alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping the valid texts. Product Name snippet must be showing the product's name in clear and full view.\n\n(3) Bad Text - text printed on a product is bad to scan it accurately!\n"
                                 showAlert = true
                             }
+                            else if productName == "" {
+                                
+                            }
                             else {
                                 alertTitle = "Product Name Scan Successful!"
                                 alertImage = "checkmark.seal.fill"
@@ -126,12 +129,12 @@ struct ContentView: View {
                 .sheet(isPresented: $showDateScanningView) {
                     ScanDateView(recognizedText: $expiryDate, isDateNotFound: $isDateNotFound)
                         .onDisappear(perform: {
-                            if isDateNotFound {
+                            if isDateNotFound == 2 {
                                 alertTitle = "Couldn't scan the expiry date!\n"
                                 alertMessage = "--Possible Reasons--\n\n(1) Bad Image Scan - Make sure you take a snapshot with clear and bright view.\n\n(2) Inaccurate snippet - Make sure you are snipping only the expiry date text only! Expiry date snippet must be showing the date in clear and full view.\n\n(3) Bad Text - Exiry date printed on a product is bad to scan the date accurately!\n\n(4) Unsupported Date Format - Date format of the product exipry may not be supported by our app."
                                 showAlert = true
                             }
-                            else {
+                            else if isDateNotFound == 1{
                                 alertTitle = "Expiry Date Scan Successful!"
                                 alertImage = "checkmark.seal.fill"
                                 color = .green
@@ -156,7 +159,7 @@ struct ContentView: View {
                     .tag(1)
                 
                 //preferences view.
-                PreferencesView(showTab: $showTab)
+                PreferencesView()
                 // assign tab button with title and image this this view.
                     .tabItem {
                         Image(systemName: "gearshape.2.fill")

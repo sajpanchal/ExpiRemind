@@ -8,7 +8,7 @@
 import Foundation
 extension ScanDateView.Coordinator {
     //a method that takes the scanned text from camera, performs validation by comparing it to regex patterns and converts it to a Date type and returns it.
-    func getFormattedDate(scannedText: String) -> (Date,Bool) {
+    func getFormattedDate(scannedText: String) -> (Date,Int) {
         // remove whitespaces and puntuation texts from a string
         var scannedText = scannedText.filter {
             !$0.isWhitespace && !$0.isPunctuation
@@ -19,7 +19,7 @@ extension ScanDateView.Coordinator {
         var formattedDate = Date().dayAfter
         
         //variable that will determine whether a given scanned text is a valid date or not.
-        var isDateNotFound = true
+        var isDateNotFound = 0
        
         //array of regex to identify valid date format for a scanned text.
         let dateFormatsRegex = [#"^EXP(0[1-9]|1[0-2])[2-9][0-9]$"#, //EXP.MM.YY //0
@@ -126,10 +126,13 @@ extension ScanDateView.Coordinator {
                 //convert the date into swift Date type
                 formattedDate = getMyDate(year: yy, month: mm, day: dd)
                 //set the flag to false as date scanned is valid.
-                isDateNotFound = false
+                isDateNotFound = 1
                 print("formatted date:\(formattedDate)")
                 //jump out of the loop
                 break
+            }
+            else {
+                isDateNotFound = 2
             }
             //otherwise continue scanning the loop
             counter += 1

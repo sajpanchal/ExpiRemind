@@ -16,7 +16,7 @@ struct ScanDateView: UIViewControllerRepresentable {
     
     //variables to be bound to rendering swiftUI view.
     @Binding var recognizedText: Date
-    @Binding var isDateNotFound: Bool
+    @Binding var isDateNotFound: Int
     
     //VC coordinator
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
@@ -69,7 +69,7 @@ struct ScanDateView: UIViewControllerRepresentable {
         }
         
         //from array of images get the text and convert it to Date and a scan result
-        func recognizeText(from images: [CGImage]) -> (Date,Bool) {
+        func recognizeText(from images: [CGImage]) -> (Date,Int) {
             //var to hold text
             var entireRecognizedText = ""
             
@@ -106,6 +106,7 @@ struct ScanDateView: UIViewControllerRepresentable {
                 try? requestHandler.perform([recognizeTextRequest])
             }
             // get the date from a string
+           
             let formattedDate = getFormattedDate(scannedText: entireRecognizedText).0
             
             //get the scanned result

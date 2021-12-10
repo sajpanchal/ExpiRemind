@@ -10,6 +10,7 @@ import CoreData
 import CloudKit
 
 struct PreferencesView: View {
+    @Environment(\.colorScheme) private var colorScheme
     //cloudkit managed object context
     @Environment(\.managedObjectContext) var viewContext
     //cloudkit fetched records from Product entity.
@@ -30,13 +31,9 @@ struct PreferencesView: View {
     
     //show/hide card or alert view.
     @State var showCard = false
-   
-    
-    //variable to show which tab view
-    @Binding var showTab: Int
-    
+       
     //set the reminder time from user default object value.
-    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date)!
+    @State var reminderTime: Date = (UserDefaults.standard.object(forKey: "reminderTime") as? Date) ?? Date(timeIntervalSinceReferenceDate: -25200)
   
     var body: some View {
         NavigationView {
@@ -45,20 +42,21 @@ struct PreferencesView: View {
                     // preferences form
                     Form {
                         //input to enable/disable notification
-                        Section(header: Text("Enable Notifications:")) {
+                        Section(header: Text("Enable/Disable Notifications:")) {
                             //toggle switch that will set/reset notification property.
-                            Toggle("Product Expiry Reminder", isOn: $notification.isNotificationEnabled)
+                            Toggle("Reminder for product exipiry is", isOn: $notification.isNotificationEnabled)
+                        
                         }
                         //input to set reminder time
-                        Section(header: Text("Reminder Time:")) {
+                        Section(header: Text("Expiry Reminder Time:")) {
                             //date picker that will allow user to set time and it will be stored in a variable
-                            DatePicker("Set Reminder At", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                            DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
                                 .accentColor(.secondary)
                         }
                         //input to set deletion day after expiry of product.
                         Section(header: Text("Delete Expired Product:")) {
                             // picker with a selection variable
-                            Picker("Delete Product(s) After", selection: $numberOfDays) {
+                            Picker("Delete product(s) after", selection: $numberOfDays) {
                                 //disply picker content from array of days.
                                 ForEach(daysCollection, id: \.self) {
                                     Text("\($0) Days")
@@ -116,17 +114,17 @@ struct PreferencesView: View {
                             HStack {
                                 Spacer()
                                 
-                                Text("Save")
+                                Text("Save Preferences")
                                     .fontWeight(.bold)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(colorScheme == .dark ? .black : .white)
                                 
                                 Spacer()
                             }
-                            .frame(height: 50, alignment: .center)
+                            .frame(height: 40, alignment: .center)
                         }
                             .background(Color.gray)
                             .buttonStyle(BorderlessButtonStyle())
-                            .cornerRadius(10)
+                            .cornerRadius(100)
                             .padding(.bottom, 10)
                             Button {
                                 numberOfDays = UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays")
@@ -136,30 +134,30 @@ struct PreferencesView: View {
                                 notification.isNotificationEnabled =   !(UserDefaults.standard.bool(forKey: "isNotificationDisabled"))
                                 
                                 //set card view appearance.
-                                alertTitle = "Preferences discards!"
+                                alertTitle = "Form Cleared"
                                 alertImage = "xmark.seal.fill"
                                 color = .red
                                 
                                 //show it with animation
                                 withAnimation {
-                              //      showCard = true
+                                    showCard = true
                                 }
                             }
                         label: {
                             HStack {
                                 Spacer()
                                 
-                                Text("Discard")
+                                Text("Clear Form")
                                     .fontWeight(.bold)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(colorScheme == .dark ? .black : .white)
                                 
                                 Spacer()
                             }
-                            .frame(height: 50, alignment: .center)
+                            .frame(height: 40, alignment: .center)
                         }
                             .background(Color.red)
                             .buttonStyle(BorderlessButtonStyle())
-                            .cornerRadius(10)
+                            .cornerRadius(100)
                             .padding(.bottom, 10)
                             
                         }
@@ -170,6 +168,7 @@ struct PreferencesView: View {
                 }
                 //when this view appears.
                 .onAppear(perform: {
+                  //  showTab = 2
                    print("on appear")
                     print(UserDefaults.standard.integer(forKey: "numberOfDays"))
                     //save number of days to default value if it is not set or keep the default value and save it to user defaults.
@@ -191,7 +190,7 @@ struct PreferencesView: View {
                     let _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
                         withAnimation {
                         showCard = false
-                         showTab = 0
+                   
                         }
                     }
                 }
@@ -221,6 +220,6 @@ struct PreferencesView: View {
 
 struct PreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferencesView(showTab: .constant(0))
+        PreferencesView()
     }
 }
