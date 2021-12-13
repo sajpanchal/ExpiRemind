@@ -64,15 +64,12 @@ extension Product {
         let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
         
         switch dateComponent.day! {
-        case 180... :
+       
+        case 90...:
             return 30
-        case 90..<180:
-            return 15
-        case 30..<90:
-            return 10
-        case 15..<30:
-            return 5
-        case 7..<15:
+        case 7..<90:
+            return 7
+        case 2..<7:
             return 2
         default:
             return 2
@@ -83,15 +80,13 @@ extension Product {
         let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
         
         switch dateComponent.day! {
-        case 180... :
-            return 60
-        case 90..<180:
-            return 30
+        case 90... :
+            return 50
         case 30..<90:
-            return 15
-        case 15..<30:
-            return 10
-        case 7..<15:
+            return 20
+        case 7..<90:
+            return 5
+        case 2..<7:
             return 4
         default:
             return 4

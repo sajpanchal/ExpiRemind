@@ -59,32 +59,45 @@ class CustomNotification: ObservableObject {
         
         // get the notification settings that will give back the authorization Status of user notification request.
         UNUserNotificationCenter.current().getNotificationSettings { settings in
+           
             //if user has authorized the request
             if settings.authorizationStatus == .authorized {
+                var flag = 0
                 print("----------------Notifications for \(product.getName)----------------")
                 // for day of expiry to last red zone day.
-                for i in 0...product.redZoneExpiry {
+                for i in (0...product.redZoneExpiry).reversed() {
+                
                     // making sure the expiry days seconds are more than the given number of days from expiry.
-                   if expirySeconds > i*86400 {
-                       // add notification trigger request.
-                       self.addRequest(seconds:i*86400, product:product, expirySeconds:expirySeconds)
-                       print("for day \(i) from expiry is sent")
+                    if i == 1 || i == 2 || i == 7 || i == 30 {
+                        flag += 1
+                        if expirySeconds > i*86400 && flag <= 3 {
+                            // add notification trigger request.
+                            self.addRequest(seconds:i*86400, product:product, expirySeconds:expirySeconds)
+                            print("for day \(i) from expiry is sent")
+                         }
                     }
+                   
                 }
             }
             //if user has not authorized the request yet.
             else if settings.authorizationStatus == .notDetermined {
+               
                 //request authoization to user again.
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                     print("Notification request is not authorized by the user yet.")
                     // if request is authorized.
                     if success {
                         // add the notification trigger requests.
-                        for i in 0...product.redZoneExpiry {
-                            if expirySeconds > i*86400 {
-                                // call method to create trigger, content and request.
-                                self.addRequest(seconds:i*86400, product:product, expirySeconds:expirySeconds)
+                        var flag = 0
+                        for i in (0...product.redZoneExpiry).reversed() {
+                            if i == 1 || i == 2 || i == 7 || i == 30 {
+                                flag += 1
+                                if expirySeconds > i*86400 && flag <= 3  {
+                                    // call method to create trigger, content and request.
+                                    self.addRequest(seconds:i*86400, product:product, expirySeconds:expirySeconds)
+                                }
                             }
+                           
                     }
                         print("Notification request has been now sent...")
                     }
@@ -104,21 +117,21 @@ class CustomNotification: ObservableObject {
     func addRequest(seconds: Int, product: Product, expirySeconds: Int) -> Void {
         // create content body.
         let createContentBody = { (productName: String) -> String in
-            if seconds == 0 {
-                print("Your product '\(product.getName)' has been expired today!")
-                return "Your product '\(product.getName)' has been expired today!"
-            }
-            else if seconds == 86400 {
-                print("Your product '\(product.getName)' is expiring tommorrow!")
-                return "Your product '\(product.getName)' is expiring tommorrow!"
+             if seconds == 86400 {
+                 print("Your product '\(product.getName)' is expiring tommorrow (Exp. Date: \(product.ExpiryDate))!")
+                return "Your product '\(product.getName)' is expiring tommorrow (Exp. Date: \(product.ExpiryDate))!"
             }
             else if seconds == 2*86400 {
-                print("Your product '\(product.getName)' is expiring in 2 days!")
-               return "Your product '\(product.getName)' is expiring in 2 days!"
+                print("Your product '\(product.getName)' is expiring in 2 days (Exp. Date: \(product.ExpiryDate)!)")
+               return "Your product '\(product.getName)' is expiring in 2 days (Exp. Date: \(product.ExpiryDate))!"
+            }
+            else if seconds == 7*86400 {
+                print("Your product '\(product.getName)' is expiring in 7 days (Exp. Date: \(product.ExpiryDate))!")
+               return "Your product '\(product.getName)' is expiring in 7 days (Exp. Date: \(product.ExpiryDate))!"
             }
             else {
-                print("Your product '\(product.getName)' is expiring on \(product.ExpiryDate.capitalized)!")
-                return "Your product '\(product.getName)' is expiring on \(product.ExpiryDate.capitalized)!"
+                print("Your product '\(product.getName)' is expiring in 30 days (Exp. Date: \(product.ExpiryDate))!")
+                return "Your product '\(product.getName)' is expiring in 30 days (Exp. Date: \(product.ExpiryDate))!"
             }
         }
         // content object
