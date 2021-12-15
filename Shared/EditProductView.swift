@@ -12,7 +12,7 @@ import CloudKit
 struct EditProductView: View {
     // show/hide this view
     @Environment(\.presentationMode) var presentationMode
-    
+    var index: Int
     // cloudkit managed object context
     @Environment(\.managedObjectContext) var viewContext
     // cloudkit fetched records from Product entity.
@@ -54,7 +54,7 @@ struct EditProductView: View {
             VStack {
                 ProductForm(product: product,productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
             }
-            .navigationTitle("Edit Product")
+            .navigationTitle("Edit Product\(index)")
             .onAppear(perform: printProducts)
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
@@ -128,6 +128,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView(product: Product(), productName: "",productType: "Grocery", expiryDate: Date().dayAfter)
+        EditProductView(index:0,product: Product(), productName: "",productType: "Grocery", expiryDate: Date().dayAfter)
     }
 }

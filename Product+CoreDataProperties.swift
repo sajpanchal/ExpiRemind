@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 
 extension Product {
@@ -22,6 +23,7 @@ extension Product {
     @NSManaged public var type: String?
     @NSManaged public var deleteAfter: Int16
     @NSManaged public var productID: UUID?
+    @NSManaged public var isNotificationSet: Bool
     
     public var getProductID: String {
         return "\(productID ?? UUID())"
@@ -35,7 +37,9 @@ extension Product {
     public var getType: String {
         type ?? "N/A"
     }
-    
+    public var IsNotificationSet: Bool {
+        return isNotificationSet
+    }
     public var ExpiryDate: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium // Jan 1, 2021
@@ -192,6 +196,16 @@ extension Product {
        let modifiedDate: Date = dateAndTimeFormatter.date(from: modifiedDateStr)!
         print("modified date:", modifiedDate)
         return modifiedDate
+    }
+    
+    static func checkNumberOfReminders(products: FetchedResults<Product>) -> Int {
+        var counter = 0
+        for prod in products {
+            if prod.isNotificationSet == true {
+                counter += 1
+            }
+        }
+        return counter
     }
     
     

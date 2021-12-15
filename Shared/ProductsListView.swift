@@ -10,6 +10,7 @@ import CoreData
 import CloudKit
 
 struct ProductsListView: View {
+
     //cloudKit view context
     @Environment(\.managedObjectContext) var viewContext
     //fetched records from cloudkit product entity.
@@ -38,12 +39,15 @@ struct ProductsListView: View {
                                 if product.getType == type {
                                     // display that product with a link to edit product view.
                                     NavigationLink(
-                                        destination: EditProductView(product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date().dayAfter),
+                                        destination: EditProductView(index: products.firstIndex(of: product)!,product: product, productName: product.getName, productType: product.getType, expiryDate: product.expiryDate ?? Date().dayAfter),
                                         // navigation link appearance.
                                         label: {
                                             ZStack {
-                                                //view that creates a UI for each list row.
-                                                ListRowView(product: product)
+                                               
+                                                    //view that creates a UI for each list row.
+                                                    ListRowView(index: products.firstIndex(of: product)!,product: product)
+                                                
+                                               
                                                 
                                                 //if product is expired.
                                                 if isExpired(expiryDate: product.expiryDate!) {
@@ -71,7 +75,10 @@ struct ProductsListView: View {
             .onAppear(perform: {
                 print("-------------Product list--------------")
                 for prod in products {
+                    
+                    
                     print("\(prod.getProductID): ",prod.getName)
+                    print("isNotificationSet: ", prod.isNotificationSet)
                 }
                // notification.notificationRequest()
                 //updateProductsandNotifications()

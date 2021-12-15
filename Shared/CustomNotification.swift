@@ -51,7 +51,9 @@ class CustomNotification: ObservableObject {
     
     //add time trigger notification for a given product.
     func sendTimeNotification(product: Product) {
-        
+        if !product.isNotificationSet {
+            return
+        }
         //date component that will get the seconds passed from this day to product expiry
         print(product.expiryDate.debugDescription.localizedLowercase)
         let expirySeconds = Self.dateComponent(product.expiryDate!).seconds ?? 0

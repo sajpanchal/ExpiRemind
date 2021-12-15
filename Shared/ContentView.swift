@@ -15,7 +15,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     //fetched records from cloudkit entity 'Product'
-    @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
+    @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
     
     //custom notification object to handle notifications and product
     var notification = CustomNotification()
