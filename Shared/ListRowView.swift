@@ -91,7 +91,7 @@ struct ListRowView: View {
             }
         }
         .alert(isPresented: $sendAlert) {
-            Alert(title: Text("Can't set notifications for this product"), message: Text("You can only set notifications for 20 products at a time. To set notification for this product disable notifications for other products that are less relevant to you."), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Can't set notifications for this product\n"), message: Text("You can only set notifications for 20 products at a time. \nTo set notification for this product disable notifications for other products that are less relevant to you."), dismissButton: .default(Text("OK")))
          }
         .onAppear(perform: {
             if product.isNotificationSet {
