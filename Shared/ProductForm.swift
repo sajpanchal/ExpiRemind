@@ -12,7 +12,7 @@ struct ProductForm: View {
     @Environment(\.managedObjectContext) var viewContext
     @Environment(\.colorScheme) private var colorScheme
     //fetched records from cloudkit Product entity.
-    @FetchRequest(entity: Product.entity(), sortDescriptors: []) var products: FetchedResults<Product>
+    @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
     // product variable that is passed from content view is having a property wrapper ObservedObject. i.e. this object is going to be changed if the original object is changed. also, it will re-render this view if it's values are in use.
     @ObservedObject var product: Product
     //same as above to share and sync notification object throughout the app
@@ -324,7 +324,7 @@ struct ProductForm: View {
         product.expiryDate = Product.modifyDate(date: expiryDate)
         product.dateStamp = Date()
         product.deleteAfter = Int16( UserDefaults.standard.integer(forKey: "numberOfDays") == 0 ? 1 : UserDefaults.standard.integer(forKey: "numberOfDays"))
-        
+        product.isNotificationSet = Product.checkNumberOfReminders(products: products) < 20 ? true: false
         //save the managed object context with a new record added.
         Product.saveContext(viewContext: viewContext)
        

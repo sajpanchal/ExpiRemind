@@ -12,7 +12,7 @@ import CloudKit
 struct EditProductView: View {
     // show/hide this view
     @Environment(\.presentationMode) var presentationMode
-    
+    var index: Int
     // cloudkit managed object context
     @Environment(\.managedObjectContext) var viewContext
     // cloudkit fetched records from Product entity.
@@ -48,6 +48,10 @@ struct EditProductView: View {
     //variable to determine which camera view to render.
     @State var viewTag = 1
     
+    //notification taps
+    @State var imageName = ""
+
+    
     var body: some View {
         ZStack {
             //product form view
@@ -55,10 +59,50 @@ struct EditProductView: View {
                 ProductForm(product: product,productName: $productName, productType: $productType, expiryDate: $expiryDate, showProductScanningView: $showProductScanningView, showDateScanningView: $showDateScanningView, alertTitle:$alertTitle, alertImage:$alertImage, alertMessage: $alertMessage, color:$color, showCard: $showCard, showAlert:$showAlert, viewTag: $viewTag)
             }
             .navigationTitle("Edit Product")
-            .onAppear(perform: printProducts)
+            .navigationBarItems(trailing: Image(systemName: imageName)
+                                    .foregroundColor(color)
+                                    .onTapGesture {
+                                        if color == .red && Product.checkNumberOfReminders(products: products) < 20 {
+                                            product.isNotificationSet = true
+                                            Product.saveContext(viewContext: viewContext)
+                                            color = .yellow
+                                            imageName = "bell.fill"
+                                            notification.sendTimeNotification(product: product)
+                                            
+                                        }
+                                        else if color == .yellow {
+                                            product.isNotificationSet = false
+                                            Product.saveContext(viewContext: viewContext)
+                                            notification.removeNotification(product: product)
+                                            color = .red
+                                            imageName = "bell.slash.fill"
+                                        }
+                                        else {
+                                            
+                                            alertTitle = "Can't set notifications for this product\n"
+                                            alertMessage = "You can only set notifications for 20 products at a time. \nTo set notification for this product disable notifications for other products that are less relevant to you."
+                                            showAlert = true
+                                            
+                                        }
+                                        
+                                    })
+            .onAppear(perform: {
+                printProducts()
+                if product.isNotificationSet {
+                    color = .yellow
+                    imageName = "bell.fill"
+                }
+                else {
+                    color = .red
+                    imageName = "bell.slash.fill"
+                }
+            })
             .onDisappear(perform: {
                 presentationMode.wrappedValue.dismiss()
             })
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+             }
             //pop up the camera view to scan and diplay product name
             .sheet(isPresented: $showProductScanningView) {
                 ScanDocumentView(recognizedText: $productName)
@@ -128,6 +172,6 @@ struct EditProductView: View {
 
 struct EditProductView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProductView(product: Product(), productName: "",productType: "Grocery", expiryDate: Date().dayAfter)
+        EditProductView(index:0,product: Product(), productName: "",productType: "Grocery", expiryDate: Date().dayAfter)
     }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 
 extension Product {
@@ -22,6 +23,7 @@ extension Product {
     @NSManaged public var type: String?
     @NSManaged public var deleteAfter: Int16
     @NSManaged public var productID: UUID?
+    @NSManaged public var isNotificationSet: Bool
     
     public var getProductID: String {
         return "\(productID ?? UUID())"
@@ -35,7 +37,9 @@ extension Product {
     public var getType: String {
         type ?? "N/A"
     }
-    
+    public var IsNotificationSet: Bool {
+        return isNotificationSet
+    }
     public var ExpiryDate: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium // Jan 1, 2021
@@ -64,15 +68,12 @@ extension Product {
         let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
         
         switch dateComponent.day! {
-        case 180... :
+       
+        case 90...:
             return 30
-        case 90..<180:
-            return 15
-        case 30..<90:
-            return 10
-        case 15..<30:
-            return 5
-        case 7..<15:
+        case 7..<90:
+            return 7
+        case 2..<7:
             return 2
         default:
             return 2
@@ -83,15 +84,13 @@ extension Product {
         let dateComponent = Calendar.current.dateComponents([.day], from: Date(), to: expiryDate ?? Date())
         
         switch dateComponent.day! {
-        case 180... :
-            return 60
-        case 90..<180:
-            return 30
+        case 90... :
+            return 50
         case 30..<90:
-            return 15
-        case 15..<30:
-            return 10
-        case 7..<15:
+            return 20
+        case 7..<90:
+            return 5
+        case 2..<7:
             return 4
         default:
             return 4
@@ -197,6 +196,16 @@ extension Product {
        let modifiedDate: Date = dateAndTimeFormatter.date(from: modifiedDateStr)!
         print("modified date:", modifiedDate)
         return modifiedDate
+    }
+    
+    static func checkNumberOfReminders(products: FetchedResults<Product>) -> Int {
+        var counter = 0
+        for prod in products {
+            if prod.isNotificationSet == true {
+                counter += 1
+            }
+        }
+        return counter
     }
     
     
