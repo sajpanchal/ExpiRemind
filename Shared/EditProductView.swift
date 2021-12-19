@@ -50,6 +50,7 @@ struct EditProductView: View {
     
     //notification taps
     @State var imageName = ""
+    @State var bellColor: Color?
 
     
     var body: some View {
@@ -60,21 +61,21 @@ struct EditProductView: View {
             }
             .navigationTitle("Edit Product")
             .navigationBarItems(trailing: Image(systemName: imageName)
-                                    .foregroundColor(color)
+                                    .foregroundColor(bellColor)
                                     .onTapGesture {
-                                        if color == .red && Product.checkNumberOfReminders(products: products) < 20 {
+                                        if bellColor == .red && Product.checkNumberOfReminders(products: products) < 20 {
                                             product.isNotificationSet = true
                                             Product.saveContext(viewContext: viewContext)
-                                            color = .yellow
+                                            bellColor = .yellow
                                             imageName = "bell.fill"
                                             notification.sendTimeNotification(product: product)
                                             
                                         }
-                                        else if color == .yellow {
+                                        else if bellColor == .yellow {
                                             product.isNotificationSet = false
                                             Product.saveContext(viewContext: viewContext)
                                             notification.removeNotification(product: product)
-                                            color = .red
+                                            bellColor = .red
                                             imageName = "bell.slash.fill"
                                         }
                                         else {
@@ -89,11 +90,11 @@ struct EditProductView: View {
             .onAppear(perform: {
                 printProducts()
                 if product.isNotificationSet {
-                    color = .yellow
+                    bellColor = .yellow
                     imageName = "bell.fill"
                 }
                 else {
-                    color = .red
+                    bellColor = .red
                     imageName = "bell.slash.fill"
                 }
             })
