@@ -14,8 +14,8 @@ struct ProductsListView: View {
     //cloudKit view context
     @Environment(\.managedObjectContext) var viewContext
     //fetched records from cloudkit product entity.
-    @FetchRequest(entity: Product.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)]) var products: FetchedResults<Product>
-    
+    @FetchRequest(entity: Product.entity(), sortDescriptors: ProductsSort.default.descriptors) var products: FetchedResults<Product>
+  @State var selectedSort = ProductsSort.default
     //shared object for notification handling.
     @EnvironmentObject var notification: CustomNotification
     
@@ -72,7 +72,17 @@ struct ProductsListView: View {
                     }
                 }
             }
+          
+            .navigationBarItems(trailing: SortSelectionView(selectedSortItem: $selectedSort, sorts: ProductsSort.sorts).onChange(of: selectedSort) {_ in
+                    if #available(iOS 15.0, *) {
+                        products.nsSortDescriptors = selectedSort.descriptors
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                }
+            )
             .onAppear(perform: {
+              
                 print("-------------Product list--------------")
                 for prod in products {
                     
@@ -84,8 +94,10 @@ struct ProductsListView: View {
                 //updateProductsandNotifications()
             })
             .navigationTitle(Text("List of Products"))
+           
             
         }
+        
     }
     
     func updateProductsandNotifications() {

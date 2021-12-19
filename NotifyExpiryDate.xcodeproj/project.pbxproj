@@ -33,6 +33,8 @@
 		724E801826F792910007D122 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 724E7FFE26F792910007D122 /* Assets.xcassets */; };
 		7251B75326FE13130014FEE3 /* EditProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7251B75226FE13130014FEE3 /* EditProductView.swift */; };
 		7251B75426FE13130014FEE3 /* EditProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7251B75226FE13130014FEE3 /* EditProductView.swift */; };
+		72761FB8276FB39C007FA565 /* ProductsSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72761FB7276FB39C007FA565 /* ProductsSort.swift */; };
+		72761FBA276FB56A007FA565 /* SortSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72761FB9276FB56A007FA565 /* SortSelectionView.swift */; };
 		72EDC2E92709379C002AA10D /* CustomNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EDC2E82709379C002AA10D /* CustomNotification.swift */; };
 		72EDC2EA2709379C002AA10D /* CustomNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EDC2E82709379C002AA10D /* CustomNotification.swift */; };
 		72EE64AB2729BC19004AD6ED /* CoordinatorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EE64AA2729BC19004AD6ED /* CoordinatorExtension.swift */; };
@@ -63,6 +65,8 @@
 		724E800E26F792910007D122 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "NotifyExpiryDate (iOS).entitlements"; sourceTree = "<group>"; };
 		7251B75226FE13130014FEE3 /* EditProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductView.swift; sourceTree = "<group>"; };
+		72761FB7276FB39C007FA565 /* ProductsSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSort.swift; sourceTree = "<group>"; };
+		72761FB9276FB56A007FA565 /* SortSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSelectionView.swift; sourceTree = "<group>"; };
 		72EDC2E82709379C002AA10D /* CustomNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNotification.swift; sourceTree = "<group>"; };
 		72EE64AA2729BC19004AD6ED /* CoordinatorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorExtension.swift; sourceTree = "<group>"; };
 		72F99B0C271C7963004FF570 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -98,6 +102,8 @@
 		724E7FF326F792900007D122 = {
 			isa = PBXGroup;
 			children = (
+				72761FB9276FB56A007FA565 /* SortSelectionView.swift */,
+				72761FB7276FB39C007FA565 /* ProductsSort.swift */,
 				7250A62527035D6000FD44EF /* NotifyExpiryDate (iOS).entitlements */,
 				720DF39226F8CE4800638DA6 /* Product+CoreDataClass.swift */,
 				720DF39326F8CE4800638DA6 /* Product+CoreDataProperties.swift */,
@@ -266,12 +272,14 @@
 				72EDC2E92709379C002AA10D /* CustomNotification.swift in Sources */,
 				72F99B0D271C7963004FF570 /* Card.swift in Sources */,
 				721D7B3B27246135001E208B /* ScanDocumentView.swift in Sources */,
+				72761FB8276FB39C007FA565 /* ProductsSort.swift in Sources */,
 				720D912227286AE300AB32B6 /* ProductForm.swift in Sources */,
 				724E801126F792910007D122 /* NotifyExpiryDateApp.swift in Sources */,
 				72247CE0272AFEFE00EC4405 /* ScanDateView.swift in Sources */,
 				720DF39426F8CE4800638DA6 /* Product+CoreDataClass.swift in Sources */,
 				7234F4C826FA232800504155 /* ProductsListView.swift in Sources */,
 				724E801326F792910007D122 /* ContentView.swift in Sources */,
+				72761FBA276FB56A007FA565 /* SortSelectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
